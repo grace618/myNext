@@ -1,26 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-
+import React, { Suspense, lazy } from 'react';
+import {
+    BrowserRouter as Router,
+    Route,
+    Switch
+} from 'react-router-dom'
+import { ThemeProvider } from '@material-ui/styles';
+import theme from './theme';
+import Layout from 'views/Layouts'
+const Home = lazy(() => import('views/Home'))
+const GameDetail = lazy(() => import('views/GameDetail'))
+const GameList = lazy(() => import('views/GameList'))
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <ThemeProvider theme={theme}>
+            <Router>
+                <Suspense fallback={<div></div>}>
+                    <Switch>
+                        <Layout>
+                            <Route path="/" exact component={Home}></Route>
+                            <Route path="/detail" component={GameDetail}></Route>
+                            <Route path="/gameslist" component={GameList}></Route>
+                        </Layout>
+                    </Switch>
+                </Suspense>
+            </Router>
+        </ThemeProvider>
+    )
 }
-
-export default App;
+export default App
