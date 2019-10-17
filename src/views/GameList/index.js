@@ -2,9 +2,10 @@ import React from 'react'
 import { Link as RouterLink } from 'react-router-dom';
 import Slider from "react-slick";
 import { makeStyles, Container, Typography, Grid, Button, Box, Hidden, Breadcrumbs, Link, Divider, ButtonBase } from '@material-ui/core'
-import banner1 from 'assets/imgs/gamelist/banner1.jpg'
 
+import banner1 from 'assets/imgs/gamelist/banner1.jpg'
 import mythLogo from 'assets/imgs/mythLogo.png'
+
 const useStyles = makeStyles(theme => ({
     navBar: {
         height: '100%',
@@ -90,13 +91,13 @@ function GameList() {
                 <div className={classes.slideWrap}>
                     <Slider {...settings} className={classes.box}>
                         <div>
-                            <Grid container alignItems="center" direction="column" justify="space-around" >
-                                <img src={banner1} alt="uluLogo" className={classes.pic} />
+                            <Grid container alignItems="center" justify="center" >
+                                <img src={banner1} alt="banner1" className={classes.pic} />
                             </Grid>
                         </div>
                         <div>
-                            <Grid container alignItems="center" direction="column" justify="space-around" >
-                                <img src={banner1} alt="uluLogo" className={classes.pic} />
+                            <Grid container alignItems="center" justify="center" >
+                                <img src={banner1} alt="banner1" className={classes.pic} />
                             </Grid>
                         </div>
                     </Slider>
@@ -113,17 +114,13 @@ function GameList() {
                             </ButtonBase>
                         </Grid>
                         <Grid item xs={12} sm container>
-                            <Grid item xs container direction="column" spacing={1}>
-                                <Grid item>
-                                    <Box fontSize="18px" className={classes.textInfo} pb={1}>Myth of Sword</Box>
-                                    <Typography variant="body2" color="textSecondary"> Upcoming game with 2.5D artwork! </Typography>
-                                </Grid>
-                                <Grid item>
-                                    <Box fontSize="14px" lineHeight="1.7">
-                                        Upcoming game with 2.5D artwork! Fantastic design with various challenge game-plays:1. Clan battle.
+                            <Grid item xs container direction="column" spacing={1} justify="space-around">
+                                <Box fontSize="18px" className={classes.textInfo} pb={1}>Myth of Sword</Box>
+                                <Typography variant="body2" color="textSecondary"> Upcoming game with 2.5D artwork! </Typography>
+                                <Box fontSize="14px" lineHeight="1.7">
+                                    Upcoming game with 2.5D artwork! Fantastic design with various challenge game-plays:1. Clan battle.
                                     Battle among different clans for the rich materials and Boss.
-                                 </Box>
-                                </Grid>
+                                </Box>
                             </Grid>
                             <Grid item>
                                 <Button variant="contained" color="primary" size="small" component={RouterLink} to="/detail">
@@ -140,17 +137,13 @@ function GameList() {
                             </ButtonBase>
                         </Grid>
                         <Grid item xs={12} sm container>
-                            <Grid item xs container direction="column" spacing={1}>
-                                <Grid item>
-                                    <Box fontSize="18px" className={classes.textInfo} pb={1}>Myth of Sword</Box>
-                                    <Typography variant="body2" color="textSecondary"> Upcoming game with 2.5D artwork! </Typography>
-                                </Grid>
-                                <Grid item>
-                                    <Box fontSize="14px" lineHeight="1.7">
-                                        Upcoming game with 2.5D artwork! Fantastic design with various challenge game-plays:1. Clan battle.
+                            <Grid item xs container direction="column" spacing={1} justify="space-around">
+                                <Box fontSize="18px" className={classes.textInfo} pb={1}>Myth of Sword</Box>
+                                <Typography variant="body2" color="textSecondary"> Upcoming game with 2.5D artwork! </Typography>
+                                <Box fontSize="14px" lineHeight="1.7">
+                                    Upcoming game with 2.5D artwork! Fantastic design with various challenge game-plays:1. Clan battle.
                                     Battle among different clans for the rich materials and Boss.
-                                 </Box>
-                                </Grid>
+                                </Box>
                             </Grid>
                             <Grid item>
                                 <Button variant="contained" color="primary" size="small" component={RouterLink} to="/detail">
@@ -167,17 +160,13 @@ function GameList() {
                             </ButtonBase>
                         </Grid>
                         <Grid item xs={12} sm container>
-                            <Grid item xs container direction="column" spacing={1}>
-                                <Grid item>
-                                    <Box fontSize="18px" className={classes.textInfo} pb={1}>Myth of Sword</Box>
-                                    <Typography variant="body2" color="textSecondary"> Upcoming game with 2.5D artwork! </Typography>
-                                </Grid>
-                                <Grid item>
-                                    <Box fontSize="14px" lineHeight="1.7">
-                                        Upcoming game with 2.5D artwork! Fantastic design with various challenge game-plays:1. Clan battle.
+                            <Grid item xs container direction="column" spacing={1} justify="space-around">
+                                <Box fontSize="18px" className={classes.textInfo} pb={1}>Myth of Sword</Box>
+                                <Typography variant="body2" color="textSecondary"> Upcoming game with 2.5D artwork! </Typography>
+                                <Box fontSize="14px" lineHeight="1.7">
+                                    Upcoming game with 2.5D artwork! Fantastic design with various challenge game-plays:1. Clan battle.
                                     Battle among different clans for the rich materials and Boss.
-                                 </Box>
-                                </Grid>
+                                </Box>
                             </Grid>
                             <Grid item>
                                 <Button variant="contained" color="primary" size="small" component={RouterLink} to="/detail">

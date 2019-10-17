@@ -161,7 +161,7 @@ function Home() {
                             <Typography variant="h6" gutterBottom color="textSecondary" align="center">Start self-publishing, or as a publishing partner with ULU GAMES</Typography>
                         </Hidden>
                         <Box mt={8} display={{ xs: 'none', sm: 'block' }}>
-                            <Button variant="contained" color="primary" size="large" >GLOBAL PUBLISHING</Button>
+                            <Button variant="contained" color="primary" size="large" to="/publishing" component={RouterLink}>GLOBAL PUBLISHING</Button>
                         </Box>
                     </Grid>
                 </Container>
@@ -188,7 +188,7 @@ function Home() {
                             We've proven the success of the process with our games <br /> being downloaded over 2 million times. Our major projects include 'ARKA', 'ETERNAL STORM', and 'ERA of DISCORD'.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          2 million times. Our major projects include 'ARKA', 'ETERNAL STORM', and 'ERA of DISCORD'.
                             </Typography>
                                 <Box mt={5}>
-                                    <Button variant="outlined" size="large" className={classes.more}>SEE MORE</Button>
+                                    <Button variant="outlined" size="large" className={classes.more} to="/gameslist" component={RouterLink}>SEE MORE</Button>
                                 </Box>
                             </Box>
                         </Grid>
@@ -256,7 +256,7 @@ function Home() {
                         <Typography gutterBottom variant="h5" color="textPrimary" align="center">PUBLISH YOUR GAME/APP GLOBALLY NOW</Typography>
                         <Typography className={classes.slogan} align="center">Start self-publishing, or as a publishing partner with ULU GAME</Typography>
                         <Box mt={7}>
-                            <Button variant="contained" size="large" color="primary" >GLOBAL PUBLISHING</Button>
+                            <Button variant="contained" size="large" color="primary" to="/publishing" component={RouterLink}>GLOBAL PUBLISHING</Button>
                         </Box>
                     </Grid>
                 </Container>
