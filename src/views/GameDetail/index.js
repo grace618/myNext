@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import { useSelector } from 'react-redux'
 import { makeStyles, Container, Typography, Grid, Button, Box, Hidden, Breadcrumbs, Link, Divider } from '@material-ui/core'
 import Slider from "react-slick";
 import ReactPlayer from 'react-player'
@@ -8,12 +9,8 @@ import {
     TwitterShareButton,
     FacebookShareButton,
 } from 'react-share';
-import img1 from 'assets/imgs/img1.jpg'
-import img2 from 'assets/imgs/img2.jpg'
-import img3 from 'assets/imgs/img3.jpg'
-import img4 from 'assets/imgs/img4.jpg'
-import mythLogo from 'assets/imgs/mythLogo.png'
-import mythOfSword from 'assets/imgs/1_myth_of_sword.png'
+
+
 import { ReactComponent as DateIcon } from 'icons/svg/date.svg'
 import { ReactComponent as LightIcon } from 'icons/svg/light.svg'
 import { ReactComponent as UserIcon } from 'icons/svg/user.svg'
@@ -24,6 +21,10 @@ import { ReactComponent as Youtube } from 'icons/svg/youtube.svg'
 import { ReactComponent as IOS } from 'icons/svg/IOS.svg'
 import { ReactComponent as Android } from 'icons/svg/andriod.svg'
 import { ReactComponent as Twitch } from 'icons/svg/twitch.svg'
+
+
+import { getGameDetail } from 'service/gameDetail'
+
 
 const useStyles = makeStyles(theme => ({
     navBar: {
@@ -102,7 +103,15 @@ const useStyles = makeStyles(theme => ({
         marginTop: '20px'
     },
     box: {
-        marginBottom: theme.spacing(5)
+        marginBottom: theme.spacing(5),
+    },
+
+    slideImg: {
+        '& img': {
+            width: '100%',
+            padding: '3%',
+            boxSizing: 'border-box'
+        }
     },
     textInfo: {
         color: theme.palette.text.primary,
@@ -123,19 +132,45 @@ const useStyles = makeStyles(theme => ({
         marginBottom: theme.spacing(3),
         width: theme.spacing(16),
         height: theme.spacing(16),
-    }
-}))
+    },
+    img: {
+        width: 128,
+        height: 128,
+        borderRadius: '30px'
+    },
 
-function Home() {
+}))
+const gameType = [
+    '角色扮演',
+    '卡牌对战',
+    '战略游戏',
+    '模拟游戏',
+    '休闲益智',
+    '竞技格斗',
+    '射击游戏',
+    '动作冒险',
+    '策略塔防',
+    '动作角色扮演',
+    '多人角色',
+    '竞技体育',
+    '音乐游戏'
+]
+function Detail(props) {
     const classes = useStyles()
-    const shareUrl = 'http://github.com';
-    const title = 'GitHub';
+    const { match: { params: { id } } } = props;
+    const [detail, setDetail] = useState({ gameBaseInfoList: [], recommendList: [], downloadUrlList: [] })
+    const [snapshotImg, setSnapshotImg] = useState([])
+    const [video, setVideo] = useState([])
+    const [carousel, setCarousel] = useState([])
+    const language = useSelector(state => state.app)
     const settings = {
         dots: true,
         infinite: true,
         speed: 500,
         slidesToShow: 4,
         slidesToScroll: 4,
+        initialSlide: 0,
+        // variableWidth: true,
         responsive: [
             {
                 breakpoint: 1280,
@@ -163,6 +198,34 @@ function Home() {
             }
         ]
     }
+    const getDetail = async (id, lang) => {
+        const res = await getGameDetail(id, lang)
+        if (res.status === 200) {
+            setDetail(res.data)
+            let snapshotImg = [], video = [], carousel = []
+            res.data.snapshotUrlList.map(item => {
+                if (item.type === '1') {
+                    snapshotImg.push(item.snapshotUrl)
+                }
+                if (item.type === '3') {
+                    video.push(item.snapshotUrl)
+                }
+                if (item.type === '2') {
+                    carousel.push(item.snapshotUrl)
+                }
+                return null
+            })
+            setSnapshotImg(snapshotImg)
+            setVideo(video)
+            setCarousel(carousel)
+
+        }
+    }
+    useEffect(() => {
+        if (language) {
+            getDetail(id, language.lang)
+        }
+    }, [language, id])
     return (
         <div>
             <Hidden smDown>
@@ -175,32 +238,49 @@ function Home() {
                                 <Link color="inherit" to="/" component={RouterLink} className={classes.breadcrumbs}>
                                     Games
                                  </Link>
-                                <Typography color="textPrimary" className={classes.breadcrumbs}>Myth of Sword</Typography>
+                                <Typography color="textPrimary" className={classes.breadcrumbs}>{detail.gameName}</Typography>
                             </Breadcrumbs>
                         </Grid>
                     </Container>
                 </Box>
             </Hidden>
+
             <Container>
                 <Grid container alignItems="center" className={classes.gameTitle}>
-                    <Box mr={5} mb={1}>
-                        <img src={mythLogo} alt="mytho of sword" />
+                    <Box mr={3} mb={1}>
+                        <img src={detail.gameImg} alt="" className={classes.img} />
                     </Box>
                     <div>
-                        <Typography gutterBottom variant="h5" color="textPrimary">Myth of Sword</Typography>
-                        <Typography color="textSecondary">Upcoming game with 2.5D artwork! </Typography>
+                        <Typography gutterBottom variant="h5" color="textPrimary">{detail.gameName}</Typography>
+                        {
+                            detail.gameBaseInfoList.map(value => (
+                                value.type === '1' && <Typography color="textSecondary" key={value.type}>{value.gameDescription}</Typography>
+                            ))
+                        }
                     </div>
                 </Grid>
                 <Divider />
                 <Grid container justify="space-between" className={classes.space}>
                     {/* spacing={spacing}  */}
                     <Grid item xs={12} sm={12} md={7} lg={7} xl={7}>
-                        <img src={mythOfSword} alt="mythOfSword" width="100%" className={classes.source} />
-                        <ReactPlayer url='https://www.youtube.com/embed/oSUq36I6jnA' width="100%" className={classes.source} />
+                        {
+                            snapshotImg.map(item => (
+                                <img src={item} alt="" width="100%" className={classes.source} key={item} />
+                            ))
+                        }
+                        {
+                            video.map(item => (
+                                <ReactPlayer url={item} width="100%" className={classes.source} key={item} />
+                            ))
+                        }
                     </Grid>
                     <Grid item xs={12} sm={12} md={5} lg={5} xl={5} className={classes.rightPanel}>
                         <Box color="text.secondary" mb={3}>
-                            <Typography> Upcoming game with 2.5D artwork! Fantastic design with various challenge game-plays:</Typography>
+                            {
+                                detail.gameBaseInfoList.map(value => (
+                                    value.type === '2' && <Typography color="textSecondary" key={value.type}>{value.gameDescription}</Typography>
+                                ))
+                            }
                             <Typography className={classes.m}>
                                 1. Clan battle. Battle among different clans for the rich materials and Boss. <br />
                                 2. Cross-server PK. PK across server for rare materials and BOSS! Be the KING!<br />
@@ -219,45 +299,56 @@ function Home() {
                         <Grid className={classes.infoPanel} container direction="column">
                             <Grid container item>
                                 <Box className={classes.textInfo} width="150px"> <UserIcon /> Developer: </Box>
-                                <span>ULU Games</span>
+                                {detail.developer}
                             </Grid>
                             <Grid container item >
                                 <Box className={classes.textInfo} width="150px"> <DateIcon /><span> Release Date:</span>  </Box>
-                                <span>December 2016</span>
+                                {detail.onlineTime}
                             </Grid>
                             <Grid container item>
                                 <Box className={classes.textInfo} width="150px">  <LightIcon /><span> Genre:</span>  </Box>
-                                <span>RPG</span>
+                                {gameType[detail.gameType]}
                             </Grid>
                         </Grid>
                         <Divider />
                         <Grid className={classes.infoPanel} container direction="column">
                             <div className={classes.textInfo} > Download Now!</div>
-                            <Button variant="contained" color="secondary" size="large" className={classes.downloadiOS}>
-                                <IOS className={classes.icon} />
-                                APP STORE
-                            </Button>
-                            <Button variant="contained" color="primary" size="large" className={classes.downloadGoogleplay}>
-                                <Android className={classes.icon} />
-                                GOOGLE PLAY
-                            </Button>
+                            {
+                                detail.downloadUrlList.map(item => (
+                                    <React.Fragment key={item.type}>
+                                        {item.type === '2' &&
+                                            <Button variant="contained" color="secondary" size="large" className={classes.downloadiOS} href={item.downloadUrl} target="_blank">
+                                                <IOS className={classes.icon} />
+                                                APP STORE
+                                            </Button>
+                                        }
+                                        {
+                                            item.type === '1' &&
+                                            <Button variant="contained" color="primary" size="large" className={classes.downloadGoogleplay} href={item.downloadUrl} target="_blank">
+                                                <Android className={classes.icon} />
+                                                GOOGLE PLAY
+                                            </Button>
+                                        }
+                                    </React.Fragment>
+                                ))
+                            }
                         </Grid>
                         <Divider />
                         <Grid className={classes.infoPanel} container direction="column">
                             <div className={classes.textInfo} >Follow official channels of ULU GAMES!</div>
-                            <Button variant="contained" color="secondary" size="medium" className={classes.facebook}>
+                            <Button variant="contained" color="secondary" size="medium" className={classes.facebook} href={detail.fbCommunityUrl} target="_blank">
                                 <Facebook className={classes.icon} />
                                 ULUGAMES FACEBOOK
                             </Button>
-                            <Button variant="contained" color="secondary" size="medium" className={classes.twitter}>
+                            <Button variant="contained" color="secondary" size="medium" className={classes.twitter} href={detail.twitterCommunityUrl} target="_blank">
                                 <Twitter className={classes.icon} />
                                 ULUGAMES TWITTER
                             </Button>
-                            <Button variant="contained" color="primary" size="medium" className={classes.youtube}>
+                            <Button variant="contained" color="primary" size="medium" className={classes.youtube} href={detail.youtubeCommunityUrl} target="_blank">
                                 <Youtube className={classes.icon} />
                                 ULUGAMES YOUTUBE
                             </Button>
-                            <Button variant="contained" color="secondary" size="medium" className={classes.wechat}>
+                            <Button variant="contained" color="secondary" size="medium" className={classes.wechat} href={detail.wechatCommunityUrl} target="_blank">
                                 <Wechat className={classes.icon} />
                                 ULUGAMES WECHAT
                             </Button>
@@ -285,20 +376,24 @@ function Home() {
                             <Typography>Share:</Typography>
                             <Box p={2}>
                                 <Grid container >
-                                    <FacebookShareButton
-                                        url={shareUrl}
-                                        quote={title}
-                                        className={classes.share}
-                                    >
-                                        <Facebook />
-                                    </FacebookShareButton>
-                                    <TwitterShareButton
-                                        url={shareUrl}
-                                        quote={title}
-                                        className={classes.share}
-                                    >
-                                        <Twitter />
-                                    </TwitterShareButton>
+                                    {
+                                        detail.fbShareUrl && <FacebookShareButton
+                                            url={detail.fbShareUrl}
+                                            quote={detail.fbShareTitle}
+                                            className={classes.share}
+                                        >
+                                            <Facebook />
+                                        </FacebookShareButton>
+                                    }
+                                    {
+                                        detail.twitterShareUrl && <TwitterShareButton
+                                            url={detail.twitterShareUrl}
+                                            quote={detail.twitterShareTitle}
+                                            className={classes.share}
+                                        >
+                                            <Twitter />
+                                        </TwitterShareButton>
+                                    }
                                     <Wechat className={classes.share} />
                                 </Grid>
                             </Box>
@@ -310,106 +405,56 @@ function Home() {
                 <div className={classes.slideWrap}>
                     <Slider {...settings} className={classes.box}>
                         {/* <Skeleton variant="rect" width={210} height={118} /> */}
-                        <div>
-                            <Grid container alignItems="center" justify="center">
-                                {/* <img src={img1} alt="uluLogo" className={classes.pic} /> */}
-                                <ImageZoom
-                                    image={{ src: img1, alt: 'ulugameImg', }}
-                                    zoomImage={{ src: img1, alt: 'ulugameImg' }}
-                                />
-                                {/* <ImageZoom
-                                    image={{
-                                        src: img1,
-                                        alt: 'Gazelle Stomping',
-                                        title: "Don't exceed original image dimensions...",
-                                        className: 'img',
-                                        style: {
-                                            width: '100%'
-                                        }
-                                    }}
-                                    shouldRespectMaxDimension={true}
-                                /> */}
-                            </Grid>
-                        </div>
-                        <div>
-                            <Grid container alignItems="center" justify="center">
-                                <ImageZoom
-                                    image={{ src: img2, alt: 'ulugameImg', }}
-                                    zoomImage={{ src: img2, alt: 'ulugameImg' }}
-                                />
-                            </Grid>
-                        </div>
-                        <div>
-                            <Grid container alignItems="center" justify="center">
-                                <ImageZoom
-                                    image={{ src: img3, alt: 'ulugameImg', }}
-                                    zoomImage={{ src: img3, alt: 'ulugameImg' }}
-                                />
-                            </Grid>
-                        </div>
-                        <div>
-                            <Grid container alignItems="center" justify="center" >
-                                <ImageZoom
-                                    image={{ src: img4, alt: 'ulugameImg', }}
-                                    zoomImage={{ src: img4, alt: 'ulugameImg' }}
-                                />
-                            </Grid>
-                        </div>
+                        {
+                            carousel.map(item => (
+                                <div key={item} className={classes.slideImg}>
+                                    <ImageZoom
+                                        image={{ src: item, alt: 'ulugameImg', }}
+                                        zoomImage={{ src: item, alt: 'ulugameImg' }}
+                                    />
+                                </div>
+                            ))
+                        }
                     </Slider>
                 </div>
                 <Divider />
                 <Box pt={3} pb={4} fontSize="20px" className={classes.textInfo}>Recommended Similar Games</Box>
                 <Grid justify="space-between" container>
-                    <Grid container item xs={12} sm={12} md={12} lg={6} xl={6}  >
-                        <Grid xs={12} sm={12} md={3} lg={3} xl={3} item container justify="center">
-                            <img src={mythLogo} alt="mytho of sword" className={classes.thumbnail} />
-                        </Grid>
-                        <Grid xs={12} sm={12} md={8} lg={8} xl={8} item>
-                            <Grid item justify="space-between" container>
-                                <div>
-                                    <Box fontSize="18px" className={classes.textInfo}>Myth of Sword</Box>
-                                    <Typography color="textSecondary">Upcoming game with 2.5D artwork! </Typography>
-                                </div>
-                                <Hidden smDown>
-                                    <Button variant="contained" color="primary" size="small" className={classes.moreDetail}>
-                                        MORE DETAILS
-                                    </Button>
-                                </Hidden>
+                    {
+                        detail.recommendList.map(item => (
+                            <Grid container item xs={12} sm={12} md={12} lg={6} xl={6} key={item.id} >
+                                <Grid xs={12} sm={12} md={3} lg={3} xl={3} item container justify="center">
+                                    <img src={detail.gameImg} alt="" className={classes.thumbnail} />
+                                </Grid>
+                                <Grid xs={12} sm={12} md={8} lg={8} xl={8} item>
+                                    <Grid item justify="space-between" container>
+                                        <div>
+                                            <Box fontSize="18px" className={classes.textInfo}>{item.gameName}</Box>
+                                            {
+                                                item.gameDetails.map(value => (
+                                                    value.type === '1' && <Typography variant="body2" color="textSecondary" key={value.type}>{value.gameDescription}</Typography>
+                                                ))
+                                            }
+                                        </div>
+                                        <Hidden smDown>
+                                            <Button variant="contained" color="primary" size="small" className={classes.moreDetail} component={RouterLink} to={`/detail/${item.id}`}>
+                                                MORE DETAILS
+                                            </Button>
+                                        </Hidden>
+                                    </Grid>
+                                    <Grid>
+                                        <Box fontSize="14px" pt={2} lineHeight="1.7" pb={2}>
+                                            {
+                                                item.gameDetails.map(value => (
+                                                    value.type === '2' && <Typography variant="body2" color="textSecondary" key={value.type}>{value.gameDescription}</Typography>
+                                                ))
+                                            }
+                                        </Box>
+                                    </Grid>
+                                </Grid>
                             </Grid>
-                            <Grid>
-                                <Box fontSize="14px" pt={2} lineHeight="1.7" pb={2}>
-                                    Upcoming game with 2.5D artwork! <br />Fantastic design with various challenge game-plays:<br />
-                                    1.  Clan battle. Battle among different clans for the rich materials and Boss.<br />
-                                    2. Cross-server PK. PK across server for rare materials and BOSS! Be the KING!
-                                </Box>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                    <Grid container item xs={12} sm={12} md={12} lg={6} xl={6}  >
-                        <Grid xs={12} sm={12} md={3} lg={3} xl={3} item container justify="center">
-                            <img src={mythLogo} alt="mytho of sword" className={classes.thumbnail} />
-                        </Grid>
-                        <Grid xs={12} sm={12} md={8} lg={8} xl={8} item>
-                            <Grid item justify="space-between" container>
-                                <div>
-                                    <Box fontSize="18px" className={classes.textInfo}>Myth of Sword</Box>
-                                    <Typography color="textSecondary">Upcoming game with 2.5D artwork! </Typography>
-                                </div>
-                                <Hidden smDown>
-                                    <Button variant="contained" color="primary" size="small" className={classes.moreDetail}>
-                                        MORE DETAILS
-                                    </Button>
-                                </Hidden>
-                            </Grid>
-                            <Grid>
-                                <Box fontSize="14px" pt={2} lineHeight="1.7">
-                                    Upcoming game with 2.5D artwork! <br />Fantastic design with various challenge game-plays:<br />
-                                    1.  Clan battle. Battle among different clans for the rich materials and Boss.<br />
-                                    2. Cross-server PK. PK across server for rare materials and BOSS! Be the KING!
-                                </Box>
-                            </Grid>
-                        </Grid>
-                    </Grid>
+                        ))
+                    }
                 </Grid>
                 <Grid alignItems="center" container justify="center" className={classes.space}>
                     <Button variant="contained" color="primary" size="large" component={RouterLink} to="/gameslist">SEE ALL GAMES </Button>
@@ -419,4 +464,4 @@ function Home() {
     );
 }
 
-export default Home;
+export default Detail;

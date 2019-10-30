@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom';
 import Slider from "react-slick";
-import { makeStyles, Container, Typography, Grid, Button, Box, Hidden, Breadcrumbs, Link, Divider, ButtonBase } from '@material-ui/core'
+import { useTranslation } from 'react-i18next';
+import { gameList } from 'service/gameList'
 
+import { useSelector } from 'react-redux'
+import { makeStyles, Container, Typography, Grid, Button, Box, Hidden, Breadcrumbs, Link, Divider, ButtonBase } from '@material-ui/core'
 import banner1 from 'assets/imgs/gamelist/banner1.jpg'
-import mythLogo from 'assets/imgs/mythLogo.png'
 
 const useStyles = makeStyles(theme => ({
     navBar: {
@@ -54,11 +56,19 @@ const useStyles = makeStyles(theme => ({
         fontSize: 26,
         fontFamily: "Arial",
         color: theme.palette.text.primary
+    },
+    img: {
+        width: 128,
+        height: 128,
+        borderRadius: '30px'
     }
 })
 )
 function GameList() {
     const classes = useStyles()
+    const { t } = useTranslation(['gameList']);
+    const [list, setList] = useState([])
+    const language = useSelector(state => state.app)
     const settings = {
         dots: true,
         infinite: true,
@@ -66,6 +76,18 @@ function GameList() {
         slidesToShow: 1,
         slidesToScroll: 1
     }
+
+    const getList = async (language) => {
+        const res = await gameList(language)
+        if (res.status === 200) {
+            setList(res.data)
+        }
+    }
+    useEffect(() => {
+        if (language) {
+            getList(language.lang)
+        }
+    }, [language])
     return (
         <div>
             <Hidden smDown>
@@ -103,78 +125,47 @@ function GameList() {
                     </Slider>
                 </div>
                 <Box pt={7}>
-                    <span className={classes.headingBlock}>GAMES</span>
+                    <span className={classes.headingBlock}>{t('game')}</span>
                     <span className={classes.line}></span>
                 </Box>
                 <div className={classes.gameList}>
-                    <Grid container spacing={2} alignItems="center">
-                        <Grid item>
-                            <ButtonBase component={RouterLink} to="/detail">
-                                <img className={classes.img} alt="complex" src={mythLogo} />
-                            </ButtonBase>
-                        </Grid>
-                        <Grid item xs={12} sm container>
-                            <Grid item xs container direction="column" spacing={1} justify="space-around">
-                                <Box fontSize="18px" className={classes.textInfo} pb={1}>Myth of Sword</Box>
-                                <Typography variant="body2" color="textSecondary"> Upcoming game with 2.5D artwork! </Typography>
-                                <Box fontSize="14px" lineHeight="1.7">
-                                    Upcoming game with 2.5D artwork! Fantastic design with various challenge game-plays:1. Clan battle.
-                                    Battle among different clans for the rich materials and Boss.
-                                </Box>
-                            </Grid>
-                            <Grid item>
-                                <Button variant="contained" color="primary" size="small" component={RouterLink} to="/detail">
-                                    MORE DETAILS
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                    <Divider className={classes.divider} />
-                    <Grid container spacing={2} alignItems="center">
-                        <Grid item>
-                            <ButtonBase component={RouterLink} to="/detail">
-                                <img className={classes.img} alt="complex" src={mythLogo} />
-                            </ButtonBase>
-                        </Grid>
-                        <Grid item xs={12} sm container>
-                            <Grid item xs container direction="column" spacing={1} justify="space-around">
-                                <Box fontSize="18px" className={classes.textInfo} pb={1}>Myth of Sword</Box>
-                                <Typography variant="body2" color="textSecondary"> Upcoming game with 2.5D artwork! </Typography>
-                                <Box fontSize="14px" lineHeight="1.7">
-                                    Upcoming game with 2.5D artwork! Fantastic design with various challenge game-plays:1. Clan battle.
-                                    Battle among different clans for the rich materials and Boss.
-                                </Box>
-                            </Grid>
-                            <Grid item>
-                                <Button variant="contained" color="primary" size="small" component={RouterLink} to="/detail">
-                                    MORE DETAILS
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                    <Divider className={classes.divider} />
-                    <Grid container spacing={2} alignItems="center">
-                        <Grid item>
-                            <ButtonBase component={RouterLink} to="/detail">
-                                <img className={classes.img} alt="complex" src={mythLogo} />
-                            </ButtonBase>
-                        </Grid>
-                        <Grid item xs={12} sm container>
-                            <Grid item xs container direction="column" spacing={1} justify="space-around">
-                                <Box fontSize="18px" className={classes.textInfo} pb={1}>Myth of Sword</Box>
-                                <Typography variant="body2" color="textSecondary"> Upcoming game with 2.5D artwork! </Typography>
-                                <Box fontSize="14px" lineHeight="1.7">
-                                    Upcoming game with 2.5D artwork! Fantastic design with various challenge game-plays:1. Clan battle.
-                                    Battle among different clans for the rich materials and Boss.
-                                </Box>
-                            </Grid>
-                            <Grid item>
-                                <Button variant="contained" color="primary" size="small" component={RouterLink} to="/detail">
-                                    MORE DETAILS
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </Grid>
+                    {
+                        list.map(item => (
+                            <React.Fragment key={item.id}>
+                                <Grid container spacing={2} alignItems="center" >
+                                    <Grid item>
+                                        <ButtonBase component={RouterLink} to={`/detail/${item.id}`}>
+                                            <img className={classes.img} alt="complex" src={item.gameImg} />
+                                        </ButtonBase>
+                                    </Grid>
+                                    <Grid item xs={12} sm container>
+                                        <Grid item xs container direction="column" spacing={1} justify="space-around">
+                                            <Box fontSize="18px" className={classes.textInfo} pb={1}>{item.gameName}</Box>
+                                            {
+                                                item.gameDetails.map(value => (
+                                                    <React.Fragment key={value.type}>
+                                                        {
+                                                            value.type === '1' && <Typography variant="body2" color="textSecondary">{value.gameDescription}</Typography>
+                                                        }
+                                                        {
+                                                            value.type === '2' && <Box fontSize="14px" lineHeight="1.7"> {value.gameDescription} </Box>
+                                                        }
+
+                                                    </React.Fragment>
+                                                ))
+                                            }
+                                        </Grid>
+                                        <Grid item>
+                                            <Button variant="contained" color="primary" size="small" component={RouterLink} to={`/detail/${item.id}`}>
+                                                {t('moreDetail')}
+                                            </Button>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                                <Divider className={classes.divider} />
+                            </React.Fragment>
+                        ))
+                    }
                 </div>
             </Container>
         </div>

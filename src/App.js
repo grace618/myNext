@@ -21,7 +21,7 @@ function App() {
                         <Route path="/jobs" component={Jobs} exact></Route>
                         <Layout>
                             <Route path="/" exact component={Home}></Route>
-                            <Route path="/detail" component={GameDetail}></Route>
+                            <Route path="/detail/:id" component={GameDetail}></Route>
                             <Route path="/gameslist" component={GameList}></Route>
                             <Route path="/publishing" component={Publishing}></Route>
                         </Layout>

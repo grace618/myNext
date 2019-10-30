@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Container, Link, Grid, IconButton, Hidden, MenuItem, Menu } from '@material-ui/core';
 import { Language, Menu as MenuIcon } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles'
+import { useDispatch } from 'react-redux';
+import { language } from 'store/modules/app'
 import logo from 'assets/imgs/logo.png'
+
 const useStyles = makeStyles(theme => ({
     root: props => ({
         backgroundColor: props.backgroundColor ? props.backgroundColor : theme.palette.primary.main,
@@ -18,9 +22,6 @@ const useStyles = makeStyles(theme => ({
         // position: 'sticky',
         // top: 0
     }),
-    normal: {
-
-    },
     fixed: {
         position: 'fixed !important',
         backgroundColor: theme.palette.primary.main + '!important',
@@ -46,16 +47,44 @@ const useStyles = makeStyles(theme => ({
     },
 
 }))
+const options = [{
+    'value': 'cn',
+    'name': '简体中文'
+}, {
+    'value': 'en',
+    'name': 'English'
+}]
+const menu = [{
+    'name': 'publishing',
+}, {
+    'name': 'gameslist',
+}, {
+    'name': 'jobs',
+}]
 function Topbar(props) {
     const classes = useStyles(props)
     const [anchorEl, setAnchorEl] = useState(null);
+    const [anchorElMenu, setAnchorElMenu] = useState(null);
     const [needFixed, setNeedFixed] = useState(false);
+    const { t, i18n } = useTranslation(['common'])
+    const dispatch = useDispatch();
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
+    }
+    const handleLanguage = (event) => {
+        setAnchorElMenu(event.currentTarget)
     }
     const handleClose = () => {
         setAnchorEl(null);
     }
+    const handleSelect = (event, value) => {
+        if (value === 'cn' || value === 'en') {
+            i18n.changeLanguage(value);
+            dispatch(language({ lang: value }))
+        }
+        setAnchorElMenu(null);
+    }
+
     useEffect(() => {
         const hanldeScroll = () => {
             let scrollTop = document.body.scrollTop || document.documentElement.scrollTop
@@ -67,7 +96,7 @@ function Topbar(props) {
         };
     })
     return (
-        <div id="menu" className={`${classes.root} ${needFixed ? classes.fixed : classes.normal}`}>
+        <div id="menu" className={`${classes.root} ${needFixed ? classes.fixed : ''}`}>
             <Container className={classes.container}>
                 <Grid container alignItems="center" justify="space-between" className={classes.content}>
                     <Hidden mdUp>
@@ -87,11 +116,11 @@ function Topbar(props) {
                                 open={Boolean(anchorEl)}
                                 onClose={handleClose}
                             >
-                                <MenuItem onClick={handleClose}> <Link to="/publishing" component={RouterLink}>GlOBAL PUBLISHING</Link></MenuItem>
-                                <MenuItem onClick={handleClose}> <Link to="/gameslist" component={RouterLink}>ULU GAMES</Link></MenuItem>
-                                <MenuItem onClick={handleClose}> <Link to="/jobs" component={RouterLink}>JOBS</Link></MenuItem>
-                                {/* <MenuItem onClick={handleClose}> <Link to="/login" component={RouterLink}>LOG IN</Link></MenuItem>
-                                <MenuItem onClick={handleClose}> <Link to="signup" component={RouterLink}>SIGN UP</Link></MenuItem> */}
+                                {
+                                    menu.map(option => (
+                                        <MenuItem key={option.name} onClick={handleClose}> <Link to={`/${option.name}`} component={RouterLink}>{t(option.name)}</Link></MenuItem>
+                                    ))
+                                }
                             </Menu>
                         </Grid>
                     </Hidden>
@@ -100,19 +129,26 @@ function Topbar(props) {
                     </Grid>
                     <Grid item className={classes.navLink}>
                         <Hidden only={['sm', 'xs']}>
-                            <Link to="/publishing" component={RouterLink}>GlOBAL PUBLISHING</Link>
-                            <Link to="/gameslist" component={RouterLink}>ULU GAMES</Link>
-                            <Link to="/jobs" component={RouterLink}>JOBS</Link>
-                            {/* <Link to="/login" component={RouterLink}>LOG IN</Link>
-                            <Link to="signup" component={RouterLink}>SIGN UP</Link> */}
+                            {
+                                menu.map(option => (
+                                    <Link to={`/${option.name}`} component={RouterLink} key={option.name}>{t(option.name)}</Link>
+                                ))
+                            }
                         </Hidden>
-                        <IconButton aria-label="select" >
+                        <IconButton aria-label="select" aria-controls="simple-menu" aria-haspopup="true" onClick={handleLanguage}>
                             <Language color="primary" className={classes.svg} />
                         </IconButton>
+                        <Menu anchorEl={anchorElMenu} keepMounted open={Boolean(anchorElMenu)} onClose={handleSelect}>
+                            {
+                                options.map(option => (
+                                    <MenuItem onClick={event => handleSelect(event, option.value)} key={option.value}>{option.name}</MenuItem>
+                                ))
+                            }
+                        </Menu>
                     </Grid>
                 </Grid>
             </Container>
-        </div>
+        </div >
     )
 }
 export default Topbar
