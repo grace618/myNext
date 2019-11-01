@@ -21,7 +21,9 @@ module.exports = override(
     store: resolve('src/store'),
     utils: resolve('src/utils'),
     assets: resolve('src/assets'),
-    icons: resolve('src/icons')
+    icons: resolve('src/icons'),
+    common: resolve('src/common'),
+    component: resolve('src/component')
   }),
   // rewiredMap()
 );

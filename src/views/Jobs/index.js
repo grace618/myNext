@@ -1,13 +1,15 @@
-import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/styles'
-import banner from 'assets/imgs/jobs/banner.jpg'
-import { Check, AddCircle } from '@material-ui/icons';
+import React, { useState, useRef } from 'react'
+import MySnackbarContentWrapper from 'component/SnackbarWrapper'
+import { addRecruitment } from 'service/jobs'
+import { uploadFile } from 'service/publishing'
+import { useSubmitForm } from 'common/CustomHooks'
 import {
-    Typography, Grid, Container, Divider, Box, List, ListItemText, ListItem, Button,
-    TextField, InputLabel, FormControl, Select, MenuItem, Input
+    makeStyles, Typography, Grid, Container, Divider, Box, List, ListItemText, ListItem, Button, InputLabel, FormControl, Select, MenuItem, Input, OutlinedInput, Snackbar
 } from '@material-ui/core'
+import { Check, AddCircle } from '@material-ui/icons';
 import Footer from 'views/Layouts/Footer'
 import Topbar from 'views/Layouts/Topbar'
+import banner from 'assets/imgs/jobs/banner.jpg'
 const useStyles = makeStyles(theme => ({
     banner: {
         background: `url(${banner}) center top no-repeat`,
@@ -137,15 +139,62 @@ const useStyles = makeStyles(theme => ({
 }))
 function Jobs() {
     const classes = useStyles()
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [development, setDevelopment] = useState('')
-    const [gameName, setGameName] = useState('')
-    const [description, setTextArea] = useState('')
-    const handleSubmit = () => {
-        // setOpen(true);
-        console.log(name, email, development, gameName, description)
+    const [open, setOpen] = useState(false);
+    const fileLoad = useRef(null)
+    const initSnackbar = {
+        message: '',
+        variant: 'warning',
+        autoHideDuration: 0
     }
+    const [snackBar, setSnackBar] = useState(initSnackbar)
+    const initialFormState = {
+        firstName: '',
+        lastName: '',
+        mail: '',
+        age: '',
+        address: '',
+        personalProfile: '',
+        salary: '',
+        arrival: '',
+        recommendUrl: '',
+        workExperience: '',
+        selfIntroduction: '',
+        resumeFileUrl: ''
+    }
+    const submitFormData = () => {
+        setSnackBar(initSnackbar)
+        const { firstName, lastName, mail, age, address, personalProfile, salary, arrival, workExperience, selfIntroduction, resumeFileUrl } = inputs
+        if (firstName === '' || lastName === '' || mail === '' || age === '' || address === '' || personalProfile === '' || salary === '' || arrival === '' || workExperience === '' || selfIntroduction === '' || resumeFileUrl === ''
+        ) {
+            setSnackBar({ ...snackBar, 'message': 'Please confirm the information entered.', 'variant': 'warning', 'autoHideDuration': 30000 })
+            setOpen(true);
+        } else {
+            addRecruitment(inputs).then(res => {
+                if (res.status === 200) {
+                    setSnackBar({ ...snackBar, 'message': 'success', 'variant': 'success', 'autoHideDuration': 1000 })
+                    setOpen(true);
+                    fileLoad.current.value = ''
+                }
+            })
+        }
+    }
+    const { inputs, handleInputChange, handleSubmit } = useSubmitForm(initialFormState, submitFormData);
+
+    const upload = (e) => {
+        let file = e.target.files[0]
+        const formdata = new FormData()
+        formdata.append('file', file)
+        uploadFile(formdata).then(res => {
+            if (res.status === 200) {
+                inputs.resumeFileUrl = res.data.imgURL
+            }
+        })
+    }
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') return
+        setOpen(false);
+    };
+
     return (
         <div>
             <div className={classes.banner}>
@@ -370,80 +419,84 @@ function Jobs() {
                             After sending us the completed form below, we will get back to you after 3 to 7 days. Thank you!
                         </Typography>
                         <span className={classes.line_short}></span>
-                        <form style={{ width: '100%' }}>
+                        <form style={{ width: '100%' }} onSubmit={handleSubmit}>
                             <FormControl >
-                                <InputLabel shrink htmlFor="NAME" className={classes.label}>
+                                <InputLabel shrink htmlFor="firstName" className={classes.label}>
                                     FIRST NAME*
                                 </InputLabel>
-                                <TextField
-                                    id="NAME"
+                                <OutlinedInput
+                                    id="firstName"
                                     className={classes.textInput}
-                                    margin="normal"
-                                    variant="outlined"
-                                    value={name}
-                                    onChange={(event) => setName(event.target.value)}
+                                    name="firstName"
+                                    required
+                                    value={inputs.firstName}
+                                    onChange={handleInputChange}
                                 />
                             </FormControl>
                             <FormControl >
-                                <InputLabel shrink htmlFor="NAME" className={classes.label}>
+                                <InputLabel shrink htmlFor="lastName" className={classes.label}>
                                     LAST NAME*
                                 </InputLabel>
-                                <TextField
-                                    id="NAME"
+                                <OutlinedInput
+                                    id="lastName"
                                     className={classes.textInput}
-                                    margin="normal"
-                                    variant="outlined"
-                                    value={name}
-                                    onChange={(event) => setName(event.target.value)}
+                                    name="lastName"
+                                    required
+                                    value={inputs.lastName}
+                                    onChange={handleInputChange}
                                 />
                             </FormControl>
                             <FormControl className={classes.inputBox}>
-                                <InputLabel shrink htmlFor="NAME" className={classes.label}>
+                                <InputLabel shrink htmlFor="mail" className={classes.label}>
                                     EMAIL*
                                 </InputLabel>
-                                <TextField
-                                    id="NAME"
+                                <OutlinedInput
+                                    id="mail"
                                     className={classes.textField}
-                                    margin="normal"
-                                    variant="outlined"
-                                    value={name}
-                                    onChange={(event) => setName(event.target.value)}
+                                    name="mail"
+                                    type="email"
+                                    required
+                                    value={inputs.mail}
+                                    onChange={handleInputChange}
                                 />
                             </FormControl>
                             <FormControl>
-                                <InputLabel shrink htmlFor="NAME" className={classes.label}>
+                                <InputLabel shrink htmlFor="age" className={classes.label}>
                                     AGE*
                                 </InputLabel>
-                                <TextField
-                                    id="NAME"
+                                <OutlinedInput
+                                    id="age"
                                     className={classes.textInput}
-                                    margin="normal"
-                                    variant="outlined"
-                                    value={name}
-                                    onChange={(event) => setName(event.target.value)}
+                                    name="age"
+                                    required
+                                    value={inputs.age}
+                                    type="number"
+                                    onChange={handleInputChange}
                                 />
                             </FormControl>
                             <FormControl >
                                 <InputLabel shrink htmlFor="NAME" className={classes.label}>
                                     AREA OF RESIDENCE*
                                 </InputLabel>
-                                <TextField
+                                <OutlinedInput
                                     id="NAME"
                                     className={classes.textInput}
-                                    margin="normal"
-                                    variant="outlined"
-                                    value={name}
-                                    onChange={(event) => setName(event.target.value)}
+                                    name="address"
+                                    required
+                                    value={inputs.address}
+                                    onChange={handleInputChange}
                                 />
                             </FormControl>
                             <FormControl className={classes.inputBox}>
-                                <InputLabel shrink htmlFor="DEVELOPMENT" className={classes.label}>
+                                <InputLabel shrink htmlFor="personalProfile" className={classes.label}>
                                     POSITION DESCRIPTION*
                                 </InputLabel>
                                 <Select
-                                    value={development}
-                                    id="DEVELOPMENT"
-                                    onChange={(event) => setDevelopment(event.target.value)}
+                                    value={inputs.personalProfile}
+                                    id="personalProfile"
+                                    name="personalProfile"
+                                    required
+                                    onChange={handleInputChange}
                                     className={classes.textField}
                                 >
                                     <MenuItem value={10}>  Early Development </MenuItem>
@@ -453,75 +506,89 @@ function Jobs() {
                                 </Select>
                             </FormControl>
                             <FormControl className={classes.inputBox}>
-                                <InputLabel shrink htmlFor="NAME" className={classes.label}>
+                                <InputLabel shrink htmlFor="salary" className={classes.label}>
                                     DESIRED SALARY (OR CURRENT SALARY)*
                                 </InputLabel>
-                                <TextField
-                                    id="NAME"
+                                <OutlinedInput
+                                    id="salary"
                                     className={classes.textField}
-                                    margin="normal"
-                                    variant="outlined"
-                                    value={name}
-                                    onChange={(event) => setName(event.target.value)}
+                                    name="salary"
+                                    required
+                                    value={inputs.salary}
+                                    onChange={handleInputChange}
                                 />
                             </FormControl>
                             <FormControl className={classes.inputBox}>
-                                <InputLabel shrink htmlFor="NAME" className={classes.label}>
+                                <InputLabel shrink htmlFor="arrival" className={classes.label}>
                                     POSSIBLE JOB START DATE*
                                 </InputLabel>
-                                <TextField
-                                    id="NAME"
+                                <OutlinedInput
+                                    id="arrival"
                                     className={classes.textField}
-                                    margin="normal"
-                                    variant="outlined"
-                                    value={name}
-                                    onChange={(event) => setName(event.target.value)}
+                                    name="arrival"
+                                    required
+                                    value={inputs.arrival}
+                                    onChange={handleInputChange}
                                 />
                             </FormControl>
                             <FormControl className={classes.inputBox}>
-                                <InputLabel shrink htmlFor="NAME" className={classes.label}>
+                                <InputLabel shrink htmlFor="recommendUrl" className={classes.label}>
                                     WEBSITE(FOR PORTFOLIO OR OTHER RELATED MATERIALS)
                                 </InputLabel>
-                                <TextField
-                                    id="NAME"
+                                <OutlinedInput
+                                    id="recommendUrl"
                                     className={classes.textField}
-                                    margin="normal"
                                     style={{ marginTop: '40px' }}
-                                    variant="outlined"
-                                    value={name}
-                                    onChange={(event) => setName(event.target.value)}
+                                    name="recommendUrl"
+                                    value={inputs.recommendUrl}
+                                    onChange={handleInputChange}
                                 />
                             </FormControl>
                             <FormControl className={classes.inputBox}>
-                                <InputLabel shrink htmlFor="UPLOAD" className={classes.label}>
+                                <InputLabel shrink htmlFor="workExperience" className={classes.label}>
                                     WORK EXPERIENCE*
                                 </InputLabel>
-                                <textarea id="UPLOAD" className={classes.textArea} value={description} onChange={(event) => setTextArea(event.target.value)} style={{ marginTop: '20px' }}>
+                                <textarea id="workExperience" className={classes.textArea} required name="workExperience" value={inputs.workExperience} onChange={handleInputChange} style={{ marginTop: '20px' }}>
                                 </textarea>
                             </FormControl>
                             <FormControl className={classes.inputBox}>
-                                <InputLabel shrink htmlFor="UPLOAD" className={classes.label}>
+                                <InputLabel shrink htmlFor="selfIntroduction" className={classes.label}>
                                     PLEASE GIVE YOURSELF A CHANCE TO INTRODUCE
                                     YOURSELF AND THE REASON YOU ARE APPLYING FOR THE
                                     JOB*
                                 </InputLabel>
-                                <textarea id="UPLOAD" className={classes.textArea} value={description} onChange={(event) => setTextArea(event.target.value)} style={{ marginTop: '48px' }}>
+                                <textarea id="selfIntroduction" className={classes.textArea} required value={inputs.selfIntroduction} name="selfIntroduction" onChange={handleInputChange} style={{ marginTop: '48px' }}>
                                 </textarea>
                             </FormControl>
                             <FormControl className={classes.inputBox}>
                                 <InputLabel shrink htmlFor="email" className={classes.label}>
                                     UPLOAD (RESUME,PORTFOLIO,ETC.)*
                                 </InputLabel>
-                                <Input type="file" />
+                                <Input type="file" onChange={upload} inputRef={fileLoad} />
                             </FormControl>
                             <FormControl className={classes.inputBox}>
-                                <Button variant="contained" color="primary" className={classes.apply} onClick={handleSubmit} style={{ width: '100%' }}>SUBMIT</Button>
+                                <Button variant="contained" color="primary" className={classes.apply} name="apply" type="submit" style={{ width: '100%' }}>SUBMIT</Button>
                             </FormControl>
                         </form>
                     </Grid>
                 </Grid>
             </Container>
             <Footer />
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                open={open}
+                autoHideDuration={snackBar.autoHideDuration}
+                onClose={handleClose}
+            >
+                <MySnackbarContentWrapper
+                    onClose={handleClose}
+                    variant={snackBar.variant}
+                    message={snackBar.message}
+                />
+            </Snackbar>
         </div >
     )
 }

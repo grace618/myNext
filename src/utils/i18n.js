@@ -9,6 +9,5 @@ export function getLanguage() {
   if (!languageList.includes(str[0])) {//其他地区使用英文
     language = 'en'
   }
-  console.log(str[0], 'language');
   return str[0];
 }

@@ -2,12 +2,10 @@ import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { makeStyles, Container, Typography, Grid, Button, Box, Hidden } from '@material-ui/core'
 import Slider from "react-slick";
+import { useSelector } from 'react-redux'
+import { useGameList } from 'common/CustomHooks';
 import './index.css'
 
-import pic1 from 'assets/imgs/pic1.jpg'
-import pic2 from 'assets/imgs/pic2.jpg'
-import pic3 from 'assets/imgs/pic3.jpg'
-import pic4 from 'assets/imgs/pic4.jpg'
 import headerBg from 'assets/imgs/headerBg.jpg'
 import person from 'assets/imgs/person.png'
 
@@ -92,7 +90,7 @@ const useStyles = makeStyles(theme => ({
         margin: '20px 0 10px 0'
     },
     box: {
-        marginBottom: theme.spacing(5)
+        marginBottom: theme.spacing(5),
     },
     gTitle: {
         padding: '0 10%'
@@ -114,16 +112,25 @@ const useStyles = makeStyles(theme => ({
         [theme.breakpoints.down('md')]: {
             padding: '9% 10%'
         },
-    }
+    },
+    slideImg: {
+        '& img': {
+            width: '277px',
+            height: '185px',
+        }
+    },
 }))
 function Home() {
     const classes = useStyles()
+    const language = useSelector(state => state.app)
     const settings = {
         dots: true,
         infinite: true,
         speed: 500,
         slidesToShow: 4,
         slidesToScroll: 4,
+        initialSlide: 0,
+        // variableWidth: true,
         responsive: [
             {
                 breakpoint: 1280,
@@ -151,6 +158,7 @@ function Home() {
             }
         ]
     }
+    const gameItem = useGameList(language.lang)
     return (
         <div>
             <div className={classes.header}>
@@ -209,43 +217,22 @@ function Home() {
                     <span className={classes.line}></span>
                     <div className={classes.slideWrap}>
                         <Slider {...settings} className={classes.box}>
-                            {/* <Skeleton variant="rect" width={210} height={118} /> */}
-                            <div>
-                                <Grid container alignItems="center" direction="column" justify="space-around" >
-                                    <RouterLink to="/detail">
-                                        <img src={pic1} alt="uluLogo" className={classes.pic} />
-                                    </RouterLink>
-                                    <Typography className={classes.gName} align="center">Myth of Sword</Typography>
-                                    <Typography className={classes.slogan}>Upcoming game with 2.5D artwork! </Typography>
-                                </Grid>
-                            </div>
-                            <div>
-                                <Grid container alignItems="center" direction="column" justify="space-around">
-                                    <RouterLink to="/detail">
-                                        <img src={pic2} alt="uluLogo" className={classes.pic} />
-                                    </RouterLink>
-                                    <Typography className={classes.gName}>ARKA</Typography>
-                                    <Typography className={classes.slogan}>MMORPG Masterpiece </Typography>
-                                </Grid>
-                            </div>
-                            <div>
-                                <Grid container alignItems="center" direction="column" justify="space-around">
-                                    <RouterLink to="/detail">
-                                        <img src={pic3} alt="uluLogo" className={classes.pic} />
-                                    </RouterLink>
-                                    <Typography className={classes.gName}>ERA OF DISCORD</Typography>
-                                    <Typography className={classes.slogan}>MMORPG Masterpiece </Typography>
-                                </Grid>
-                            </div>
-                            <div>
-                                <Grid container alignItems="center" direction="column" justify="space-around">
-                                    <RouterLink to="/detail">
-                                        <img src={pic4} alt="uluLogo" className={classes.pic} />
-                                    </RouterLink>
-                                    <Typography className={classes.gName}>RAID SURVIVOR</Typography>
-                                    <Typography className={classes.slogan}>START A NEW ADVENTURE </Typography>
-                                </Grid>
-                            </div>
+                            {
+                                gameItem.map(item => (
+
+                                    <Grid container alignItems="center" direction="column" justify="space-around" key={item.id} className={classes.slideImg}>
+                                        <RouterLink to={`/detail/${item.id}`}>
+                                            <img src={item.gameImg} alt="" className={classes.pic} />
+                                        </RouterLink>
+                                        <Typography className={classes.gName} align="center">{item.gameName}</Typography>
+                                        {
+                                            item.gameDetails.map(value => (
+                                                value.type === '1' && <Typography className={classes.slogan} key={value.type}> {value.gameDescription} </Typography>
+                                            ))
+                                        }
+                                    </Grid>
+                                ))
+                            }
                         </Slider>
                     </div>
                 </Grid>

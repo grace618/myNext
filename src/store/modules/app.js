@@ -1,11 +1,11 @@
+import { getLanguage } from 'utils/i18n.js'
 const LANGUAGE = 'APP/LANGUAGE'
-
 export const language = (data => ({
     type: LANGUAGE,
     data
 }))
 const initialState = {
-    lang: 'en'
+    lang: getLanguage()
 }
 
 export default function reducer(state = initialState, action) {

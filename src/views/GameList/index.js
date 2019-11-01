@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Link as RouterLink } from 'react-router-dom';
 import Slider from "react-slick";
 import { useTranslation } from 'react-i18next';
-import { gameList } from 'service/gameList'
-
 import { useSelector } from 'react-redux'
+
 import { makeStyles, Container, Typography, Grid, Button, Box, Hidden, Breadcrumbs, Link, Divider, ButtonBase } from '@material-ui/core'
 import banner1 from 'assets/imgs/gamelist/banner1.jpg'
+import { useGameList } from 'common/CustomHooks';
 
 const useStyles = makeStyles(theme => ({
     navBar: {
@@ -49,7 +49,7 @@ const useStyles = makeStyles(theme => ({
     gameDesc: {
         fontSize: 44,
         fontFamily: "Arial",
-        color: 'rgb(244, 66, 66)',
+        color: theme.palette.primary.main,
         fontWeight: 'bold'
     },
     headingBlock: {
@@ -61,13 +61,20 @@ const useStyles = makeStyles(theme => ({
         width: 128,
         height: 128,
         borderRadius: '30px'
-    }
+    },
+    pic: {
+        width: '100%',
+        boxSizing: 'border-box',
+        padding: '2%',
+    },
+    slideWrap: {
+        width: '100%',
+    },
 })
 )
 function GameList() {
     const classes = useStyles()
     const { t } = useTranslation(['gameList']);
-    const [list, setList] = useState([])
     const language = useSelector(state => state.app)
     const settings = {
         dots: true,
@@ -76,18 +83,7 @@ function GameList() {
         slidesToShow: 1,
         slidesToScroll: 1
     }
-
-    const getList = async (language) => {
-        const res = await gameList(language)
-        if (res.status === 200) {
-            setList(res.data)
-        }
-    }
-    useEffect(() => {
-        if (language) {
-            getList(language.lang)
-        }
-    }, [language])
+    const gameItem = useGameList(language.lang)
     return (
         <div>
             <Hidden smDown>
@@ -111,17 +107,15 @@ function GameList() {
                     </Box>
                 </Grid>
                 <div className={classes.slideWrap}>
-                    <Slider {...settings} className={classes.box}>
-                        <div>
-                            <Grid container alignItems="center" justify="center" >
-                                <img src={banner1} alt="banner1" className={classes.pic} />
-                            </Grid>
-                        </div>
-                        <div>
-                            <Grid container alignItems="center" justify="center" >
-                                <img src={banner1} alt="banner1" className={classes.pic} />
-                            </Grid>
-                        </div>
+                    <Slider {...settings}>
+                        <Grid container alignItems="center" justify="center" >
+                            <img src={banner1} alt="banner1" className={classes.pic} />
+                        </Grid>
+
+                        <Grid container alignItems="center" justify="center" >
+                            <img src={banner1} alt="banner1" className={classes.pic} />
+                        </Grid>
+
                     </Slider>
                 </div>
                 <Box pt={7}>
@@ -130,7 +124,7 @@ function GameList() {
                 </Box>
                 <div className={classes.gameList}>
                     {
-                        list.map(item => (
+                        gameItem.map(item => (
                             <React.Fragment key={item.id}>
                                 <Grid container spacing={2} alignItems="center" >
                                     <Grid item>

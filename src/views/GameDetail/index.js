@@ -105,7 +105,6 @@ const useStyles = makeStyles(theme => ({
     box: {
         marginBottom: theme.spacing(5),
     },
-
     slideImg: {
         '& img': {
             width: '100%',
@@ -409,8 +408,8 @@ function Detail(props) {
                             carousel.map(item => (
                                 <div key={item} className={classes.slideImg}>
                                     <ImageZoom
-                                        image={{ src: item, alt: 'ulugameImg', }}
-                                        zoomImage={{ src: item, alt: 'ulugameImg' }}
+                                        image={{ src: item, alt: '', }}
+                                        zoomImage={{ src: item, alt: '' }}
                                     />
                                 </div>
                             ))
@@ -424,7 +423,7 @@ function Detail(props) {
                         detail.recommendList.map(item => (
                             <Grid container item xs={12} sm={12} md={12} lg={6} xl={6} key={item.id} >
                                 <Grid xs={12} sm={12} md={3} lg={3} xl={3} item container justify="center">
-                                    <img src={detail.gameImg} alt="" className={classes.thumbnail} />
+                                    <img src={item.gameImg} alt="" className={classes.thumbnail} />
                                 </Grid>
                                 <Grid xs={12} sm={12} md={8} lg={8} xl={8} item>
                                     <Grid item justify="space-between" container>

@@ -1,16 +1,23 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { Link as RouterLink } from 'react-router-dom';
+import { addCollaboration, uploadFile } from 'service/publishing'
+import { useSubmitForm } from 'common/CustomHooks'
+import MySnackbarContentWrapper from 'component/SnackbarWrapper'
 import {
-    makeStyles, Container, Typography, Grid, Button, Box, Hidden, Breadcrumbs, Link, Divider,
-    TextField, InputLabel, FormControl, Select, MenuItem, Input, Snackbar, IconButton
+    makeStyles, Container, Typography, Grid, Button, Box, Hidden, Breadcrumbs, Link, Divider, InputLabel, FormControl, Select, MenuItem, Input, Snackbar, OutlinedInput
 } from '@material-ui/core'
-import { Close as CloseIcon } from '@material-ui/icons';
+
+
 import { ReactComponent as Facebook } from 'icons/svg/facebook.svg'
 import { ReactComponent as Twitter } from 'icons/svg/twitter.svg'
 import { ReactComponent as Wechat } from 'icons/svg/wechat.svg'
 import { ReactComponent as Youtube } from 'icons/svg/youtube.svg'
 
+
 const useStyles = makeStyles(theme => ({
+    margin: {
+        margin: theme.spacing(1),
+    },
     navBar: {
         height: '100%',
         '& div': {
@@ -111,7 +118,8 @@ const useStyles = makeStyles(theme => ({
             width: '93%',
         },
         '& div': {
-            height: '100%'
+            height: '40px',
+            lineHeight: '40px'
         }
     },
     inputBox: {
@@ -123,6 +131,7 @@ const useStyles = makeStyles(theme => ({
         color: theme.palette.text.primary,
         fontSize: 16,
         fontWeight: 'bold',
+        width: '100%'
     },
     formData: {
         margin: '14% 0 0 0',
@@ -141,7 +150,7 @@ const useStyles = makeStyles(theme => ({
             height: '40px'
         }
     },
-    info: {
+    infoRight: {
         margin: '20% 0',
     },
     box: {
@@ -164,22 +173,53 @@ const useStyles = makeStyles(theme => ({
 )
 function GameList() {
     const classes = useStyles()
-
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [development, setDevelopment] = useState('')
-    const [gameName, setGameName] = useState('')
-    const [description, setTextArea] = useState('')
-    const handleSubmit = () => {
-        setOpen(true);
-        console.log(name, email, development, gameName, description)
-    }
-
+    const inputEl = useRef(null)
     const [open, setOpen] = useState(false);
-    const handleClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
+    const initSnackbar = {
+        message: '',
+        variant: 'warning',
+        autoHideDuration: 0
+    }
+    const [snackBar, setSnackBar] = useState(initSnackbar)
+
+    const initialFormState = {
+        companyName: '',
+        mail: '',
+        developmentStage: '',
+        gameName: '',
+        descriptionContent: '',
+        fileUrl: ''
+    }
+    const submitFormData = () => {
+        setSnackBar(initSnackbar)
+        const { companyName, mail, developmentStage, gameName } = inputs
+        if (companyName === '' || mail === '' || developmentStage === '' || gameName === '') {
+            setSnackBar({ ...snackBar, 'message': 'Please confirm the information entered.', 'variant': 'warning', 'autoHideDuration': 30000 })
+            setOpen(true);
+        } else {
+            addCollaboration(inputs).then(res => {
+                if (res.status === 200) {
+                    setSnackBar({ ...snackBar, 'message': 'success', 'variant': 'success', 'autoHideDuration': 1000 })
+                    setOpen(true);
+                    inputEl.current.value = ''
+                }
+            })
         }
+    }
+    const { inputs, handleInputChange, handleSubmit } = useSubmitForm(initialFormState, submitFormData);
+
+    const upload = (e) => {
+        let file = e.target.files[0]
+        const formdata = new FormData()
+        formdata.append('file', file)
+        uploadFile(formdata).then(res => {
+            if (res.status === 200) {
+                inputs.resumeFileUrl = res.data.imgURL
+            }
+        })
+    }
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') return
         setOpen(false);
     };
     return (
@@ -355,7 +395,7 @@ function GameList() {
                                 We will help you achieve global success based on the experience and data gained from launching games of a variety of genres.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   2 million times. Our major projects include 'ARKA', 'ETERNAL STORM', and 'ERA of DISCORD'.
                             </Typography>
                             <Box mt={5}>
-                                <Button variant="outlined" size="medium" className={classes.more}>SEE MORE OF‘ARKA’</Button>
+                                <Button size="medium" className={classes.more}>SEE MORE OF‘ARKA’</Button>
                             </Box>
                         </Box>
                     </Grid>
@@ -378,7 +418,7 @@ function GameList() {
                                 We will help you achieve global success based on the experience and data gained from launching games of a variety of genres.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          2 million times. Our major projects include 'ARKA', 'ETERNAL STORM', and 'ERA of DISCORD'.
                             </Typography>
                             <Box mt={5}>
-                                <Button variant="outlined" size="large" className={classes.more}>SEE MORE OF‘ARKA’</Button>
+                                <Button size="large" className={classes.more}>SEE MORE OF‘ARKA’</Button>
                             </Box>
                         </Box>
                     </Grid>
@@ -400,31 +440,30 @@ function GameList() {
             <Container>
                 <Grid container justify="space-between">
                     <Grid xs={12} sm={12} md={9} lg={9} xl={9} item>
-                        <form className={classes.formData}>
+                        {/* react-hook-form */}
+                        <form className={classes.formData} onSubmit={handleSubmit}>
                             <FormControl className={classes.inputBox}>
                                 <InputLabel shrink htmlFor="NAME" className={classes.label}>
                                     COMPANY (OR TEAM) NAME*
                                 </InputLabel>
-                                <TextField
+                                <OutlinedInput
                                     id="NAME"
                                     className={classes.textField}
-                                    margin="normal"
-                                    variant="outlined"
-                                    value={name}
-                                    onChange={(event) => setName(event.target.value)}
+                                    name="companyName"
+                                    value={inputs.companyName}
+                                    onChange={handleInputChange}
                                 />
                             </FormControl>
                             <FormControl className={classes.inputBox}>
                                 <InputLabel shrink htmlFor="email" className={classes.label}>
                                     YOUR EMAIL*
                                 </InputLabel>
-                                <TextField
+                                <OutlinedInput
                                     id="email"
                                     className={classes.textField}
-                                    margin="normal"
-                                    variant="outlined"
-                                    value={email}
-                                    onChange={(event) => setEmail(event.target.value)}
+                                    value={inputs.mail}
+                                    name="mail"
+                                    onChange={handleInputChange}
                                 />
                             </FormControl>
                             <FormControl className={classes.inputBox}>
@@ -432,28 +471,28 @@ function GameList() {
                                     DEVELOPMENT STAGE*
                                 </InputLabel>
                                 <Select
-                                    value={development}
+                                    value={inputs.developmentStage}
                                     id="DEVELOPMENT"
-                                    onChange={(event) => setDevelopment(event.target.value)}
+                                    onChange={handleInputChange}
+                                    name="developmentStage"
                                     className={classes.textField}
                                 >
-                                    <MenuItem value={10}>  Early Development </MenuItem>
-                                    <MenuItem value={20}>  Prototype or Playable Version </MenuItem>
-                                    <MenuItem value={30}> 50 to 100% Completed </MenuItem>
-                                    <MenuItem value={40}> Already Released </MenuItem>
+                                    <MenuItem value={'Early Development'}>  Early Development </MenuItem>
+                                    <MenuItem value={'Prototype or Playable Version'}>  Prototype or Playable Version </MenuItem>
+                                    <MenuItem value={'50 to 100% Completed'}> 50 to 100% Completed </MenuItem>
+                                    <MenuItem value={'Already Released'}> Already Released </MenuItem>
                                 </Select>
                             </FormControl>
                             <FormControl style={{ width: '100%', marginTop: "20px" }}>
                                 <InputLabel shrink htmlFor="gameName" className={classes.label}>
                                     GAME NAME*
                                 </InputLabel>
-                                <TextField
+                                <OutlinedInput
                                     id="gameName"
                                     className={classes.gameName}
-                                    margin="normal"
-                                    variant="outlined"
-                                    value={gameName}
-                                    onChange={(event) => setGameName(event.target.value)}
+                                    value={inputs.gameName}
+                                    onChange={handleInputChange}
+                                    name="gameName"
                                 />
                             </FormControl>
                             <br />
@@ -461,9 +500,7 @@ function GameList() {
                                 <InputLabel shrink htmlFor="email" className={classes.label}>
                                     UPLOAD FILES (IMG, MOV, PPT, APK, ETC.)
                                 </InputLabel>
-
-                                <Input type="file" style={{ width: '93%' }} />
-
+                                <Input type="file" style={{ width: '93%' }} onChange={upload} inputRef={inputEl} />
                             </FormControl>
                             <br />
                             <br />
@@ -471,7 +508,7 @@ function GameList() {
                                 <InputLabel shrink htmlFor="UPLOAD" className={classes.label}>
                                     PLEASE TELL US ABOUT YOUR GAME, TEAM, COMPANY AND CURRENT STATUS.*
                                 </InputLabel>
-                                <textarea id="UPLOAD" className={classes.textArea} value={description} onChange={(event) => setTextArea(event.target.value)}>
+                                <textarea id="UPLOAD" className={classes.textArea} value={inputs.descriptionContent} name="descriptionContent" onChange={handleInputChange}>
                                 </textarea>
                             </FormControl>
                             <br />
@@ -481,7 +518,7 @@ function GameList() {
                         </form>
                     </Grid>
                     <Grid xs={12} sm={12} md={3} lg={3} xl={3} item>
-                        <div className={classes.info}>
+                        <div className={classes.infoRight}>
                             <Typography className={classes.t1}> INFORMATION</Typography>
                             <Typography className={classes.desc}>
                                 Experience as a user service manager
@@ -515,31 +552,24 @@ function GameList() {
                     </Grid>
                 </Grid>
             </Container>
+            {/* tips */}
             <Snackbar
                 anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
+                    vertical: 'top',
+                    horizontal: 'center',
                 }}
                 open={open}
-                autoHideDuration={6000}
+                autoHideDuration={snackBar.autoHideDuration}
                 onClose={handleClose}
-                ContentProps={{
-                    'aria-describedby': 'message-id',
-                }}
-                message={<span id="message-id">Please confirm the information entered~</span>}
-                action={[
-                    <IconButton
-                        key="close"
-                        aria-label="close"
-                        color="inherit"
-                        className={classes.close}
-                        onClick={handleClose}
-                    >
-                        <CloseIcon />
-                    </IconButton>,
-                ]}
-            />
+            >
+                <MySnackbarContentWrapper
+                    onClose={handleClose}
+                    variant={snackBar.variant}
+                    message={snackBar.message}
+                />
+            </Snackbar>
         </div>
     )
 }
+
 export default GameList
