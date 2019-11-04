@@ -277,22 +277,13 @@ function Detail(props) {
                         <Box color="text.secondary" mb={3}>
                             {
                                 detail.gameBaseInfoList.map(value => (
-                                    value.type === '2' && <Typography color="textSecondary" key={value.type}>{value.gameDescription}</Typography>
+                                    <React.Fragment key={value.type}>
+                                        {value.type === '2' && <Typography color="textSecondary" key={value.type}>{value.gameDescription}</Typography>}
+                                        {value.type === '3' && <div className={classes.m} dangerouslySetInnerHTML={{ __html: value.gameDescription }}
+                                        />}
+                                    </React.Fragment>
                                 ))
                             }
-                            <Typography className={classes.m}>
-                                1. Clan battle. Battle among different clans for the rich materials and Boss. <br />
-                                2. Cross-server PK. PK across server for rare materials and BOSS! Be the KING!<br />
-                                3. Love system. Find your love here and hold special wedding for her/him. You are not alone anymore.<br />
-                                4. Wing Feature. Fantastic Wings with huge bonus on your combat power.<br />
-                                5. Gorgeous Costume. Various unique and pretty costume for you.<br />
-                                6. Awesome Weapons. Great weapons with huge power during battle and beat boss.<br />
-                                7. Rich event. Lots of event during a day. You can play a full day!<br />
-                                8. Unique home feature. You can share your story and pictures with others!<br />
-                            </Typography>
-                            <Typography gutterBottom>
-                                More new content is under development. Please stay tuned!
-                            </Typography>
                         </Box>
                         <Divider />
                         <Grid className={classes.infoPanel} container direction="column">

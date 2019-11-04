@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { gameList } from 'service/gameList'
-function useGameList(language) {
+const useGameList = (language) => {
     const [list, setList] = useState([])
     const getList = async (language) => {
         const res = await gameList(language)
