@@ -333,7 +333,7 @@ function GameList() {
                         </Box>
                     </Grid>
                     <Grid item justify="center" alignItems="center" container className={classes.left} xs={12} sm={12} md={5} lg={5} xl={5} >
-                        <img src={require('assets/imgs/publish/group.png')} alt="role" width="85%" height="393" />
+                        <img src={require('assets/imgs/publish/group.png')} alt="role" width="87%" />
                     </Grid>
                 </Grid>
             </Container>
@@ -353,7 +353,7 @@ function GameList() {
                         </Grid>
                         <Grid container alignItems="center" direction="column" justify="space-around" item xs={12} sm={12} md={4} lg={4} xl={4} className={classes.m}>
                             <img src={require('assets/imgs/publish/icon10.png')} alt="uluLogo" className={classes.pic} />
-                            <Typography className={classes.num} align="center">4,000,000</Typography>
+                            <Typography className={classes.num} align="center">22,300,000</Typography>
                             <Typography className={classes.slogan}>{t('DOWNLOADS')}</Typography>
                         </Grid>
                         <Grid container alignItems="center" direction="column" justify="space-around" item xs={12} sm={12} md={4} lg={4} xl={4} className={classes.m}>
@@ -377,7 +377,7 @@ function GameList() {
                             </Typography>
                             <span className={classes.line}></span>
                             <Typography variant="h6" color="textSecondary" className={classes.desc}>
-                                {t('desc5')} <br /><br />{t('desc6')}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      2 million times. Our major projects include 'ARKA', 'ETERNAL STORM', and 'ERA of DISCORD'.
+                                {t('desc5')} <br /><br />{t('desc6')}
                             </Typography>
                             <Box mt={5}>
                                 <Button variant="outlined" size="medium" className={classes.more} to={`/detail/1`} component={RouterLink}>{t('seeMore')}</Button>

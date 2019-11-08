@@ -36,7 +36,7 @@ const publish = {
     COUNTRIES: 'COUNTRIES RELEASED',
     DOWNLOADS: 'DOWNLOADS SURPASSED',
     STORES: 'FEATURED ON APP STORES',
-    ARKA: 'SUCCESS OF ARKA',
+    ARKA: 'SUCCESS OF ‘ARKA’',
     gameTitle: '1 Million Global Downloads. Google Play & App Store & ONE Store download TOP1.',
     desc5: 'The magic MMO game ‘ARKA’ made with Unreal Engine 4 technology was published by ULU Games in South Korea earlier this May. After being launched for only 4 days, it quickly rose to Free Chart TOP2 in South Korea, and won the 5th on Top Grossing Chart at the end of May.',
     desc6: 'With its high quality and popular IP concept, ‘ARKA’ was officially featured on Google Play store before the launch. ‘ARKA’uses the world-leading Unreal Engine 4 technology to create a grand and aesthetic fantasy world, with seamless scenes and 1.8 billion cubic meters of scale. Exquisite Korean art style modeling, as well as detail rendering via Unreal Engine 4, makes the game screen comparable to console games. In terms of gameplay, ‘ARKA’ has not only 360° free flight air combat, but also multiple interesting dungeons, cross-server guild wars, love social and other well-designed systems, bringing a new MMO game experience for players.The grand scene, vivid details, and rich gameplays make the magic epic in ‘ARKA’ come true.More surprises will continue to be presented to players.',

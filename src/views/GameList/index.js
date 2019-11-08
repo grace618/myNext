@@ -112,11 +112,9 @@ function GameList() {
                         <Grid container alignItems="center" justify="center" >
                             <img src={banner1} alt="banner1" className={classes.pic} />
                         </Grid>
-
-                        <Grid container alignItems="center" justify="center" >
+                        {/* <Grid container alignItems="center" justify="center" >
                             <img src={banner1} alt="banner1" className={classes.pic} />
-                        </Grid>
-
+                        </Grid> */}
                     </Slider>
                 </div>
                 <Box pt={7}>

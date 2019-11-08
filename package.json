@@ -1,7 +1,6 @@
 {
   "name": "ulugame-official",
   "version": "0.1.0",
-  "homepage": ".",
   "private": true,
   "dependencies": {
     "moment": "^2.24.0",
@@ -17,7 +16,8 @@
   },
   "scripts": {
     "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
+    "build": "react-app-rewired build --mode production",
+    "dev": "react-app-rewired build --mode development",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
     "lint": "eslint --ext .js --ext .jsx src --fix"
