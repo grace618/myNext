@@ -1,9 +1,8 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core';
 import { Container, Typography, Grid, Box } from '@material-ui/core'
-import { ReactComponent as Facebook } from 'icons/svg/facebook.svg'
+// import { ReactComponent as Facebook } from 'icons/svg/facebook.svg'
 import { ReactComponent as Twitter } from 'icons/svg/twitter.svg'
-import { ReactComponent as Wechat } from 'icons/svg/wechat.svg'
 import { ReactComponent as Youtube } from 'icons/svg/youtube.svg'
 const useStyles = makeStyles(theme => ({
     box: {
@@ -28,16 +27,13 @@ function Footer() {
                 <Grid container justify="space-between" alignItems="center">
                     <Typography align="center">Copyright © U.LU Games all right reserved.</Typography>
                     <Box display={{ xs: 'none', sm: 'block' }} className={classes.box}>
-                        <a href="http://www.baidu.com" target="_blank" rel="noopener noreferrer">
+                        {/* <a target="_blank" rel="noopener noreferrer">
                             <Facebook />
-                        </a>
-                        <a href="http://www.baidu.com" target="_blank" rel="noopener noreferrer">
+                        </a> */}
+                        <a href="https://twitter.com/ULUGames1" target="_blank" rel="noopener noreferrer">
                             <Twitter />
                         </a>
-                        <a href="http://www.baidu.com" target="_blank" rel="noopener noreferrer">
-                            <Wechat />
-                        </a>
-                        <a href="http://www.baidu.com" target="_blank" rel="noopener noreferrer">
+                        <a href="https://www.youtube.com/channel/UC3PCMQ6sbpCZVdIqZaWf4-g" target="_blank" rel="noopener noreferrer">
                             <Youtube />
                         </a>
                     </Box>

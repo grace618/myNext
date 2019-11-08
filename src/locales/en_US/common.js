@@ -1,6 +1,6 @@
 const common = {
-    publishing: "GlOBAL PUBLISHING",
-    gameslist: "ULU GAMES",
+    publishing: "ABOUT US",
+    gameslist: "GAMES",
     jobs: 'JOBS',
 }
 export default common

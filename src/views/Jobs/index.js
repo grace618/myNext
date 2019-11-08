@@ -3,6 +3,7 @@ import MySnackbarContentWrapper from 'component/SnackbarWrapper'
 import { addRecruitment } from 'service/jobs'
 import { uploadFile } from 'service/publishing'
 import { useSubmitForm } from 'common/CustomHooks'
+import { useTranslation } from 'react-i18next';
 import {
     makeStyles, Typography, Grid, Container, Divider, Box, List, ListItemText, ListItem, Button, InputLabel, FormControl, Select, MenuItem, Input, OutlinedInput, Snackbar
 } from '@material-ui/core'
@@ -29,15 +30,14 @@ const useStyles = makeStyles(theme => ({
     box: {
         margin: '7% 0',
         '&>div': {
-            padding: '0 10px',
-            borderSize: 'border-box'
+            padding: '0 20px',
+            boxSizing: 'border-box'
         }
     },
     desc: {
         fontSize: 14,
         fontFamily: "Arial",
         color: theme.palette.text.secondary,
-        lineHeight: 2.252
     },
     line: {
         backgroundColor: theme.palette.primary.main,
@@ -96,7 +96,6 @@ const useStyles = makeStyles(theme => ({
         color: theme.palette.text.primary,
         fontSize: 16,
         fontWeight: 'bold',
-        width: '100%'
     },
     inputBox: {
         width: '100%',
@@ -114,12 +113,22 @@ const useStyles = makeStyles(theme => ({
     },
     textInput: {
         marginRight: theme.spacing(4),
-        marginTop: theme.spacing(3),
+        marginTop: 19,
         width: '158px',
         height: 40,
+        [theme.breakpoints.down('md')]: {
+            width: '100% !important',
+        },
         '& div': {
-            height: '100%'
+            height: '100%',
+            width: '100%'
         }
+    },
+    boxWrap: {
+        marginBottom: '20px',
+        [theme.breakpoints.down('md')]: {
+            width: '100%'
+        },
     },
     textArea: {
         width: '100%',
@@ -139,6 +148,7 @@ const useStyles = makeStyles(theme => ({
 }))
 function Jobs() {
     const classes = useStyles()
+    const { t } = useTranslation(['jobs'])
     const [open, setOpen] = useState(false);
     const fileLoad = useRef(null)
     const initSnackbar = {
@@ -149,13 +159,14 @@ function Jobs() {
     const [snackBar, setSnackBar] = useState(initSnackbar)
     const initialFormState = {
         firstName: '',
-        lastName: '',
+        telNumber: '',
         mail: '',
         age: '',
         address: '',
         personalProfile: '',
         salary: '',
         arrival: '',
+        educatinal: '',
         recommendUrl: '',
         workExperience: '',
         selfIntroduction: '',
@@ -166,19 +177,20 @@ function Jobs() {
         const { firstName, lastName, mail, age, address, personalProfile, salary, arrival, workExperience, selfIntroduction, resumeFileUrl } = inputs
         if (firstName === '' || lastName === '' || mail === '' || age === '' || address === '' || personalProfile === '' || salary === '' || arrival === '' || workExperience === '' || selfIntroduction === '' || resumeFileUrl === ''
         ) {
-            setSnackBar({ ...snackBar, 'message': 'Please confirm the information entered.', 'variant': 'warning', 'autoHideDuration': 30000 })
+            setSnackBar({ ...snackBar, 'message': 'Please confirm the information entered.', 'variant': 'warning', 'autoHideDuration': 10000 })
             setOpen(true);
         } else {
             addRecruitment(inputs).then(res => {
                 if (res.status === 200) {
-                    setSnackBar({ ...snackBar, 'message': 'success', 'variant': 'success', 'autoHideDuration': 1000 })
+                    setSnackBar({ ...snackBar, 'message': 'success', 'variant': 'success', 'autoHideDuration': 1500 })
                     setOpen(true);
+                    setInputs(initialFormState)
                     fileLoad.current.value = ''
                 }
             })
         }
     }
-    const { inputs, handleInputChange, handleSubmit } = useSubmitForm(initialFormState, submitFormData);
+    const { inputs, setInputs, handleInputChange, handleSubmit } = useSubmitForm(initialFormState, submitFormData);
 
     const upload = (e) => {
         let file = e.target.files[0]
@@ -200,52 +212,42 @@ function Jobs() {
             <div className={classes.banner}>
                 <Topbar backgroundColor="transparent" />
                 <Box pt={27} align='center'>
-                    <Typography className={classes.banner_title}>BEERS! CHEERS!</Typography>
-                    <Typography className={classes.banner_desc}>WE ARE RECRUITING TALENTED PEOPLE FOR GLOBAL SUCCESS</Typography>
+                    <Typography className={classes.banner_title}>{t('career')}</Typography>
+                    <Typography className={classes.banner_desc}>{t('bannerSlogan')}</Typography>
                 </Box>
             </div>
             <Container>
                 <Grid container justify="space-between" className={classes.box}>
                     <Grid item container direction="column" xs={12} sm={12} md={4} lg={4} xl={4}>
                         <div className={classes.desc_title}>
-                            <span className={classes.i_title}>SPECIALIST</span><span className={classes.s_title}> ULU GAMES</span>
+                            <span className={classes.i_title}>{t('t1')}</span>
+                            <span className={classes.s_title}>{t('t_1')}</span>
                             <Divider className={classes.line} />
                         </div>
-                        <Typography className={classes.desc}>
-                            With expertise in the fields of the mobile game industry, we work to get our games in to the global market.
-                            We are a group of mobile game specialists constantly innovating to showcase unique and high quality games.
-                        </Typography>
+                        <Typography className={classes.desc}>{t('d1')}</Typography>
                     </Grid>
                     <Grid item container direction="column" xs={12} sm={12} md={4} lg={4} xl={4}>
                         <div className={classes.desc_title}>
-                            <span className={classes.i_title}>OUR  </span><span className={classes.s_title}> VISION AND GOAL</span>
+                            <span className={classes.i_title}>{t('t2')}</span>
+                            <span className={classes.s_title}>{t('t_2')}</span>
                             <Divider className={classes.line} />
                         </div>
-                        <Typography className={classes.desc}>
-                            Video games are the ultimate entertainment content that revitalizes energy drained from the daily grind.
-                            We will continue to deliver unique and sophisticated games to the global community that bring smiles to the people.
-                        </Typography>
+                        <Typography className={classes.desc}>{t('d2')}</Typography>
                     </Grid>
                     <Grid item container direction="column" xs={12} sm={12} md={4} lg={4} xl={4}>
                         <div className={classes.desc_title}>
-                            <span className={classes.i_title}>GLOBAL</span><span className={classes.s_title}> CHALLENGE</span>
+                            <span className={classes.i_title}>{t('t3')}</span>
+                            <span className={classes.s_title}>{t('t_3')}</span>
                             <Divider className={classes.line} />
                         </div>
-                        <Typography className={classes.desc}>
-                            We are looking for people to challenge themselves in the global game market.
-                            Welcome to the team with constant innovation in mind. (8 hours/day , flexible work hours. Social health insurance. Performance-based incentive pay.)
-                        </Typography>
+                        <Typography className={classes.desc}>{t('d3')}</Typography>
                     </Grid>
                 </Grid>
             </Container>
             <Box bgcolor="background.light" >
                 <Container className={classes.wordText}>
-                    <Box align="center" className={classes.t1} mb={3}>
-                        WE ARE ALWAYS LOOKING FOR NEW TALENTS!
-                    </Box>
-                    <Typography className={classes.word} align="center">
-                        Head Office @ Garosu-gil, Sinsa, Seoul, Korea
-                    </Typography>
+                    <Box align="center" className={classes.t1} mb={3}>{t('join')} </Box>
+                    <Typography className={classes.word} align="center"> {t('better')}</Typography>
                 </Container>
             </Box>
             <Container>
@@ -253,176 +255,201 @@ function Jobs() {
                     <Grid item xs={12} sm={12} md={8} lg={8} xl={8} className={classes.box}>
                         <div>
                             <div className={classes.i_title}>
-                                Unity Developer
-                            <Divider className={classes.line} />
+                                {t('SDKEngineer')}
+                                <Divider className={classes.line} />
                             </div>
-                            <Typography className={classes.jobDescription}>
-                                We are looking for a Unity developer to create new mobile games.
-                            </Typography>
-                            <div className={classes.requirement}>
-                                Requirements or preferences we may have
-                            </div>
+                            <div className={classes.requirement}>{t('requirements')}</div>
                             <List className={classes.list} dense={true}>
                                 <ListItem>
                                     <Check color="primary" className={classes.icon} />
-                                    <ListItemText primary="Experience as a user service manager" />
+                                    <ListItemText primary={t('item1')} />
                                 </ListItem>
                                 <ListItem>
                                     <Check color="primary" className={classes.icon} />
-                                    <ListItemText primary="Experience in areas related to marketing, business, or operations" />
+                                    <ListItemText primary={t('item2')} />
                                 </ListItem>
                                 <ListItem>
                                     <Check color="primary" className={classes.icon} />
-                                    <ListItemText primary="Likes and understands video games" />
-                                </ListItem>
-                                <ListItem>
-                                    <Check color="primary" className={classes.icon} />
-                                    <ListItemText primary="Excellent communication skills" />
-                                </ListItem>
-                                <ListItem>
-                                    <Check color="primary" className={classes.icon} />
-                                    <ListItemText primary="Detail-oriented" />
+                                    <ListItemText primary={t('item3')} />
                                 </ListItem>
                                 <ListItem>
                                     <AddCircle color="primary" className={classes.icon} />
-                                    <ListItemText primary="Likes video games that appeal to the international audience" />
-                                </ListItem>
-                                <ListItem>
-                                    <AddCircle color="primary" className={classes.icon} />
-                                    <ListItemText primary="Speaks a foreign language" />
-                                </ListItem>
-                                <ListItem>
-                                    <AddCircle color="primary" className={classes.icon} />
-                                    <ListItemText primary="Bachelors degree or experience in related fields" />
+                                    <ListItemText primary={t('item4')} />
                                 </ListItem>
                             </List>
-                            <div className={classes.requirement}>
-                                Position Descripition
+                            <div className={classes.requirement}> {t('jobDescription')} </div>
+                            <div className={classes.desc}>
+                                <List className={classes.list} dense={true}>
+                                    <ListItem>
+                                        <ListItemText primary={t('r1')} />
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListItemText primary={t('r2')} />
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListItemText primary={t('r3')} />
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListItemText primary={t('r4')} />
+                                    </ListItem>
+                                </List>
                             </div>
-                            <Typography className={classes.desc}>
-                                Likes video games that appeal to the international audience ,Indie game developer preferred,Ability to speak a foreign language
-                            </Typography>
-                            <Button variant="contained" color="primary" className={classes.apply}>APPLY</Button>
+                            <Button variant="contained" color="primary" className={classes.apply}>{t('apply')}</Button>
                         </div>
                         <div>
                             <div className={classes.i_title}>
-                                Unity Developer
-                            <Divider className={classes.line} />
+                                {t('koreanOperation')}
+                                <Divider className={classes.line} />
                             </div>
-                            <Typography className={classes.jobDescription}>
-                                We are looking for a Unity developer to create new mobile games.
-                            </Typography>
                             <div className={classes.requirement}>
-                                Requirements or preferences we may have
+                                {t('requirements')}
                             </div>
                             <List className={classes.list} dense={true}>
                                 <ListItem>
                                     <Check color="primary" className={classes.icon} />
-                                    <ListItemText primary="Experience as a user service manager" />
+                                    <ListItemText primary={t('item2_2')} />
                                 </ListItem>
                                 <ListItem>
                                     <Check color="primary" className={classes.icon} />
-                                    <ListItemText primary="Experience in areas related to marketing, business, or operations" />
-                                </ListItem>
-                                <ListItem>
-                                    <Check color="primary" className={classes.icon} />
-                                    <ListItemText primary="Likes and understands video games" />
-                                </ListItem>
-                                <ListItem>
-                                    <Check color="primary" className={classes.icon} />
-                                    <ListItemText primary="Excellent communication skills" />
-                                </ListItem>
-                                <ListItem>
-                                    <Check color="primary" className={classes.icon} />
-                                    <ListItemText primary="Detail-oriented" />
+                                    <ListItemText primary={t('item2_3')} />
                                 </ListItem>
                                 <ListItem>
                                     <AddCircle color="primary" className={classes.icon} />
-                                    <ListItemText primary="Likes video games that appeal to the international audience" />
+                                    <ListItemText primary={t('item2_1')} />
                                 </ListItem>
                                 <ListItem>
                                     <AddCircle color="primary" className={classes.icon} />
-                                    <ListItemText primary="Speaks a foreign language" />
-                                </ListItem>
-                                <ListItem>
-                                    <AddCircle color="primary" className={classes.icon} />
-                                    <ListItemText primary="Bachelors degree or experience in related fields" />
+                                    <ListItemText primary={t('item2_4')} />
                                 </ListItem>
                             </List>
-                            <div className={classes.requirement}>
-                                Position Descripition
+                            <div className={classes.requirement}>{t('jobDescription')} </div>
+                            <div className={classes.desc}>
+                                <List className={classes.list} dense={true}>
+                                    <ListItem>
+                                        <ListItemText primary={t('r2_1')} />
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListItemText primary={t('r2_2')} />
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListItemText primary={t('r2_3')} />
+                                    </ListItem>
+                                </List>
                             </div>
-                            <Typography className={classes.desc}>
-                                Likes video games that appeal to the international audience ,Indie game developer preferred,Ability to speak a foreign language
-                            </Typography>
-                            <Button variant="contained" color="primary" className={classes.apply}>APPLY</Button>
+                            <Button variant="contained" color="primary" className={classes.apply}>{t('apply')}</Button>
                         </div>
                         <div>
                             <div className={classes.i_title}>
-                                Unity Developer
-                            <Divider className={classes.line} />
+                                {t('videoDesigner')}
+                                <Divider className={classes.line} />
                             </div>
-                            <Typography className={classes.jobDescription}>
-                                We are looking for a Unity developer to create new mobile games.
-                            </Typography>
-                            <div className={classes.requirement}>
-                                Requirements or preferences we may have
-                            </div>
+                            <div className={classes.requirement}> {t('requirements')}</div>
                             <List className={classes.list} dense={true}>
                                 <ListItem>
                                     <Check color="primary" className={classes.icon} />
-                                    <ListItemText primary="Experience as a user service manager" />
+                                    <ListItemText primary={t('item3_2')} />
                                 </ListItem>
                                 <ListItem>
                                     <Check color="primary" className={classes.icon} />
-                                    <ListItemText primary="Experience in areas related to marketing, business, or operations" />
+                                    <ListItemText primary={t('item3_3')} />
                                 </ListItem>
                                 <ListItem>
                                     <Check color="primary" className={classes.icon} />
-                                    <ListItemText primary="Likes and understands video games" />
+                                    <ListItemText primary={t('item3_4')} />
                                 </ListItem>
                                 <ListItem>
                                     <Check color="primary" className={classes.icon} />
-                                    <ListItemText primary="Excellent communication skills" />
+                                    <ListItemText primary={t('item3_5')} />
                                 </ListItem>
                                 <ListItem>
                                     <Check color="primary" className={classes.icon} />
-                                    <ListItemText primary="Detail-oriented" />
+                                    <ListItemText primary={t('item3_6')} />
+                                </ListItem>
+                                <ListItem>
+                                    <Check color="primary" className={classes.icon} />
+                                    <ListItemText primary={t('item3_7')} />
+                                </ListItem>
+                                <ListItem>
+                                    <Check color="primary" className={classes.icon} />
+                                    <ListItemText primary={t('item3_9')} />
                                 </ListItem>
                                 <ListItem>
                                     <AddCircle color="primary" className={classes.icon} />
-                                    <ListItemText primary="Likes video games that appeal to the international audience" />
-                                </ListItem>
-                                <ListItem>
-                                    <AddCircle color="primary" className={classes.icon} />
-                                    <ListItemText primary="Speaks a foreign language" />
-                                </ListItem>
-                                <ListItem>
-                                    <AddCircle color="primary" className={classes.icon} />
-                                    <ListItemText primary="Bachelors degree or experience in related fields" />
+                                    <ListItemText primary={t('item3_8')} />
                                 </ListItem>
                             </List>
-                            <div className={classes.requirement}>
-                                Position Descripition
+                            <div className={classes.requirement}>{t('jobDescription')} </div>
+                            <div className={classes.desc}>
+                                <List className={classes.list} dense={true}>
+                                    <ListItem>
+                                        <ListItemText primary={t('r3_1')} />
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListItemText primary={t('r3_2')} />
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListItemText primary={t('r3_3')} />
+                                    </ListItem>
+                                </List>
                             </div>
-                            <Typography className={classes.desc}>
-                                Likes video games that appeal to the international audience ,Indie game developer preferred,Ability to speak a foreign language
-                            </Typography>
-                            <Button variant="contained" color="primary" className={classes.apply}>APPLY</Button>
+                            <Button variant="contained" color="primary" className={classes.apply}>{t('apply')}</Button>
+                        </div>
+                        <div>
+                            <div className={classes.i_title}>
+                                {t('coordinator')}
+                                <Divider className={classes.line} />
+                            </div>
+                            <div className={classes.requirement}> {t('requirements')} </div>
+                            <List className={classes.list} dense={true}>
+                                <ListItem>
+                                    <Check color="primary" className={classes.icon} />
+                                    <ListItemText primary={t('item4_1')} />
+                                </ListItem>
+                                <ListItem>
+                                    <Check color="primary" className={classes.icon} />
+                                    <ListItemText primary={t('item4_3')} />
+                                </ListItem>
+                                <ListItem>
+                                    <Check color="primary" className={classes.icon} />
+                                    <ListItemText primary={t('item4_4')} />
+                                </ListItem>
+                                <ListItem>
+                                    <Check color="primary" className={classes.icon} />
+                                    <ListItemText primary={t('item4_5')} />
+                                </ListItem>
+                                <ListItem>
+                                    <AddCircle color="primary" className={classes.icon} />
+                                    <ListItemText primary={t('item4_2')} />
+                                </ListItem>
+                            </List>
+                            <div className={classes.requirement}> {t('jobDescription')}</div>
+                            <div className={classes.desc}>
+                                <List className={classes.list} dense={true}>
+                                    <ListItem>
+                                        <ListItemText primary={t('r4_1')} />
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListItemText primary={t('r4_2')} />
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListItemText primary={t('r4_3')} />
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListItemText primary={t('r4_4')} />
+                                    </ListItem>
+                                </List>
+                            </div>
+                            <Button variant="contained" color="primary" className={classes.apply}>{t('apply')}</Button>
                         </div>
                     </Grid>
                     <Grid item xs={12} sm={12} md={4} lg={4} xl={4} className={classes.box}>
-                        <div className={classes.i_title}>
-                            APPLY
-                        </div>
-                        <Typography className={classes.word}>
-                            After sending us the completed form below, we will get back to you after 3 to 7 days. Thank you!
-                        </Typography>
+                        <div className={classes.i_title}> {t('apply')} </div>
+                        <Typography className={classes.word}> {t('info')}</Typography>
                         <span className={classes.line_short}></span>
                         <form style={{ width: '100%' }} onSubmit={handleSubmit}>
-                            <FormControl >
+                            <FormControl className={classes.boxWrap}>
                                 <InputLabel shrink htmlFor="firstName" className={classes.label}>
-                                    FIRST NAME*
+                                    {t('name')}*
                                 </InputLabel>
                                 <OutlinedInput
                                     id="firstName"
@@ -433,26 +460,26 @@ function Jobs() {
                                     onChange={handleInputChange}
                                 />
                             </FormControl>
-                            <FormControl >
-                                <InputLabel shrink htmlFor="lastName" className={classes.label}>
-                                    LAST NAME*
+                            <FormControl className={classes.boxWrap}>
+                                <InputLabel shrink htmlFor="telNumber" className={classes.label}>
+                                    {t('TEL')}*
                                 </InputLabel>
                                 <OutlinedInput
-                                    id="lastName"
+                                    id="telNumber"
                                     className={classes.textInput}
-                                    name="lastName"
+                                    name="telNumber"
                                     required
-                                    value={inputs.lastName}
+                                    value={inputs.telNumber}
                                     onChange={handleInputChange}
                                 />
                             </FormControl>
-                            <FormControl className={classes.inputBox}>
+                            <FormControl className={classes.boxWrap}>
                                 <InputLabel shrink htmlFor="mail" className={classes.label}>
-                                    EMAIL*
+                                    {t('EMAIL')}*
                                 </InputLabel>
                                 <OutlinedInput
                                     id="mail"
-                                    className={classes.textField}
+                                    className={classes.textInput}
                                     name="mail"
                                     type="email"
                                     required
@@ -460,9 +487,9 @@ function Jobs() {
                                     onChange={handleInputChange}
                                 />
                             </FormControl>
-                            <FormControl>
+                            <FormControl className={classes.boxWrap}>
                                 <InputLabel shrink htmlFor="age" className={classes.label}>
-                                    AGE*
+                                    {t('AGE')}*
                                 </InputLabel>
                                 <OutlinedInput
                                     id="age"
@@ -474,22 +501,10 @@ function Jobs() {
                                     onChange={handleInputChange}
                                 />
                             </FormControl>
-                            <FormControl >
-                                <InputLabel shrink htmlFor="NAME" className={classes.label}>
-                                    AREA OF RESIDENCE*
-                                </InputLabel>
-                                <OutlinedInput
-                                    id="NAME"
-                                    className={classes.textInput}
-                                    name="address"
-                                    required
-                                    value={inputs.address}
-                                    onChange={handleInputChange}
-                                />
-                            </FormControl>
+
                             <FormControl className={classes.inputBox}>
                                 <InputLabel shrink htmlFor="personalProfile" className={classes.label}>
-                                    POSITION DESCRIPTION*
+                                    {t('DESCRIPTION')}*
                                 </InputLabel>
                                 <Select
                                     value={inputs.personalProfile}
@@ -499,15 +514,28 @@ function Jobs() {
                                     onChange={handleInputChange}
                                     className={classes.textField}
                                 >
-                                    <MenuItem value={10}>  Early Development </MenuItem>
-                                    <MenuItem value={20}>  Prototype or Playable Version </MenuItem>
-                                    <MenuItem value={30}> 50 to 100% Completed </MenuItem>
-                                    <MenuItem value={40}> Already Released </MenuItem>
+                                    <MenuItem value={t('SDKEngineer')}>  {t('SDKEngineer')} </MenuItem>
+                                    <MenuItem value={t('koreanOperation')}> {t('koreanOperation')}</MenuItem>
+                                    <MenuItem value={t('videoDesigner')}> {t('videoDesigner')} </MenuItem>
+                                    <MenuItem value={t('coordinator')}> {t('coordinator')} </MenuItem>
                                 </Select>
                             </FormControl>
                             <FormControl className={classes.inputBox}>
+                                <InputLabel shrink htmlFor="NAME" className={classes.label}>
+                                    {t('RESIDENCE')}*
+                                </InputLabel>
+                                <OutlinedInput
+                                    id="NAME"
+                                    className={classes.textField}
+                                    name="address"
+                                    required
+                                    value={inputs.address}
+                                    onChange={handleInputChange}
+                                />
+                            </FormControl>
+                            <FormControl className={classes.inputBox}>
                                 <InputLabel shrink htmlFor="salary" className={classes.label}>
-                                    DESIRED SALARY (OR CURRENT SALARY)*
+                                    {t('SALARY')}*
                                 </InputLabel>
                                 <OutlinedInput
                                     id="salary"
@@ -520,7 +548,7 @@ function Jobs() {
                             </FormControl>
                             <FormControl className={classes.inputBox}>
                                 <InputLabel shrink htmlFor="arrival" className={classes.label}>
-                                    POSSIBLE JOB START DATE*
+                                    {t('DATE')}*
                                 </InputLabel>
                                 <OutlinedInput
                                     id="arrival"
@@ -533,36 +561,46 @@ function Jobs() {
                             </FormControl>
                             <FormControl className={classes.inputBox}>
                                 <InputLabel shrink htmlFor="recommendUrl" className={classes.label}>
-                                    WEBSITE(FOR PORTFOLIO OR OTHER RELATED MATERIALS)
+                                    {t('WEBSITE')}
                                 </InputLabel>
                                 <OutlinedInput
                                     id="recommendUrl"
                                     className={classes.textField}
-                                    style={{ marginTop: '40px' }}
                                     name="recommendUrl"
                                     value={inputs.recommendUrl}
                                     onChange={handleInputChange}
                                 />
                             </FormControl>
                             <FormControl className={classes.inputBox}>
+                                <InputLabel shrink htmlFor="educatinal" className={classes.label}>
+                                    {t('BACKGROUND')}*
+                                </InputLabel>
+                                <OutlinedInput
+                                    id="educatinal"
+                                    className={classes.textField}
+                                    name="educatinal"
+                                    required
+                                    value={inputs.educatinal}
+                                    onChange={handleInputChange}
+                                />
+                            </FormControl>
+                            <FormControl className={classes.inputBox}>
                                 <InputLabel shrink htmlFor="workExperience" className={classes.label}>
-                                    WORK EXPERIENCE*
+                                    {t('EXPERIENCE')}*
                                 </InputLabel>
                                 <textarea id="workExperience" className={classes.textArea} required name="workExperience" value={inputs.workExperience} onChange={handleInputChange} style={{ marginTop: '20px' }}>
                                 </textarea>
                             </FormControl>
                             <FormControl className={classes.inputBox}>
                                 <InputLabel shrink htmlFor="selfIntroduction" className={classes.label}>
-                                    PLEASE GIVE YOURSELF A CHANCE TO INTRODUCE
-                                    YOURSELF AND THE REASON YOU ARE APPLYING FOR THE
-                                    JOB*
+                                    {t('INTRODUCTION')}*
                                 </InputLabel>
-                                <textarea id="selfIntroduction" className={classes.textArea} required value={inputs.selfIntroduction} name="selfIntroduction" onChange={handleInputChange} style={{ marginTop: '48px' }}>
+                                <textarea id="selfIntroduction" className={classes.textArea} required value={inputs.selfIntroduction} name="selfIntroduction" onChange={handleInputChange} style={{ marginTop: '20px' }}>
                                 </textarea>
                             </FormControl>
                             <FormControl className={classes.inputBox}>
-                                <InputLabel shrink htmlFor="email" className={classes.label}>
-                                    UPLOAD (RESUME,PORTFOLIO,ETC.)*
+                                <InputLabel shrink className={classes.label}>
+                                    {t('UPLOAD')}*
                                 </InputLabel>
                                 <Input type="file" onChange={upload} inputRef={fileLoad} />
                             </FormControl>

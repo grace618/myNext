@@ -3,6 +3,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { makeStyles, Container, Typography, Grid, Button, Box, Hidden } from '@material-ui/core'
 import Slider from "react-slick";
 import { useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next';
 import { useGameList } from 'common/CustomHooks';
 import './index.css'
 
@@ -116,13 +117,15 @@ const useStyles = makeStyles(theme => ({
     slideImg: {
         '& img': {
             width: '277px',
-            height: '185px',
+            height: '277px',
+            margin: '0 auto'
         }
     },
 }))
 function Home() {
     const classes = useStyles()
     const language = useSelector(state => state.app)
+    const { t } = useTranslation(['home'])
     const settings = {
         dots: true,
         infinite: true,
@@ -164,12 +167,12 @@ function Home() {
             <div className={classes.header}>
                 <Container className={classes.container}>
                     <Grid container alignItems="center" direction="column" justify="center" className={classes.publishBtn}>
-                        <Typography variant="h4" gutterBottom color="textSecondary" align="center">PUBLISH YOUR GAME/APP GLOBALLY NOW</Typography>
+                        <Typography variant="h4" gutterBottom color="textSecondary" align="center">{t('solgan')}</Typography>
                         <Hidden smDown>
-                            <Typography variant="h6" gutterBottom color="textSecondary" align="center">Start self-publishing, or as a publishing partner with ULU GAMES</Typography>
+                            <Typography variant="h6" gutterBottom color="textSecondary" align="center">{t('sloganDesc')}</Typography>
                         </Hidden>
                         <Box mt={8} display={{ xs: 'none', sm: 'block' }}>
-                            <Button variant="contained" color="primary" size="large" to="/publishing" component={RouterLink}>GLOBAL PUBLISHING</Button>
+                            <Button variant="contained" color="primary" size="large" to="/publishing" component={RouterLink}>{t('aboutBtn')}</Button>
                         </Box>
                     </Grid>
                 </Container>
@@ -183,20 +186,18 @@ function Home() {
                         <Grid item container direction="column" justify="center" className={classes.right} xs={12} sm={12} md={12} lg={6} xl={6}>
                             <Box width="100%">
                                 <Typography>
-                                    <span className={classes.t1}>PUBLISHER</span>
-                                    <span className={classes.t2}>ULU GAMES</span>
+                                    <span className={classes.t1}>{t('ulu')}</span>
+                                    <span className={classes.t2}>{t('uluGame')}</span>
                                 </Typography>
                                 <Typography variant="h6" color="textSecondary" className={classes.word}>
-                                    Publish globally with a partner
-                            </Typography>
+                                    {t('gameTitle')}
+                                </Typography>
                                 <span className={classes.line}></span>
                                 <Typography variant="h6" color="textSecondary" className={classes.desc}>
-                                    We do publishing by targeting the global market with high quality and unique <br />mobile games.
-                            Quality games are sourced, then improvements are made through <br /> our polishing process.
-                            We've proven the success of the process with our games <br /> being downloaded over 2 million times. Our major projects include 'ARKA', 'ETERNAL STORM', and 'ERA of DISCORD'.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          2 million times. Our major projects include 'ARKA', 'ETERNAL STORM', and 'ERA of DISCORD'.
-                            </Typography>
+                                    {t('gameDesc')}
+                                </Typography>
                                 <Box mt={5}>
-                                    <Button variant="outlined" size="large" className={classes.more} to="/gameslist" component={RouterLink}>SEE MORE</Button>
+                                    <Button variant="outlined" size="large" className={classes.more} to="/gameslist" component={RouterLink}>{t('moreBtn')}</Button>
                                 </Box>
                             </Box>
                         </Grid>
@@ -207,11 +208,11 @@ function Home() {
                 <Grid container justify="center" direction="column" alignItems="center" >
                     <div className={classes.gTitle}>
                         <Typography gutterBottom align="center">
-                            <span className={classes.t3}>PUBLISHED GAMES BY</span>
-                            <span className={classes.t4}>ULU GAMES</span>
+                            {/* <span className={classes.t3}>PUBLISHED GAMES BY</span> */}
+                            <span className={classes.t4}>{t('gameList')}</span>
                         </Typography>
                         <Typography className={classes.slogan} align="center">
-                            See our games on App Store and Google Play!
+                            {t('gameListDesc')}
                         </Typography>
                     </div>
                     <span className={classes.line}></span>
@@ -219,15 +220,14 @@ function Home() {
                         <Slider {...settings} className={classes.box}>
                             {
                                 gameItem.map(item => (
-
                                     <Grid container alignItems="center" direction="column" justify="space-around" key={item.id} className={classes.slideImg}>
                                         <RouterLink to={`/detail/${item.id}`}>
-                                            <img src={item.gameImg} alt="" className={classes.pic} />
+                                            <img src={item.gameImg} alt="" />
                                         </RouterLink>
                                         <Typography className={classes.gName} align="center">{item.gameName}</Typography>
                                         {
                                             item.gameDetails.map(value => (
-                                                value.type === '1' && <Typography className={classes.slogan} key={value.type}> {value.gameDescription} </Typography>
+                                                value.type === '1' && <Typography className={classes.slogan} key={value.type} align="center"> {value.gameDescription} </Typography>
                                             ))
                                         }
                                     </Grid>
@@ -240,10 +240,10 @@ function Home() {
             <Box pt={8} pb={6} bgcolor="background.light">
                 <Container>
                     <Grid container justify="center" direction="column" alignItems="center" className={classes.padding}>
-                        <Typography gutterBottom variant="h5" color="textPrimary" align="center">PUBLISH YOUR GAME/APP GLOBALLY NOW</Typography>
-                        <Typography className={classes.slogan} align="center">Start self-publishing, or as a publishing partner with ULU GAME</Typography>
+                        <Typography gutterBottom variant="h5" color="textPrimary" align="center">{t('partner')}</Typography>
+                        <Typography className={classes.slogan} align="center">{t('create')}</Typography>
                         <Box mt={7}>
-                            <Button variant="contained" size="large" color="primary" to="/publishing" component={RouterLink}>GLOBAL PUBLISHING</Button>
+                            <Button variant="contained" size="large" color="primary" to="/publishing" component={RouterLink}>{t('about')}</Button>
                         </Box>
                     </Grid>
                 </Container>

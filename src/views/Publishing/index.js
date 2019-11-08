@@ -2,15 +2,15 @@ import React, { useState, useRef } from 'react'
 import { Link as RouterLink } from 'react-router-dom';
 import { addCollaboration, uploadFile } from 'service/publishing'
 import { useSubmitForm } from 'common/CustomHooks'
+import { useTranslation } from 'react-i18next';
 import MySnackbarContentWrapper from 'component/SnackbarWrapper'
 import {
     makeStyles, Container, Typography, Grid, Button, Box, Hidden, Breadcrumbs, Link, Divider, InputLabel, FormControl, Select, MenuItem, Input, Snackbar, OutlinedInput
 } from '@material-ui/core'
 
 
-import { ReactComponent as Facebook } from 'icons/svg/facebook.svg'
+// import { ReactComponent as Facebook } from 'icons/svg/facebook.svg'
 import { ReactComponent as Twitter } from 'icons/svg/twitter.svg'
-import { ReactComponent as Wechat } from 'icons/svg/wechat.svg'
 import { ReactComponent as Youtube } from 'icons/svg/youtube.svg'
 
 
@@ -43,8 +43,7 @@ const useStyles = makeStyles(theme => ({
     gameDesc: {
         fontSize: 42,
         fontFamily: "Arial",
-        color: 'rgb(244, 66, 66)',
-        fontWeight: 'bold'
+        color: theme.palette.primary.main,
     },
     banner: {
         margin: '20px auto 100px auto',
@@ -145,9 +144,11 @@ const useStyles = makeStyles(theme => ({
     },
     gameName: {
         width: '93%',
+        height: 40,
         marginTop: theme.spacing(3),
         '& div': {
-            height: '40px'
+            height: '40px',
+            lineHeight: '40px'
         }
     },
     infoRight: {
@@ -173,6 +174,7 @@ const useStyles = makeStyles(theme => ({
 )
 function GameList() {
     const classes = useStyles()
+    const { t } = useTranslation(['publishing'])
     const inputEl = useRef(null)
     const [open, setOpen] = useState(false);
     const initSnackbar = {
@@ -192,21 +194,22 @@ function GameList() {
     }
     const submitFormData = () => {
         setSnackBar(initSnackbar)
-        const { companyName, mail, developmentStage, gameName } = inputs
-        if (companyName === '' || mail === '' || developmentStage === '' || gameName === '') {
-            setSnackBar({ ...snackBar, 'message': 'Please confirm the information entered.', 'variant': 'warning', 'autoHideDuration': 30000 })
+        const { companyName, mail, developmentStage, gameName, descriptionContent } = inputs
+        if (companyName === '' || mail === '' || developmentStage === '' || gameName === '' || descriptionContent === '') {
+            setSnackBar({ ...snackBar, 'message': 'Please confirm the information entered.', 'variant': 'warning', 'autoHideDuration': 10000 })
             setOpen(true);
         } else {
             addCollaboration(inputs).then(res => {
                 if (res.status === 200) {
-                    setSnackBar({ ...snackBar, 'message': 'success', 'variant': 'success', 'autoHideDuration': 1000 })
+                    setSnackBar({ ...snackBar, 'message': 'success', 'variant': 'success', 'autoHideDuration': 1500 })
                     setOpen(true);
+                    setInputs(initialFormState)
                     inputEl.current.value = ''
                 }
             })
         }
     }
-    const { inputs, handleInputChange, handleSubmit } = useSubmitForm(initialFormState, submitFormData);
+    const { inputs, setInputs, handleInputChange, handleSubmit } = useSubmitForm(initialFormState, submitFormData);
 
     const upload = (e) => {
         let file = e.target.files[0]
@@ -228,10 +231,10 @@ function GameList() {
                 <Box bgcolor="background.light" height="60px">
                     <Container className={classes.navBar}>
                         <Grid justify="space-between" container alignItems="center">
-                            <Typography className={classes.logo}>GLOBAL PUBLISHING</Typography>
+                            <Typography className={classes.logo}>{t('ABOUT')}</Typography>
                             <Breadcrumbs aria-label="breadcrumb">
-                                <Link color="inherit" to="/" component={RouterLink} className={classes.breadcrumbs}>Home </Link>
-                                <Typography color="textPrimary" className={classes.breadcrumbs}> Global Publishing</Typography>
+                                <Link color="inherit" to="/" component={RouterLink} className={classes.breadcrumbs}>{t('home')} </Link>
+                                <Typography color="textPrimary" className={classes.breadcrumbs}>{t('aboutUs')}</Typography>
                             </Breadcrumbs>
                         </Grid>
                     </Container>
@@ -239,9 +242,9 @@ function GameList() {
             </Hidden>
             <Container>
                 <Grid container direction="column" justify="center" alignItems="center">
-                    <Box fontSize={44} align="center" fontWeight={500} pt={10} pb={2}> GLOBAL MOBILE GAME PUBLISHER <span className={classes.gameDesc}>ULU GAMES</span> </Box>
+                    <Box fontSize={44} align="center" pt={10} pb={2} fontWeight='bold'> {t('ulu')} <span className={classes.gameDesc}>{t('global')}</span> </Box>
                     <Box align="center" color="text.secondary" pb={1} fontSize={24}>
-                        Partner with us and go global
+                        {t('partner')}
                     </Box>
                     <span className={classes.line}></span>
                     <img src={require('assets/imgs/publish/banner.jpg')} alt="banner" className={classes.banner} />
@@ -249,48 +252,48 @@ function GameList() {
             </Container>
             <Box bgcolor="background.light">
                 <Container className={classes.listwrap}>
-                    <Typography align="center" className={classes.support}>GLOBAL PUBLISHING SUPPORT</Typography>
-                    <Box align="center" color="text.secondary" pb={6} pt={4}>We professionally assist developers to go global.</Box>
+                    <Typography align="center" className={classes.support}>{t('suport')}</Typography>
+                    <Box align="center" color="text.secondary" pb={6} pt={4}>{t('developers')}</Box>
                     <Grid container>
                         <Grid container alignItems="center" direction="column" item xs={12} sm={6} md={3} lg={3} xl={3} className={classes.list}>
                             <img src={require('assets/imgs/publish/icon1.png')} alt="uluLogo" className={classes.pic} />
-                            <Typography className={classes.gName} align="center">POLISHING</Typography>
-                            <Typography className={classes.slogan} align="center">Game Direction, Game <br />  Balance, and UX </Typography>
+                            <Typography className={classes.gName} align="center">{t('POLISHING')}</Typography>
+                            <Typography className={classes.slogan} align="center">{t('direction')} </Typography>
                         </Grid>
                         <Grid container alignItems="center" direction="column" item xs={12} sm={6} md={3} lg={3} xl={3} className={classes.list}>
                             <img src={require('assets/imgs/publish/icon2.png')} alt="uluLogo" className={classes.pic} />
-                            <Typography className={classes.gName} align="center">MONETIZATION DESIGN</Typography>
-                            <Typography className={classes.slogan} align="center">Game Revenue Maximization </Typography>
+                            <Typography className={classes.gName} align="center">{t('MONETIZATION')}</Typography>
+                            <Typography className={classes.slogan} align="center">{t('revenue')}</Typography>
                         </Grid>
                         <Grid container alignItems="center" direction="column" item xs={12} sm={6} md={3} lg={3} xl={3} className={classes.list}>
                             <img src={require('assets/imgs/publish/icon3.png')} className={classes.pic} alt="icon" />
-                            <Typography className={classes.gName} align="center">LOCALIZATION</Typography>
-                            <Typography className={classes.slogan} align="center">Text Translations and <br />Localization </Typography>
+                            <Typography className={classes.gName} align="center">{t('LOCALIZATION')}</Typography>
+                            <Typography className={classes.slogan} align="center">{t('localization')} </Typography>
                         </Grid>
                         <Grid container alignItems="center" direction="column" item xs={12} sm={6} md={3} lg={3} xl={3} className={classes.list}>
                             <img src={require('assets/imgs/publish/icon4.png')} alt="uluLogo" className={classes.pic} />
-                            <Typography className={classes.gName} align="center">SERVER SUPPORT</Typography>
-                            <Typography className={classes.slogan} align="center">Play! Server Implementation </Typography>
+                            <Typography className={classes.gName} align="center">{t('SERVER')}</Typography>
+                            <Typography className={classes.slogan} align="center">{t('implementation')} </Typography>
                         </Grid>
                         <Grid container alignItems="center" direction="column" item xs={12} sm={6} md={3} lg={3} xl={3} className={classes.list}>
                             <img src={require('assets/imgs/publish/icon5.png')} alt="uluLogo" className={classes.pic} />
-                            <Typography className={classes.gName} align="center">MARKETING</Typography>
-                            <Typography className={classes.slogan} align="center">Ads and Cross-Promotions </Typography>
+                            <Typography className={classes.gName} align="center">{t('MARKETING')}</Typography>
+                            <Typography className={classes.slogan} align="center">{t('ads')} </Typography>
                         </Grid>
                         <Grid container alignItems="center" direction="column" item xs={12} sm={6} md={3} lg={3} xl={3} className={classes.list}>
                             <img src={require('assets/imgs/publish/icon6.png')} alt="uluLogo" className={classes.pic} />
-                            <Typography className={classes.gName} align="center">PR</Typography>
-                            <Typography className={classes.slogan} align="center">Media and Influencers </Typography>
+                            <Typography className={classes.gName} align="center">{t("PR")}</Typography>
+                            <Typography className={classes.slogan} align="center">{t('influencers')} </Typography>
                         </Grid>
                         <Grid container alignItems="center" direction="column" item xs={12} sm={6} md={3} lg={3} xl={3} className={classes.list}>
                             <img src={require('assets/imgs/publish/icon7.png')} alt="uluLogo" className={classes.pic} />
-                            <Typography className={classes.gName} align="center">QA TESTING</Typography>
-                            <Typography className={classes.slogan} align="center">Completeness and Checks for <br />Hurdles </Typography>
+                            <Typography className={classes.gName} align="center">{t('QA')}</Typography>
+                            <Typography className={classes.slogan} align="center">{t('completeness')}</Typography>
                         </Grid>
                         <Grid container alignItems="center" direction="column" item xs={12} sm={6} md={3} lg={3} xl={3} className={classes.list}>
                             <img src={require('assets/imgs/publish/icon8.png')} alt="uluLogo" className={classes.pic} />
-                            <Typography className={classes.gName} align="center">HELP DESK</Typography>
-                            <Typography className={classes.slogan} align="center">Global User Inquiries </Typography>
+                            <Typography className={classes.gName} align="center">{t('DESK')}</Typography>
+                            <Typography className={classes.slogan} align="center">{t('inquiries')} </Typography>
                         </Grid>
                     </Grid>
                 </Container>
@@ -302,21 +305,13 @@ function GameList() {
                     </Grid>
                     <Grid item container direction="column" justify="flex-end" className={classes.right} xs={12} sm={12} md={7} lg={7} xl={7}>
                         <Box width="100%">
-                            <Typography className={classes.t1}> GO GLOBAL AND BEYOND </Typography>
+                            <Typography className={classes.t1}> {t('BEYOND')} </Typography>
                             <Typography className={classes.word}>
-                                ULUA GAME’s Publishing Partnership targets the global market.
+                                {t('partnership')}
                             </Typography>
                             <span className={classes.line}></span>
                             <Typography className={classes.desc}>
-                                The world has become ever more connected since the inception of smartphones.
-                                As a consequence, a large number of diverse people from different countries are able to play games on their devices.
-                                The current mobile game market is the largest of all the game markets.
-                                We are aiming for the success in the global market by taking advantage of this great opportunity. <br /><br />
-
-                                In order to do so, we have established great publishing partnerships with excellent game developers and studios for publishing worldwide.
-                                The size, genre and number of teams for the game being developed have no relations to the partnership.
-                                If you think you have a unique and high-quality game that can be enjoyed by the global audience, please contact us without hesitation.
-                                We will use all of ULUA GAME's capabilities to help the game's success on the global stage.
+                                {t('desc1')} <br /><br />{t('desc2')}
                             </Typography>
                         </Box>
                     </Grid>
@@ -326,19 +321,14 @@ function GameList() {
                     <Grid item container direction="column" justify="flex-end" className={classes.right} xs={12} sm={12} md={7} lg={7} xl={7}>
                         <Box width="100%">
                             <Typography className={classes.t1}>
-                                GROUP OF SPECIALISTS WITH THE BEST QUALIFICATIONS
+                                {t('QUALIFICATIONS')}
                             </Typography>
                             <Typography className={classes.word}>
-                                We help you upgrade the finish and turn up the fun of the game to the max.
+                                {t('help')}
                             </Typography>
                             <span className={classes.line}></span>
                             <Typography className={classes.desc}>
-                                We are experts in each of our own respective fields with the best skills.
-                               We help you publish and go global with the experience acquired from having over 10 mobile games successfully launched.<br /><br />
-
-                                From the development stage of the game, we plan, balance, design monetization and UI for enhanced results.
-                                In particular, we work with our partners to establish positioning in the global market with perfection in mind.
-                                We will help you achieve global success based on the experience and data gained from launching games of a variety of genres.
+                                {t('desc3')} <br /><br />{t('desc4')}
                             </Typography>
                         </Box>
                     </Grid>
@@ -350,26 +340,26 @@ function GameList() {
             <Box bgcolor="background.light">
                 <Container>
                     <Box className={classes.t1} align="center" pt={9} mb={4}>
-                        ULUA GAME GLOBAL PUBLISHING ACHIEVEMENTS
+                        {t('ACHIEVEMENTS')}
                     </Box>
                     <Typography className={classes.word} align="center">
-                        iOS App Store & Android Google Play
+                        {t('plantform')}
                     </Typography>
                     <Grid container justify="space-around">
                         <Grid container alignItems="center" direction="column" justify="space-around" item xs={12} sm={12} md={4} lg={4} xl={4} className={classes.m}>
                             <img src={require('assets/imgs/publish/icon9.png')} alt="uluLogo" className={classes.pic} />
-                            <Typography className={classes.num} align="center">155</Typography>
-                            <Typography className={classes.slogan}>COUNTRIES RELEASED</Typography>
+                            <Typography className={classes.num} align="center">30</Typography>
+                            <Typography className={classes.slogan}>{t('COUNTRIES')}</Typography>
                         </Grid>
                         <Grid container alignItems="center" direction="column" justify="space-around" item xs={12} sm={12} md={4} lg={4} xl={4} className={classes.m}>
                             <img src={require('assets/imgs/publish/icon10.png')} alt="uluLogo" className={classes.pic} />
-                            <Typography className={classes.num} align="center">2,000,000</Typography>
-                            <Typography className={classes.slogan}>DOWNLOADS SURPASSED</Typography>
+                            <Typography className={classes.num} align="center">4,000,000</Typography>
+                            <Typography className={classes.slogan}>{t('DOWNLOADS')}</Typography>
                         </Grid>
                         <Grid container alignItems="center" direction="column" justify="space-around" item xs={12} sm={12} md={4} lg={4} xl={4} className={classes.m}>
                             <img src={require('assets/imgs/publish/icon11.png')} alt="uluLogo" className={classes.pic} />
                             <Typography className={classes.num} align="center">90%</Typography>
-                            <Typography className={classes.slogan}>FEATURED ON APP STORES </Typography>
+                            <Typography className={classes.slogan}>{t('STORES')} </Typography>
                         </Grid>
                     </Grid>
                 </Container>
@@ -381,21 +371,16 @@ function GameList() {
                     </Grid>
                     <Grid item container direction="column" justify="center" className={classes.right} xs={12} sm={12} md={7} lg={7} xl={7}>
                         <Box width="100%">
-                            <Typography className={classes.t1}>SUCCESS OF 'ARKA'</Typography>
+                            <Typography className={classes.t1}>{t('ARKA')}</Typography>
                             <Typography className={classes.word}>
-                                We help you upgrade the finish and turn up the fun of the game to the max.
+                                {t('gameTitle')}
                             </Typography>
                             <span className={classes.line}></span>
                             <Typography variant="h6" color="textSecondary" className={classes.desc}>
-                                We are experts in each of our own respective fields with the best skills.
-                              We help you publish and go global with the experience acquired from having over 10 mobile games successfully launched. <br /><br />
-
-                                From the development stage of the game, we plan, balance, design monetization and UI for enhanced results. In particular,
-                                we work with our partners to establish positioning in the global market with perfection in mind.
-                                We will help you achieve global success based on the experience and data gained from launching games of a variety of genres.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   2 million times. Our major projects include 'ARKA', 'ETERNAL STORM', and 'ERA of DISCORD'.
+                                {t('desc5')} <br /><br />{t('desc6')}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      2 million times. Our major projects include 'ARKA', 'ETERNAL STORM', and 'ERA of DISCORD'.
                             </Typography>
                             <Box mt={5}>
-                                <Button size="medium" className={classes.more}>SEE MORE OF‘ARKA’</Button>
+                                <Button variant="outlined" size="medium" className={classes.more} to={`/detail/1`} component={RouterLink}>{t('seeMore')}</Button>
                             </Box>
                         </Box>
                     </Grid>
@@ -404,21 +389,16 @@ function GameList() {
                 <Grid container justify="space-between" spacing={1}>
                     <Grid item container direction="column" justify="center" className={classes.right} xs={12} sm={12} md={7} lg={7} xl={7}>
                         <Box width="100%">
-                            <Typography className={classes.t1}>RADICAL ACHIEVEMENTS THROUGH RE-LAUNCH</Typography>
+                            <Typography className={classes.t1}>{t('sword')}</Typography>
                             <Typography className={classes.word}>
-                                We help you upgrade the finish and turn up the fun of the game to the max.
+                                {t('swordTtile')}
                             </Typography>
                             <span className={classes.line}></span>
                             <Typography variant="h6" color="textSecondary" className={classes.desc}>
-                                We are experts in each of our own respective fields with the best skills.
-                              We help you publish and go global with the experience acquired from having over 10 mobile games successfully launched. <br /> <br />
-
-                                From the development stage of the game, we plan, balance, design monetization and UI for enhanced results.
-                                In particular, we work with our partners to establish positioning in the global market with perfection in mind.
-                                We will help you achieve global success based on the experience and data gained from launching games of a variety of genres.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          2 million times. Our major projects include 'ARKA', 'ETERNAL STORM', and 'ERA of DISCORD'.
+                                {t('desc7')} <br /><br />{t('desc8')}
                             </Typography>
                             <Box mt={5}>
-                                <Button size="large" className={classes.more}>SEE MORE OF‘ARKA’</Button>
+                                <Button variant="outlined" size="medium" className={classes.more} to={`/detail/2`} component={RouterLink}>{t('seeMoreBtn')}</Button>
                             </Box>
                         </Box>
                     </Grid>
@@ -430,10 +410,10 @@ function GameList() {
             <Box bgcolor="background.light" >
                 <Container className={classes.wordText}>
                     <Box align="center" className={classes.t1} mb={3}>
-                        DREAM OF SHOWCASING YOUR GAME GLOBALLY?
+                        {t('GLOBALLY')}
                     </Box>
                     <Typography className={classes.word} align="center">
-                        Submit your proposal with information. We will work with you for global success.
+                        {t('welcome')}
                     </Typography>
                 </Container>
             </Box>
@@ -444,7 +424,7 @@ function GameList() {
                         <form className={classes.formData} onSubmit={handleSubmit}>
                             <FormControl className={classes.inputBox}>
                                 <InputLabel shrink htmlFor="NAME" className={classes.label}>
-                                    COMPANY (OR TEAM) NAME*
+                                    {t('name')}
                                 </InputLabel>
                                 <OutlinedInput
                                     id="NAME"
@@ -456,19 +436,21 @@ function GameList() {
                             </FormControl>
                             <FormControl className={classes.inputBox}>
                                 <InputLabel shrink htmlFor="email" className={classes.label}>
-                                    YOUR EMAIL*
+                                    {t('email')}
                                 </InputLabel>
                                 <OutlinedInput
                                     id="email"
                                     className={classes.textField}
                                     value={inputs.mail}
                                     name="mail"
+                                    type="email"
+                                    required
                                     onChange={handleInputChange}
                                 />
                             </FormControl>
                             <FormControl className={classes.inputBox}>
                                 <InputLabel shrink htmlFor="DEVELOPMENT" className={classes.label}>
-                                    DEVELOPMENT STAGE*
+                                    {t('stage')}
                                 </InputLabel>
                                 <Select
                                     value={inputs.developmentStage}
@@ -477,15 +459,15 @@ function GameList() {
                                     name="developmentStage"
                                     className={classes.textField}
                                 >
-                                    <MenuItem value={'Early Development'}>  Early Development </MenuItem>
-                                    <MenuItem value={'Prototype or Playable Version'}>  Prototype or Playable Version </MenuItem>
-                                    <MenuItem value={'50 to 100% Completed'}> 50 to 100% Completed </MenuItem>
-                                    <MenuItem value={'Already Released'}> Already Released </MenuItem>
+                                    <MenuItem value={t('Development')} >  {t('Development')} </MenuItem>
+                                    <MenuItem value={t('Version')}> {t('Version')} </MenuItem>
+                                    <MenuItem value={t('Completed')}> {t('Completed')} </MenuItem>
+                                    <MenuItem value={t('Released')}>{t('Released')} </MenuItem>
                                 </Select>
                             </FormControl>
                             <FormControl style={{ width: '100%', marginTop: "20px" }}>
                                 <InputLabel shrink htmlFor="gameName" className={classes.label}>
-                                    GAME NAME*
+                                    {t('GAMENAME')}
                                 </InputLabel>
                                 <OutlinedInput
                                     id="gameName"
@@ -498,7 +480,7 @@ function GameList() {
                             <br />
                             <FormControl style={{ width: '100%', marginTop: "20px" }}>
                                 <InputLabel shrink htmlFor="email" className={classes.label}>
-                                    UPLOAD FILES (IMG, MOV, PPT, APK, ETC.)
+                                    {t('upload')}
                                 </InputLabel>
                                 <Input type="file" style={{ width: '93%' }} onChange={upload} inputRef={inputEl} />
                             </FormControl>
@@ -506,45 +488,37 @@ function GameList() {
                             <br />
                             <FormControl style={{ width: '100%', marginTop: "20px" }}>
                                 <InputLabel shrink htmlFor="UPLOAD" className={classes.label}>
-                                    PLEASE TELL US ABOUT YOUR GAME, TEAM, COMPANY AND CURRENT STATUS.*
+                                    {t('info')}
                                 </InputLabel>
                                 <textarea id="UPLOAD" className={classes.textArea} value={inputs.descriptionContent} name="descriptionContent" onChange={handleInputChange}>
                                 </textarea>
                             </FormControl>
                             <br />
                             <FormControl>
-                                <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>SUBMIT</Button>
+                                <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>{t('submit')}</Button>
                             </FormControl>
                         </form>
                     </Grid>
                     <Grid xs={12} sm={12} md={3} lg={3} xl={3} item>
                         <div className={classes.infoRight}>
-                            <Typography className={classes.t1}> INFORMATION</Typography>
+                            <Typography className={classes.t1}>{t('INFORMATION')}</Typography>
                             <Typography className={classes.desc}>
-                                Experience as a user service manager
-                                Experience in areas related to marketing, busiWe accept all genres and development stages of games for partnerships.
-                                 Submitted materials will not be used for any purpose other than reviewing the game for a potential partnership.
-                                Security and confidentiality will be maintained. After going over the proposal, we will get back to you within 3 to 15 business days.
+                                {t('concat')}
                             </Typography>
                             <span className={classes.line}></span>
-                            <Box fontWeight="bold"> Head office </Box>
+                            <Box fontWeight="bold"> {t('office')} </Box>
                             <Typography className={classes.desc}>
-                                Experience as a user service manager
-                            Experience in areas related <br /> <br />
-                                Email: info@ulugame.com
+                                {t('address1')}<br />{t('address2')}<br />{t('address3')}<br />{t('email1')}
                             </Typography>
                             <br />
                             <Box className={classes.box}>
-                                <a href="http://www.baidu.com" target="_blank" rel="noopener noreferrer">
+                                {/* <a href="http://www.baidu.com" target="_blank" rel="noopener noreferrer">
                                     <Facebook />
-                                </a>
-                                <a href="http://www.baidu.com" target="_blank" rel="noopener noreferrer">
+                                </a> */}
+                                <a href="https://twitter.com/ULUGames1" target="_blank" rel="noopener noreferrer">
                                     <Twitter />
                                 </a>
-                                <a href="http://www.baidu.com" target="_blank" rel="noopener noreferrer">
-                                    <Wechat />
-                                </a>
-                                <a href="http://www.baidu.com" target="_blank" rel="noopener noreferrer">
+                                <a href="https://www.youtube.com/channel/UC3PCMQ6sbpCZVdIqZaWf4-g" target="_blank" rel="noopener noreferrer">
                                     <Youtube />
                                 </a>
                             </Box>

@@ -1,6 +1,6 @@
 const gameList = {
     headerTitle: "THE BEST MOBILE GAMES ARE HERE!",
-    headerSmallTitle: "ULU GAMES Globally Published Games",
+    headerSmallTitle: "We are committed to be the global interactive entertainment leader. ",
     game: 'GAMES',
     moreDetail: 'MORE DETAILS'
 }

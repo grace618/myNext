@@ -4,19 +4,17 @@ import { useSelector } from 'react-redux'
 import { makeStyles, Container, Typography, Grid, Button, Box, Hidden, Breadcrumbs, Link, Divider } from '@material-ui/core'
 import Slider from "react-slick";
 import ReactPlayer from 'react-player'
+import { useTranslation } from 'react-i18next';
 import ImageZoom from 'react-medium-image-zoom'
-import {
-    TwitterShareButton,
-    FacebookShareButton,
-} from 'react-share';
-
-
+// import {
+//     TwitterShareButton,
+//     FacebookShareButton,
+// } from 'react-share';
 import { ReactComponent as DateIcon } from 'icons/svg/date.svg'
 import { ReactComponent as LightIcon } from 'icons/svg/light.svg'
 import { ReactComponent as UserIcon } from 'icons/svg/user.svg'
 import { ReactComponent as Facebook } from 'icons/svg/facebook.svg'
 import { ReactComponent as Twitter } from 'icons/svg/twitter.svg'
-import { ReactComponent as Wechat } from 'icons/svg/wechat.svg'
 import { ReactComponent as Youtube } from 'icons/svg/youtube.svg'
 import { ReactComponent as IOS } from 'icons/svg/IOS.svg'
 import { ReactComponent as Android } from 'icons/svg/andriod.svg'
@@ -141,7 +139,7 @@ const useStyles = makeStyles(theme => ({
 }))
 const gameType = [
     '角色扮演',
-    '卡牌对战',
+    'MMORPG',
     '战略游戏',
     '模拟游戏',
     '休闲益智',
@@ -156,6 +154,7 @@ const gameType = [
 ]
 function Detail(props) {
     const classes = useStyles()
+    const { t } = useTranslation(['gameDetail'])
     const { match: { params: { id } } } = props;
     const [detail, setDetail] = useState({ gameBaseInfoList: [], recommendList: [], downloadUrlList: [] })
     const [snapshotImg, setSnapshotImg] = useState([])
@@ -217,7 +216,6 @@ function Detail(props) {
             setSnapshotImg(snapshotImg)
             setVideo(video)
             setCarousel(carousel)
-
         }
     }
     useEffect(() => {
@@ -233,17 +231,14 @@ function Detail(props) {
                         <Grid justify="space-between" container alignItems="center">
                             <Typography className={classes.logo}>ULU GAMES</Typography>
                             <Breadcrumbs aria-label="breadcrumb">
-                                <Link color="inherit" to="/" component={RouterLink} className={classes.breadcrumbs}>Home </Link>
-                                <Link color="inherit" to="/" component={RouterLink} className={classes.breadcrumbs}>
-                                    Games
-                                 </Link>
+                                <Link color="inherit" to="/" component={RouterLink} className={classes.breadcrumbs}>{t('home')} </Link>
+                                <Link color="inherit" to="/gameslist" component={RouterLink} className={classes.breadcrumbs}> {t('game')}</Link>
                                 <Typography color="textPrimary" className={classes.breadcrumbs}>{detail.gameName}</Typography>
                             </Breadcrumbs>
                         </Grid>
                     </Container>
                 </Box>
             </Hidden>
-
             <Container>
                 <Grid container alignItems="center" className={classes.gameTitle}>
                     <Box mr={3} mb={1}>
@@ -288,60 +283,74 @@ function Detail(props) {
                         <Divider />
                         <Grid className={classes.infoPanel} container direction="column">
                             <Grid container item>
-                                <Box className={classes.textInfo} width="150px"> <UserIcon /> Developer: </Box>
+                                <Box className={classes.textInfo} width="150px"> <UserIcon /> {t('developer')}: </Box>
                                 {detail.developer}
                             </Grid>
                             <Grid container item >
-                                <Box className={classes.textInfo} width="150px"> <DateIcon /><span> Release Date:</span>  </Box>
+                                <Box className={classes.textInfo} width="150px"> <DateIcon /><span> {t('release')}:</span>  </Box>
                                 {detail.onlineTime}
                             </Grid>
                             <Grid container item>
-                                <Box className={classes.textInfo} width="150px">  <LightIcon /><span> Genre:</span>  </Box>
+                                <Box className={classes.textInfo} width="150px">  <LightIcon /><span> {t('genre')}:</span>  </Box>
                                 {gameType[detail.gameType]}
                             </Grid>
                         </Grid>
                         <Divider />
-                        <Grid className={classes.infoPanel} container direction="column">
-                            <div className={classes.textInfo} > Download Now!</div>
-                            {
-                                detail.downloadUrlList.map(item => (
-                                    <React.Fragment key={item.type}>
-                                        {item.type === '2' &&
-                                            <Button variant="contained" color="secondary" size="large" className={classes.downloadiOS} href={item.downloadUrl} target="_blank">
-                                                <IOS className={classes.icon} />
-                                                APP STORE
+                        {
+                            detail.downloadUrlList.length > 0 && (
+                                <Grid className={classes.infoPanel} container direction="column">
+                                    <div className={classes.textInfo} >{t('download')}</div>
+                                    {
+                                        detail.downloadUrlList.map(item => (
+                                            <React.Fragment key={item.type}>
+                                                {item.type === '2' &&
+                                                    <Button variant="contained" color="secondary" size="large" className={classes.downloadiOS} href={item.downloadUrl} target="_blank">
+                                                        <IOS className={classes.icon} />
+                                                        APP STORE
                                             </Button>
-                                        }
-                                        {
-                                            item.type === '1' &&
-                                            <Button variant="contained" color="primary" size="large" className={classes.downloadGoogleplay} href={item.downloadUrl} target="_blank">
-                                                <Android className={classes.icon} />
-                                                GOOGLE PLAY
+                                                }
+                                                {
+                                                    item.type === '1' &&
+                                                    <Button variant="contained" color="primary" size="large" className={classes.downloadGoogleplay} href={item.downloadUrl} target="_blank">
+                                                        <Android className={classes.icon} />
+                                                        GOOGLE PLAY
                                             </Button>
-                                        }
-                                    </React.Fragment>
-                                ))
-                            }
-                        </Grid>
+                                                }
+                                            </React.Fragment>
+                                        ))
+                                    }
+                                </Grid>)
+                        }
                         <Divider />
                         <Grid className={classes.infoPanel} container direction="column">
-                            <div className={classes.textInfo} >Follow official channels of ULU GAMES!</div>
-                            <Button variant="contained" color="secondary" size="medium" className={classes.facebook} href={detail.fbCommunityUrl} target="_blank">
-                                <Facebook className={classes.icon} />
-                                ULUGAMES FACEBOOK
-                            </Button>
-                            <Button variant="contained" color="secondary" size="medium" className={classes.twitter} href={detail.twitterCommunityUrl} target="_blank">
-                                <Twitter className={classes.icon} />
-                                ULUGAMES TWITTER
-                            </Button>
-                            <Button variant="contained" color="primary" size="medium" className={classes.youtube} href={detail.youtubeCommunityUrl} target="_blank">
-                                <Youtube className={classes.icon} />
-                                ULUGAMES YOUTUBE
-                            </Button>
-                            <Button variant="contained" color="secondary" size="medium" className={classes.wechat} href={detail.wechatCommunityUrl} target="_blank">
+                            <div className={classes.textInfo} >{t('follow')}</div>
+                            {
+                                detail.fbCommunityUrl && (
+                                    <Button variant="contained" color="secondary" size="medium" className={classes.facebook} href={detail.fbCommunityUrl} target="_blank">
+                                        <Facebook className={classes.icon} />
+                                        ULUGAMES FACEBOOK
+                                </Button>
+                                )
+                            }
+                            {
+                                detail.twitterCommunityUrl && (
+                                    <Button variant="contained" color="secondary" size="medium" className={classes.twitter} href={detail.twitterCommunityUrl} target="_blank">
+                                        <Twitter className={classes.icon} />
+                                        ULUGAMES TWITTER
+                                     </Button>
+                                )
+                            }
+                            {
+                                detail.youtubeCommunityUrl && (
+                                    <Button variant="contained" color="primary" size="medium" className={classes.youtube} href={detail.youtubeCommunityUrl} target="_blank">
+                                        <Youtube className={classes.icon} />
+                                        ULUGAMES YOUTUBE
+                            </Button>)
+                            }
+                            {/* <Button variant="contained" color="secondary" size="medium" className={classes.wechat} href={detail.wechatCommunityUrl} target="_blank">
                                 <Wechat className={classes.icon} />
                                 ULUGAMES WECHAT
-                            </Button>
+                            </Button> */}
                         </Grid>
                         <Divider />
                         <Grid className={classes.infoPanel} container>
@@ -351,18 +360,16 @@ function Detail(props) {
                                         <Youtube className={classes.youtube2} /> YouTube
                                     </Box>
                                     <div>
-                                        <Twitch /> Twitch Copuright（Free）
+                                        <Twitch /> Twitch Copyright（Free）
                                     </div>
                                 </Grid>
                             </Box>
                             <Typography>
-                                Some game developers restrict use of game content on YouTube, Twitch, or other similar video streaming services.
-                                We at ULU GAMES welcome and encourage you to use our games to be streamed freely.
-                                 Along with the video, please use our images and artwork available throughout our site :)
+                                {t('textInfo')}
                             </Typography>
                         </Grid>
-                        <Divider />
-                        <Grid justify="space-between" container alignItems="center" >
+                        {/* <Divider /> */}
+                        {/* <Grid justify="space-between" container alignItems="center" >
                             <Typography>Share:</Typography>
                             <Box p={2}>
                                 <Grid container >
@@ -384,14 +391,13 @@ function Detail(props) {
                                             <Twitter />
                                         </TwitterShareButton>
                                     }
-                                    <Wechat className={classes.share} />
                                 </Grid>
                             </Box>
-                        </Grid>
-                        <Divider />
+                        </Grid> */}
+                        {/* <Divider /> */}
                     </Grid>
                 </Grid>
-                <Box pt={2} pb={2} fontSize="20px" className={classes.textInfo}>Screenshots & Artwork</Box>
+                <Box pt={2} pb={2} fontSize="20px" className={classes.textInfo}>{t('screenshots')}</Box>
                 <div className={classes.slideWrap}>
                     <Slider {...settings} className={classes.box}>
                         {/* <Skeleton variant="rect" width={210} height={118} /> */}
@@ -408,13 +414,15 @@ function Detail(props) {
                     </Slider>
                 </div>
                 <Divider />
-                <Box pt={3} pb={4} fontSize="20px" className={classes.textInfo}>Recommended Similar Games</Box>
+                <Box pt={3} pb={4} fontSize="20px" className={classes.textInfo}>{t('recommended')}</Box>
                 <Grid justify="space-between" container>
                     {
                         detail.recommendList.map(item => (
                             <Grid container item xs={12} sm={12} md={12} lg={6} xl={6} key={item.id} >
                                 <Grid xs={12} sm={12} md={3} lg={3} xl={3} item container justify="center">
-                                    <img src={item.gameImg} alt="" className={classes.thumbnail} />
+                                    <RouterLink to={`/detail/${item.id}`}>
+                                        <img src={item.gameImg} alt="" className={classes.thumbnail} />
+                                    </RouterLink>
                                 </Grid>
                                 <Grid xs={12} sm={12} md={8} lg={8} xl={8} item>
                                     <Grid item justify="space-between" container>
@@ -428,7 +436,7 @@ function Detail(props) {
                                         </div>
                                         <Hidden smDown>
                                             <Button variant="contained" color="primary" size="small" className={classes.moreDetail} component={RouterLink} to={`/detail/${item.id}`}>
-                                                MORE DETAILS
+                                                {t('moreDetail')}
                                             </Button>
                                         </Hidden>
                                     </Grid>
@@ -447,7 +455,7 @@ function Detail(props) {
                     }
                 </Grid>
                 <Grid alignItems="center" container justify="center" className={classes.space}>
-                    <Button variant="contained" color="primary" size="large" component={RouterLink} to="/gameslist">SEE ALL GAMES </Button>
+                    <Button variant="contained" color="primary" size="large" component={RouterLink} to="/gameslist">{t('seeMore')} </Button>
                 </Grid>
             </Container>
         </div >

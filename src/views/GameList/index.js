@@ -101,9 +101,10 @@ function GameList() {
             </Hidden>
             <Container>
                 <Grid container direction="column">
-                    <Box fontSize={44} align="center" fontWeight={500} pt={10} pb={4}> THE <span className={classes.gameDesc}>BEST MOBILE GAMES</span> ARE HERE! </Box>
+                    {/* <span className={classes.gameDesc}>BEST MOBILE GAMES</span> */}
+                    <Box fontSize={44} align="center" fontWeight={500} pt={10} pb={4}> {t('headerTitle')} </Box>
                     <Box align="center" color="text.secondary" pb={6} fontSize={24}>
-                        ULU GAMES Globally Published Games
+                        {t('headerSmallTitle')}
                     </Box>
                 </Grid>
                 <div className={classes.slideWrap}>

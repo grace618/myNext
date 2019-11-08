@@ -1,6 +1,6 @@
 const common = {
-    publishing: "全球出版",
-    gameslist: "游戏",
-    jobs: '招聘',
+    publishing: "关于游陆",
+    gameslist: "游陆游戏",
+    jobs: '加入游陆',
 }
 export default common

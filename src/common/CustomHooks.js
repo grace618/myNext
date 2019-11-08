@@ -20,7 +20,7 @@ const useSubmitForm = (initialValues, callback) => {
     const handleSubmit = (event) => {
         if (event) event.preventDefault();
         callback();
-        setInputs(initialValues)
+        // setInputs(initialValues)
     }
     const handleInputChange = (event) => {
         event.persist();
@@ -30,7 +30,8 @@ const useSubmitForm = (initialValues, callback) => {
     return {
         handleSubmit,
         handleInputChange,
-        inputs
+        inputs,
+        setInputs
     };
 }
 export { useGameList, useSubmitForm }
