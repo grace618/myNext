@@ -144,6 +144,9 @@ const useStyles = makeStyles(theme => ({
         fontSize: '24px',
         fontFamily: "Arial",
         color: 'white'
+    },
+    jobBox: {
+        marginBottom: '40px'
     }
 }))
 function Jobs() {
@@ -253,7 +256,7 @@ function Jobs() {
             <Container>
                 <Grid container spacing={4}>
                     <Grid item xs={12} sm={12} md={8} lg={8} xl={8} className={classes.box}>
-                        <div>
+                        <div className={classes.jobBox}>
                             <div className={classes.i_title}>
                                 {t('SDKEngineer')}
                                 <Divider className={classes.line} />
@@ -294,9 +297,9 @@ function Jobs() {
                                     </ListItem>
                                 </List>
                             </div>
-                            <Button variant="contained" color="primary" className={classes.apply}>{t('apply')}</Button>
+                            {/* <Button variant="contained" color="primary" className={classes.apply}>{t('apply')}</Button> */}
                         </div>
-                        <div>
+                        <div className={classes.jobBox}>
                             <div className={classes.i_title}>
                                 {t('koreanOperation')}
                                 <Divider className={classes.line} />
@@ -336,9 +339,9 @@ function Jobs() {
                                     </ListItem>
                                 </List>
                             </div>
-                            <Button variant="contained" color="primary" className={classes.apply}>{t('apply')}</Button>
+                            {/* <Button variant="contained" color="primary" className={classes.apply}>{t('apply')}</Button> */}
                         </div>
-                        <div>
+                        <div className={classes.jobBox}>
                             <div className={classes.i_title}>
                                 {t('videoDesigner')}
                                 <Divider className={classes.line} />
@@ -392,9 +395,9 @@ function Jobs() {
                                     </ListItem>
                                 </List>
                             </div>
-                            <Button variant="contained" color="primary" className={classes.apply}>{t('apply')}</Button>
+                            {/* <Button variant="contained" color="primary" className={classes.apply}>{t('apply')}</Button> */}
                         </div>
-                        <div>
+                        <div className={classes.jobBox}>
                             <div className={classes.i_title}>
                                 {t('coordinator')}
                                 <Divider className={classes.line} />
@@ -439,14 +442,15 @@ function Jobs() {
                                     </ListItem>
                                 </List>
                             </div>
-                            <Button variant="contained" color="primary" className={classes.apply}>{t('apply')}</Button>
+                            {/* <Button variant="contained" color="primary" className={classes.apply}>{t('apply')}</Button> */}
                         </div>
                     </Grid>
                     <Grid item xs={12} sm={12} md={4} lg={4} xl={4} className={classes.box}>
-                        <div className={classes.i_title}> {t('apply')} </div>
-                        <Typography className={classes.word}> {t('info')}</Typography>
-                        <span className={classes.line_short}></span>
-                        <form style={{ width: '100%' }} onSubmit={handleSubmit}>
+                        <Box className={classes.i_title} mb={3}> {t('apply')} </Box>
+
+                        <Typography className={classes.word}> {t('info')}  <a href="mailto:uluhr@ulugame.com" style={{ color: 'rgb(100, 101, 105)' }}>{t('email')}</a></Typography>
+                        {/* <span className={classes.line_short}></span> */}
+                        {/* <form style={{ width: '100%' }} onSubmit={handleSubmit}>
                             <FormControl className={classes.boxWrap}>
                                 <InputLabel shrink htmlFor="firstName" className={classes.label}>
                                     {t('name')}*
@@ -607,7 +611,7 @@ function Jobs() {
                             <FormControl className={classes.inputBox}>
                                 <Button variant="contained" color="primary" className={classes.apply} name="apply" type="submit" style={{ width: '100%' }}>SUBMIT</Button>
                             </FormControl>
-                        </form>
+                        </form> */}
                     </Grid>
                 </Grid>
             </Container>

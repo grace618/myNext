@@ -1,18 +1,18 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Link as RouterLink } from 'react-router-dom';
-import { addCollaboration, uploadFile } from 'service/publishing'
-import { useSubmitForm } from 'common/CustomHooks'
 import { useTranslation } from 'react-i18next';
-import MySnackbarContentWrapper from 'component/SnackbarWrapper'
+import BMap from 'BMap'
 import {
     makeStyles, Container, Typography, Grid, Button, Box, Hidden, Breadcrumbs, Link, Divider, InputLabel, FormControl, Select, MenuItem, Input, Snackbar, OutlinedInput
 } from '@material-ui/core'
+import MySnackbarContentWrapper from 'component/SnackbarWrapper'
+import { addCollaboration, uploadFile } from 'service/publishing'
+import { useSubmitForm } from 'common/CustomHooks'
 
-
-// import { ReactComponent as Facebook } from 'icons/svg/facebook.svg'
+import { ReactComponent as Facebook } from 'icons/svg/facebook.svg'
 import { ReactComponent as Twitter } from 'icons/svg/twitter.svg'
 import { ReactComponent as Youtube } from 'icons/svg/youtube.svg'
-
+import { ReactComponent as Wechat } from 'icons/svg/wechat.svg'
 
 const useStyles = makeStyles(theme => ({
     margin: {
@@ -152,19 +152,17 @@ const useStyles = makeStyles(theme => ({
         }
     },
     infoRight: {
-        margin: '20% 0',
+        margin: '20% 0 30% 0',
     },
-    box: {
-        '& a': {
-            marginRight: theme.spacing(6),
-            '& svg:hover': {
-                '& path': {
-                    fill: 'orange'
-                }
-            },
+    ico: {
+        marginRight: theme.spacing(6),
+        '& svg:hover': {
             '& path': {
-                fill: '#787676'
+                fill: 'orange'
             }
+        },
+        '& path': {
+            fill: '#787676'
         }
     },
     close: {
@@ -225,6 +223,16 @@ function GameList() {
         if (reason === 'clickaway') return
         setOpen(false);
     };
+
+    useEffect(() => {
+        var map = new BMap.Map("container"); // 创建Map实例
+        var point = new BMap.Point(121.3997796598, 31.1751441091)
+        map.centerAndZoom(point, 12);// // 初始化地图,设置中心点坐标和地图级别
+        map.addOverlay(new BMap.Marker(point));    // 创建标注,将标注添加到地图中 
+        map.addControl(new BMap.MapTypeControl()); //添加地图类型控件
+        map.setCurrentCity("上海"); // 设置地图显示的城市 此项是必须设置的
+        map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
+    }, [])
     return (
         <div>
             <Hidden smDown>
@@ -420,8 +428,11 @@ function GameList() {
             <Container>
                 <Grid container justify="space-between">
                     <Grid xs={12} sm={12} md={9} lg={9} xl={9} item>
+
+                        <div style={{ width: "90%", height: "80%", minHeight: '400px', margin: '8% auto', boxSizing: "border-box" }} id="container"></div>
+
                         {/* react-hook-form */}
-                        <form className={classes.formData} onSubmit={handleSubmit}>
+                        {/* <form className={classes.formData} onSubmit={handleSubmit}>
                             <FormControl className={classes.inputBox}>
                                 <InputLabel shrink htmlFor="NAME" className={classes.label}>
                                     {t('name')}
@@ -497,7 +508,7 @@ function GameList() {
                             <FormControl>
                                 <Button variant="contained" color="primary" className={classes.button} onClick={handleSubmit}>{t('submit')}</Button>
                             </FormControl>
-                        </form>
+                        </form> */}
                     </Grid>
                     <Grid xs={12} sm={12} md={3} lg={3} xl={3} item>
                         <div className={classes.infoRight}>
@@ -508,20 +519,20 @@ function GameList() {
                             <span className={classes.line}></span>
                             <Box fontWeight="bold"> {t('office')} </Box>
                             <Typography className={classes.desc}>
-                                {t('address1')}<br />{t('address2')}<br />{t('address3')}<br />{t('email1')}
+                                {t('address1')}<br />{t('address2')}<br />{t('address3')}<br />
+                                <a href="mailto:bd@ulugame.com" style={{ color: 'rgb(100, 101, 105)' }}>{t('email1')}</a>
                             </Typography>
                             <br />
-                            <Box className={classes.box}>
-                                {/* <a href="http://www.baidu.com" target="_blank" rel="noopener noreferrer">
-                                    <Facebook />
-                                </a> */}
-                                <a href="https://twitter.com/ULUGames1" target="_blank" rel="noopener noreferrer">
+                            <div>
+                                <a href="https://twitter.com/ULUGames1" target="_blank" rel="noopener noreferrer" className={classes.ico}>
                                     <Twitter />
                                 </a>
-                                <a href="https://www.youtube.com/channel/UC3PCMQ6sbpCZVdIqZaWf4-g" target="_blank" rel="noopener noreferrer">
+                                <a href="https://www.youtube.com/channel/UC3PCMQ6sbpCZVdIqZaWf4-g" target="_blank" rel="noopener noreferrer" className={classes.ico}>
                                     <Youtube />
                                 </a>
-                            </Box>
+                                <span className={classes.ico}><Facebook /></span>
+                                <span className={classes.ico}><Wechat /></span>
+                            </div>
                         </div>
                     </Grid>
                 </Grid>

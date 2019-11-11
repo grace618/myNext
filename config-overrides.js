@@ -7,11 +7,12 @@ const path = require('path');
 function resolve(dir) {
   return path.join(__dirname, '.', dir);
 }
-
-const rewiredMap = () => (config) => {
-  config.devtool = config.mode === 'development' ? 'cheap-module-source-map' : false;
-  return config;
-};
+const ext = () => (config) => {
+  config.externals = {
+    'BMap': 'BMap',
+  }
+  return config
+}
 process.env.GENERATE_SOURCEMAP = 'false';
 module.exports = override(
   // 配置路径别名
@@ -25,5 +26,5 @@ module.exports = override(
     common: resolve('src/common'),
     component: resolve('src/component')
   }),
-  // rewiredMap()
+  ext()
 );

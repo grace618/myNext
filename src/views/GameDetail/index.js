@@ -22,8 +22,7 @@ import { ReactComponent as Twitch } from 'icons/svg/twitch.svg'
 
 
 import { getGameDetail } from 'service/gameDetail'
-
-
+import { parseTime } from 'utils/format.js'
 const useStyles = makeStyles(theme => ({
     navBar: {
         height: '100%',
@@ -138,19 +137,19 @@ const useStyles = makeStyles(theme => ({
 
 }))
 const gameType = [
-    '角色扮演',
+    'RolePlaying',
     'MMORPG',
-    '战略游戏',
-    '模拟游戏',
-    '休闲益智',
-    '竞技格斗',
-    '射击游戏',
-    '动作冒险',
-    '策略塔防',
-    '动作角色扮演',
-    '多人角色',
-    '竞技体育',
-    '音乐游戏'
+    'Strategy',
+    'Simulation',
+    'Puzzle',
+    'Fighting',
+    'Shooter',
+    'Adventure',
+    'TowerDefense',
+    'ActionRolePlaying',
+    'MultiplayerRolePlaying',
+    'Sports',
+    'Music',
 ]
 function Detail(props) {
     const classes = useStyles()
@@ -288,11 +287,11 @@ function Detail(props) {
                             </Grid>
                             <Grid container item >
                                 <Box className={classes.textInfo} width="150px"> <DateIcon /><span> {t('release')}:</span>  </Box>
-                                {detail.onlineTime}
+                                {parseTime(detail.onlineTime)}
                             </Grid>
                             <Grid container item>
                                 <Box className={classes.textInfo} width="150px">  <LightIcon /><span> {t('genre')}:</span>  </Box>
-                                {gameType[detail.gameType]}
+                                {t(gameType[detail.gameType])}
                             </Grid>
                         </Grid>
                         <Divider />

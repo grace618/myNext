@@ -10,6 +10,19 @@ const gameDetail = {
     recommended: 'Recommended Similar Games',
     seeMore: 'SEE ALL GAMES',
     moreDetail: ' MORE DETAILS',
-    textInfo: 'Some game developers restrict use of game content on YouTube, Twitch, or other similar video streaming services.  We at ULU GAMES welcome and encourage you to use our games to be streamed freely. Along with the video, please use our images and artwork available throughout our site:)。'
+    textInfo: 'Some game developers restrict use of game content on YouTube, Twitch, or other similar video streaming services.  We at ULU GAMES welcome and encourage you to use our games to be streamed freely. Along with the video, please use our images and artwork available throughout our site:)。',
+    RolePlaying: 'Role Playing',
+    MMORPG: 'MMORPG',
+    Strategy: 'Strategy',
+    Simulation: 'Simulation',
+    Puzzle: 'uzzle',
+    Fighting: 'ighting',
+    Shooter: 'hooter',
+    Adventure: 'dventure',
+    TowerDefense: 'owerDefense',
+    ActionRolePlaying: 'ctionRolePlaying',
+    MultiplayerRolePlaying: 'ultiplayerRolePlaying',
+    Sports: 'ports',
+    Music: 'Music',
 }
 export default gameDetail

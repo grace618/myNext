@@ -10,6 +10,19 @@ const gameDetail = {
     recommended: '相似游戏推荐',
     seeMore: '更多游戏',
     moreDetail: '更多细节',
-    textInfo: '一些游戏开发商限制游戏内容在YouTube、Twitch以及其他视频平台上传播，但我们欢迎并鼓励各位玩家使用我们网站上的图片和视频进行传播。'
+    textInfo: '一些游戏开发商限制游戏内容在YouTube、Twitch以及其他视频平台上传播，但我们欢迎并鼓励各位玩家使用我们网站上的图片和视频进行传播。',
+    RolePlaying: '角色扮演',
+    MMORPG: 'MMORPG',
+    Strategy: '战略游戏',
+    Simulation: '模拟游戏',
+    Puzzle: '休闲益智',
+    Fighting: '竞技格斗',
+    Shooter: '射击游戏',
+    Adventure: '动作冒险',
+    TowerDefense: '策略塔防',
+    ActionRolePlaying: '动作角色扮演',
+    MultiplayerRolePlaying: '多人角色',
+    Sports: '竞技体育',
+    Music: '音乐游戏',
 }
 export default gameDetail
