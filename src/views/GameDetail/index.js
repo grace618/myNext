@@ -176,6 +176,7 @@ function Detail(props) {
         slidesToShow: 4,
         slidesToScroll: 4,
         initialSlide: 0,
+        arrows: false,
         // variableWidth: true,
         responsive: [
             {
@@ -214,7 +215,9 @@ function Detail(props) {
                     snapshotImg.push(item.snapshotUrl)
                 }
                 if (item.type === '3') {
-                    video.push(item.snapshotUrl)
+                    if (item.snapshotUrl && item.snapshotUrl != '') {
+                        video.push(item.snapshotUrl)
+                    }
                 }
                 if (item.type === '2') {
                     carousel.push(item.snapshotUrl)

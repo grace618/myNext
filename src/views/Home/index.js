@@ -132,6 +132,7 @@ function Home() {
         slidesToShow: 4,
         slidesToScroll: 4,
         initialSlide: 0,
+        arrows: false,
         // variableWidth: true,
         responsive: [
             {

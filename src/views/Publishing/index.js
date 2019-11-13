@@ -356,7 +356,7 @@ function GameList() {
                     <Grid container justify="space-around">
                         <Grid container alignItems="center" direction="column" justify="space-around" item xs={12} sm={12} md={4} lg={4} xl={4} className={classes.m}>
                             <img src={require('assets/imgs/publish/icon9.png')} alt="uluLogo" className={classes.pic} />
-                            <Typography className={classes.num} align="center">30</Typography>
+                            <Typography className={classes.num} align="center">30+</Typography>
                             <Typography className={classes.slogan}>{t('COUNTRIES')}</Typography>
                         </Grid>
                         <Grid container alignItems="center" direction="column" justify="space-around" item xs={12} sm={12} md={4} lg={4} xl={4} className={classes.m}>
@@ -512,7 +512,7 @@ function GameList() {
                     </Grid>
                     <Grid xs={12} sm={12} md={3} lg={3} xl={3} item>
                         <div className={classes.infoRight}>
-                            <Typography className={classes.t1}>{t('INFORMATION')}</Typography>
+                            {/* <Typography className={classes.t1}>{t('INFORMATION')}</Typography> */}
                             <Typography className={classes.desc}>
                                 {t('concat')}
                             </Typography>
