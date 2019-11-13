@@ -137,19 +137,28 @@ const useStyles = makeStyles(theme => ({
 
 }))
 const gameType = [
-    'RolePlaying',
     'MMORPG',
-    'Strategy',
+    'SLG',
+    'MOBA',
+    'RPG',
+    'Card',
+    'RTS',
+    'Action',
+    'Adventure',
+    'Fighting',
+    'Shooting',
+    'FPS',
     'Simulation',
     'Puzzle',
-    'Fighting',
-    'Shooter',
-    'Adventure',
-    'TowerDefense',
-    'ActionRolePlaying',
-    'MultiplayerRolePlaying',
+    'Racing',
     'Sports',
+    'TableGame',
     'Music',
+    'LoveGame',
+    'Education',
+    'TowerDefense',
+    'IdleGame',
+    'CasualGame'
 ]
 function Detail(props) {
     const classes = useStyles()
@@ -262,7 +271,7 @@ function Detail(props) {
                             ))
                         }
                         {
-                            video.map(item => (
+                            video.length > 0 && video.map(item => (
                                 <ReactPlayer url={item} width="100%" className={classes.source} key={item} />
                             ))
                         }
@@ -287,7 +296,7 @@ function Detail(props) {
                             </Grid>
                             <Grid container item >
                                 <Box className={classes.textInfo} width="150px"> <DateIcon /><span> {t('release')}:</span>  </Box>
-                                {parseTime(detail.onlineTime)}
+                                {parseTime(detail.onlineTime, '{y}-{m}')}
                             </Grid>
                             <Grid container item>
                                 <Box className={classes.textInfo} width="150px">  <LightIcon /><span> {t('genre')}:</span>  </Box>
