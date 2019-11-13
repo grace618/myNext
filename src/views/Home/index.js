@@ -100,8 +100,7 @@ const useStyles = makeStyles(theme => ({
         padding: '0 10%'
     },
     role: {
-        marginLeft: -340,
-        margin: '15% 0 0 -340px',
+        margin: '15% 0 0 -136px',
         [theme.breakpoints.down('md')]: {
             width: '90%',
             marginLeft: 0

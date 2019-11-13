@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux'
 
 import { makeStyles, Container, Typography, Grid, Button, Box, Hidden, Breadcrumbs, Link, Divider, ButtonBase } from '@material-ui/core'
-import banner1 from 'assets/imgs/gamelist/banner1.jpg'
 import { useGameList } from 'common/CustomHooks';
 
 const useStyles = makeStyles(theme => ({
@@ -110,11 +109,23 @@ function GameList() {
                 <div className={classes.slideWrap}>
                     <Slider {...settings}>
                         <Grid container alignItems="center" justify="center" >
-                            <img src={banner1} alt="banner1" className={classes.pic} />
+                            <img src={require('assets/imgs/gamelist/banner1.jpg')} alt="banner1" className={classes.pic} />
                         </Grid>
-                        {/* <Grid container alignItems="center" justify="center" >
-                            <img src={banner1} alt="banner1" className={classes.pic} />
-                        </Grid> */}
+                        <Grid container alignItems="center" justify="center" >
+                            <img src={require('assets/imgs/gamelist/banner2.jpg')} alt="banner1" className={classes.pic} />
+                        </Grid>
+                        <Grid container alignItems="center" justify="center" >
+                            <img src={require('assets/imgs/gamelist/banner3.jpg')} alt="banner1" className={classes.pic} />
+                        </Grid>
+                        <Grid container alignItems="center" justify="center" >
+                            <img src={require('assets/imgs/gamelist/banner4.jpg')} alt="banner1" className={classes.pic} />
+                        </Grid>
+                        <Grid container alignItems="center" justify="center" >
+                            <img src={require('assets/imgs/gamelist/banner5.jpg')} alt="banner1" className={classes.pic} />
+                        </Grid>
+                        <Grid container alignItems="center" justify="center" >
+                            <img src={require('assets/imgs/gamelist/banner6.jpg')} alt="banner1" className={classes.pic} />
+                        </Grid>
                     </Slider>
                 </div>
                 <Box pt={7}>
@@ -143,7 +154,6 @@ function GameList() {
                                                         {
                                                             value.type === '2' && <Box fontSize="14px" lineHeight="1.7"> {value.gameDescription} </Box>
                                                         }
-
                                                     </React.Fragment>
                                                 ))
                                             }

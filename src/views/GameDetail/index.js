@@ -272,7 +272,7 @@ function Detail(props) {
                             {
                                 detail.gameBaseInfoList.map(value => (
                                     <React.Fragment key={value.type}>
-                                        {value.type === '2' && <Typography color="textSecondary" key={value.type}>{value.gameDescription}</Typography>}
+                                        {/* {value.type === '2' && <Typography color="textSecondary" key={value.type}>{value.gameDescription}</Typography>} */}
                                         {value.type === '3' && <div className={classes.m} dangerouslySetInnerHTML={{ __html: value.gameDescription }}
                                         />}
                                     </React.Fragment>

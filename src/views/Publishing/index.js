@@ -309,7 +309,7 @@ function GameList() {
             <Container >
                 <Grid container justify="space-between" >
                     <Grid item justify="center" alignItems="center" container xs={12} sm={12} md={5} lg={5} xl={5}>
-                        <img src={require('assets/imgs/publish/global.png')} alt="role" width="87%" />
+                        <img src={require('assets/imgs/publish/global.jpg')} alt="role" width="87%" />
                     </Grid>
                     <Grid item container direction="column" justify="flex-end" className={classes.right} xs={12} sm={12} md={7} lg={7} xl={7}>
                         <Box width="100%">
@@ -341,7 +341,7 @@ function GameList() {
                         </Box>
                     </Grid>
                     <Grid item justify="center" alignItems="center" container className={classes.left} xs={12} sm={12} md={5} lg={5} xl={5} >
-                        <img src={require('assets/imgs/publish/group.png')} alt="role" width="87%" />
+                        <img src={require('assets/imgs/publish/group.jpg')} alt="role" width="87%" />
                     </Grid>
                 </Grid>
             </Container>
