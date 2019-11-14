@@ -62,10 +62,10 @@ const publish = {
     submit: 'SUBMIT',
     concat: 'We accept all genres and development stages of games for partnerships. Submitted materials will not be used for any purpose other than reviewing the game for a potential partnership. Security and confidentiality will be maintained. After going over the proposal, we will get back to you within 3 to 15 business days.',
     INFORMATION: 'INFORMATION',
-    office: 'Head Office',
-    address1: 'Room 605, XinYiCity TowerA, No.1618, YiShan Rd, MinHang District, Shanghai, China. ',
-    address2: '2F, 32-21, Donggyo- ro 23gil, Mapo - gu, Seoul, Republic of Korea.',
-    address3: 'Unit B,10/F Lee May Building 788-790 Nathan Road, Mongkok Kooloon, HongKong.',
+    office: 'Contact US',
+    address1: 'Head Office: Room 605, XinYiCity TowerA, No.1618, YiShan Rd, MinHang District, Shanghai, China.',
+    address2: 'Korean Branch: 2F, 32-21, Donggyo- ro 23gil, Mapo - gu, Seoul, Republic of Korea.',
+    address3: 'Hong Kong Branch: Unit B,10/F Lee May Building 788-790 Nathan Road, Mongkok Kooloon, HongKong.',
     email1: 'Email：bd@ulugame.com'
 
 }

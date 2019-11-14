@@ -42,7 +42,7 @@ const useStyles = makeStyles(theme => ({
     line: {
         backgroundColor: theme.palette.primary.main,
         height: 2,
-        margin: '20px 0 35px 0'
+        margin: '20px 0'
     },
     wordText: {
         display: 'flex',
@@ -147,6 +147,9 @@ const useStyles = makeStyles(theme => ({
     },
     jobBox: {
         marginBottom: '40px'
+    },
+    infoList: {
+        marginBottom: '40px'
     }
 }))
 function Jobs() {
@@ -221,7 +224,7 @@ function Jobs() {
             </div>
             <Container>
                 <Grid container justify="space-between" className={classes.box}>
-                    <Grid item container direction="column" xs={12} sm={12} md={4} lg={4} xl={4}>
+                    <Grid item container direction="column" xs={12} sm={12} md={4} lg={4} xl={4} className={classes.infoList}>
                         <div className={classes.desc_title}>
                             <span className={classes.i_title}>{t('t1')}</span>
                             <span className={classes.s_title}>{t('t_1')}</span>
@@ -229,7 +232,7 @@ function Jobs() {
                         </div>
                         <Typography className={classes.desc}>{t('d1')}</Typography>
                     </Grid>
-                    <Grid item container direction="column" xs={12} sm={12} md={4} lg={4} xl={4}>
+                    <Grid item container direction="column" xs={12} sm={12} md={4} lg={4} xl={4} className={classes.infoList}>
                         <div className={classes.desc_title}>
                             <span className={classes.i_title}>{t('t2')}</span>
                             <span className={classes.s_title}>{t('t_2')}</span>
