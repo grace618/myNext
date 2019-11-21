@@ -24,6 +24,7 @@ function App() {
                             <Route path="/detail/:id" component={GameDetail}></Route>
                             <Route path="/gameslist" component={GameList}></Route>
                             <Route path="/publishing" component={Publishing}></Route>
+                            <Route component={Home}></Route>
                         </Layout>
                     </Switch>
                 </Suspense>
