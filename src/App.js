@@ -2,7 +2,8 @@ import React, { Suspense, lazy } from 'react';
 import {
     BrowserRouter as Router,
     Route,
-    Switch
+    Switch,
+    Redirect
 } from 'react-router-dom'
 import { ThemeProvider } from '@material-ui/styles';
 import theme from './theme';
@@ -24,8 +25,8 @@ function App() {
                             <Route path="/detail/:id" component={GameDetail}></Route>
                             <Route path="/gameslist" exact component={GameList}></Route>
                             <Route path="/publishing" exact component={Publishing}></Route>
+                            <Redirect from="/*" to="/" />
                         </Layout>
-                        <Route component={Home}></Route>
                     </Switch>
                 </Suspense>
             </Router>
