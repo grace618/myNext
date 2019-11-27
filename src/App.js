@@ -22,10 +22,10 @@ function App() {
                         <Layout>
                             <Route path="/" exact component={Home}></Route>
                             <Route path="/detail/:id" component={GameDetail}></Route>
-                            <Route path="/gameslist" component={GameList}></Route>
-                            <Route path="/publishing" component={Publishing}></Route>
-                            <Route component={Home}></Route>
+                            <Route path="/gameslist" exact component={GameList}></Route>
+                            <Route path="/publishing" exact component={Publishing}></Route>
                         </Layout>
+                        <Route component={Home}></Route>
                     </Switch>
                 </Suspense>
             </Router>
