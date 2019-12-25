@@ -92,8 +92,8 @@ function GameList() {
                         <Grid justify="space-between" container alignItems="center">
                             <Typography className={classes.logo}>ULU GAMES</Typography>
                             <Breadcrumbs aria-label="breadcrumb">
-                                <Link color="inherit" to="/" component={RouterLink} className={classes.breadcrumbs}>Home </Link>
-                                <Typography color="textPrimary" className={classes.breadcrumbs}> Games</Typography>
+                                <Link color="inherit" to="/" component={RouterLink} className={classes.breadcrumbs}>{t('Home')} </Link>
+                                <Typography color="textPrimary" className={classes.breadcrumbs}> {t('Games')}</Typography>
                             </Breadcrumbs>
                         </Grid>
                     </Container>

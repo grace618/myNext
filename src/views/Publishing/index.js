@@ -224,15 +224,15 @@ function GameList() {
         setOpen(false);
     };
 
-    useEffect(() => {
-        var map = new BMap.Map("container"); // 创建Map实例
-        var point = new BMap.Point(121.3997796598, 31.1751441091)
-        map.centerAndZoom(point, 12);// // 初始化地图,设置中心点坐标和地图级别
-        map.addOverlay(new BMap.Marker(point));    // 创建标注,将标注添加到地图中 
-        map.addControl(new BMap.MapTypeControl()); //添加地图类型控件
-        map.setCurrentCity("上海"); // 设置地图显示的城市 此项是必须设置的
-        map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
-    }, [])
+    // useEffect(() => {
+    //     var map = new BMap.Map("container"); // 创建Map实例
+    //     var point = new BMap.Point(121.3997796598, 31.1751441091)
+    //     map.centerAndZoom(point, 12);// // 初始化地图,设置中心点坐标和地图级别
+    //     map.addOverlay(new BMap.Marker(point));    // 创建标注,将标注添加到地图中 
+    //     map.addControl(new BMap.MapTypeControl()); //添加地图类型控件
+    //     map.setCurrentCity("上海"); // 设置地图显示的城市 此项是必须设置的
+    //     map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
+    // }, [])
     return (
         <div>
             <Hidden smDown>
@@ -309,7 +309,7 @@ function GameList() {
             <Container >
                 <Grid container justify="space-between" >
                     <Grid item justify="center" alignItems="center" container xs={12} sm={12} md={5} lg={5} xl={5}>
-                        <img src={require('assets/imgs/publish/global.jpg')} alt="role" width="87%" />
+                        <img src={require('assets/imgs/publish/global.jpg')} alt="role" />
                     </Grid>
                     <Grid item container direction="column" justify="flex-end" className={classes.right} xs={12} sm={12} md={7} lg={7} xl={7}>
                         <Box width="100%">
@@ -341,7 +341,7 @@ function GameList() {
                         </Box>
                     </Grid>
                     <Grid item justify="center" alignItems="center" container className={classes.left} xs={12} sm={12} md={5} lg={5} xl={5} >
-                        <img src={require('assets/imgs/publish/group.jpg')} alt="role" width="87%" />
+                        <img src={require('assets/imgs/publish/group.jpg')} alt="role" />
                     </Grid>
                 </Grid>
             </Container>
@@ -429,8 +429,8 @@ function GameList() {
                 <Grid container justify="space-between">
                     <Grid xs={12} sm={12} md={9} lg={9} xl={9} item>
 
-                        <div style={{ width: "90%", height: "80%", minHeight: '400px', margin: '8% auto', boxSizing: "border-box" }} id="container"></div>
-
+                        {/* <div style={{ width: "90%", height: "80%", minHeight: '400px', margin: '8% auto', boxSizing: "border-box" }} id="container"></div> */}
+                        <img src={require('assets/imgs/publish/map.png')} alt="role" style={{ width: "90%", height: "80%", minHeight: '400px', margin: '8% auto', boxSizing: "border-box" }} />
                         {/* react-hook-form */}
                         {/* <form className={classes.formData} onSubmit={handleSubmit}>
                             <FormControl className={classes.inputBox}>

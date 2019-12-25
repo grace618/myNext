@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
         height: '100%'
     },
     panelContainer: {
-        paddingTop: 1
+        padding: '5% 0',
     },
     t1: {
         fontSize: 38,
@@ -100,7 +100,7 @@ const useStyles = makeStyles(theme => ({
         padding: '0 10%'
     },
     role: {
-        margin: '15% 0 0 0',
+        margin: '11% 0 0 0',
         [theme.breakpoints.down('md')]: {
             width: '90%',
             marginLeft: 0
@@ -112,6 +112,9 @@ const useStyles = makeStyles(theme => ({
         [theme.breakpoints.down('md')]: {
             padding: '9% 10%'
         },
+    },
+    left: {
+        textAlign: 'center'
     },
     slideImg: {
         '& img': {
