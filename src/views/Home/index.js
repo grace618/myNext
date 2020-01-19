@@ -172,7 +172,9 @@ function Home() {
                     <Grid container alignItems="center" direction="column" justify="center" className={classes.publishBtn}>
                         <Typography variant="h4" gutterBottom color="textSecondary" align="center">{t('solgan')}</Typography>
                         {/* <Hidden smDown> */}
-                        <Typography variant="h6" gutterBottom color="textSecondary" align="center">{t('sloganDesc')}</Typography>
+                        <Typography variant="h6" gutterBottom color="textSecondary" align="center">{t('sloganDesc1')}</Typography>
+                        <Typography variant="h6" gutterBottom color="textSecondary" align="center">{t('sloganDesc2')}</Typography>
+                        <Typography variant="h6" gutterBottom color="textSecondary" align="center">{t('sloganDesc3')}</Typography>
                         {/* </Hidden> */}
                         <Box mt={8} display={{ xs: 'none', sm: 'block' }}>
                             <Button variant="contained" color="primary" size="large" to="/publishing" component={RouterLink}>{t('aboutBtn')}</Button>

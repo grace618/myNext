@@ -7,7 +7,7 @@ import { ReactComponent as Youtube } from 'icons/svg/youtube.svg'
 import { ReactComponent as Wechat } from 'icons/svg/wechat.svg'
 const useStyles = makeStyles(theme => ({
     ico: {
-        marginRight: theme.spacing(6),
+        marginLeft: theme.spacing(6),
         '& svg:hover': {
             '& path': {
                 fill: 'orange'
@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
         }
     },
     info: {
-        margin: '10px 0',
+        margin: '20px 0',
         '& a': {
             color: '#91959A',
             textDecoration: 'none'
@@ -29,14 +29,15 @@ const useStyles = makeStyles(theme => ({
             color: '#91959A',
             textDecoration: 'none'
         }
-    }
+    },
+
 }))
 function Footer() {
     const classes = useStyles()
     return (
         <Box bgcolor="background.default" color="text.light" p={7}>
             <Container>
-                <Grid className={classes.tips} container alignItems="center" justify="space-between">
+                <Grid container alignItems="center" justify="space-between">
                     <span>健康游戏忠告</span>
                     <span>抵制不良游戏</span>
                     <span>拒绝盗版游戏</span>
@@ -47,31 +48,23 @@ function Footer() {
                     <span>合理安排时间</span>
                     <span>享受健康生活</span>
                 </Grid>
-                <Grid container alignItems="center" justify="space-between" style={{ margin: '10px 0' }}>
-                    {/* left */}
-                    <Grid container direction="column" item xs={12} sm={12} md={8} lg={8} xl={8} >
-                        <Grid container justify="space-around" alignItems="center" className={classes.info}>
-                            <a href="http://www.beian.miit.gov.cn" target="_blank">沪ICP备17016575号-2</a>
-                            <a href="http://www.beian.miit.gov.cn" target="_blank"> 沪网文{2017}3448-218号</a>
-                            <Typography align="center">Copyright © U.LU Games all right reserved.</Typography>
-                        </Grid>
-                        <Grid container justify="space-around" alignItems="center">
-                            <div className={classes.policy}>
-                                <a href="http://policy.ulugame.com/policycn.html" target="_blank">用户服务协议  |  </a>
-                                <a href="http://policy.ulugame.com/cn.html" target="_blank">用户隐私条款</a>
-                            </div>
-                            <Typography align="center">互联网违法不良信息举报电话：021-3490998</Typography>
-                        </Grid>
-                    </Grid>
-                    {/* right */}
-                    <Grid xs={12} sm={12} md={4} lg={4} xl={4} item container justify="flex-end" alignItems="center">
-                        <Box display={{ xs: 'none', sm: 'block' }} >
-                            <a href="https://twitter.com/ULUGames1" target="_blank" rel="noopener noreferrer" className={classes.ico}> <Twitter /></a>
-                            <a href="https://www.youtube.com/channel/UC3PCMQ6sbpCZVdIqZaWf4-g" target="_blank" rel="noopener noreferrer" className={classes.ico}><Youtube /></a>
-                            <span className={classes.ico}><Facebook /></span>
-                            <span className={classes.ico}><Wechat /></span>
-                        </Box>
-                    </Grid>
+                <Grid container justify="space-between" alignItems="center" className={classes.info}>
+                    <a href="http://www.beian.miit.gov.cn" target="_blank">沪ICP备17016575号-2</a>
+                    <a href="http://www.beian.miit.gov.cn" target="_blank"> 沪网文{2017}3448-218号</a>
+                    <span >Copyright © U.LU Games all right reserved</span>
+                </Grid>
+                <Grid container justify="space-between" alignItems="center">
+                    <div className={classes.policy}>
+                        <a href="http://policy.ulugame.com/policycn.html" target="_blank">用户服务协议  |  </a>
+                        <a href="http://policy.ulugame.com/cn.html" target="_blank">用户隐私条款</a>
+                    </div>
+                    <span >互联网违法不良信息举报电话：021-3490998</span>
+                    <Box display={{ xs: 'none', sm: 'block' }} >
+                        <a href="https://twitter.com/ULUGames1" target="_blank" rel="noopener noreferrer" className={classes.ico}> <Twitter /></a>
+                        <a href="https://www.youtube.com/channel/UC3PCMQ6sbpCZVdIqZaWf4-g" target="_blank" rel="noopener noreferrer" className={classes.ico}><Youtube /></a>
+                        <span className={classes.ico}><Facebook /></span>
+                        <span className={classes.ico}><Wechat /></span>
+                    </Box>
                 </Grid>
             </Container>
         </Box >
