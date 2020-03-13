@@ -1,7 +1,7 @@
 const gameDetail = {
     home: '主页',
     game: '游戏',
-    developer: '开发商',
+    developer: '发行商',
     release: '发行时间',
     genre: '游戏类别',
     download: '立即下载',

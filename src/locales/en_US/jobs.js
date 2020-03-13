@@ -7,7 +7,7 @@ const jobs = {
     t2: 'THE TALENTS ',
     t_2: 'WE WANT',
     d2: 'We choose the best people to build the best team. We want people with good experience, but we also provide opportunities to new graduates. If you really love games, or if you are ready to proceed, then join us and set sail.',
-    t3: 'WE GET YOU',
+    t3: 'WE GET YOU ',
     t_3: 'THE BEST BENEFIT',
     d3: 'We provide the best resource for our talents. (Competitive salaries; Equal and open working environment; Clear promotion access for staff; Social insurance, theme party, holiday gifts, etc.)',
     join: 'GROW UP WITH OUTSTANDING PEOPLE',

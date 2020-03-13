@@ -1,7 +1,7 @@
 const gameDetail = {
     home: 'Home',
     game: 'Games',
-    developer: 'Developer',
+    developer: 'Publisher',
     release: 'Release Date',
     genre: 'Genre',
     download: 'Download Now!',

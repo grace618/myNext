@@ -9,12 +9,17 @@ import './index.css'
 
 import headerBg from 'assets/imgs/headerBg.jpg'
 import person from 'assets/imgs/person.png'
-
+import mHeader from 'assets/imgs/mHeader.jpg'
 const useStyles = makeStyles(theme => ({
     header: {
-        background: `url(${headerBg}) 20% top`,
+        background: `url(${headerBg}) center center`,
         width: '100%',
-        height: 889
+        height: 889,
+        [theme.breakpoints.down('md')]: {
+            background: `url(${mHeader}) top center`,
+            backgroundSize: '100% 100%',
+            height: 700
+        },
     },
     container: {
         height: '100%'

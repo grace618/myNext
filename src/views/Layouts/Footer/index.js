@@ -58,7 +58,7 @@ function Footer() {
                         <a href="http://policy.ulugame.com/policycn.html" target="_blank">用户服务协议  |  </a>
                         <a href="http://policy.ulugame.com/cn.html" target="_blank">用户隐私条款</a>
                     </div>
-                    <span >互联网违法不良信息举报电话：021-3490998</span>
+                    <span >互联网违法不良信息举报电话：021-34909980</span>
                     <Box display={{ xs: 'none', sm: 'block' }} >
                         <a href="https://twitter.com/ULUGames1" target="_blank" rel="noopener noreferrer" className={classes.ico}> <Twitter /></a>
                         <a href="https://www.youtube.com/channel/UC3PCMQ6sbpCZVdIqZaWf4-g" target="_blank" rel="noopener noreferrer" className={classes.ico}><Youtube /></a>
