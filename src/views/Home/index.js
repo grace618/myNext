@@ -15,10 +15,10 @@ const useStyles = makeStyles(theme => ({
         background: `url(${headerBg}) center center`,
         width: '100%',
         height: 889,
-        [theme.breakpoints.down('md')]: {
+        [theme.breakpoints.down('sm')]: {
             background: `url(${mHeader}) top center`,
             backgroundSize: '100% 100%',
-            height: 700
+            height: 667
         },
     },
     container: {
@@ -60,7 +60,7 @@ const useStyles = makeStyles(theme => ({
         fontSize: 24,
         fontFamily: "Microsoft YaHei",
         color: theme.palette.text.light,
-        fontWeight: 'lighter'
+        fontWeight: 'lighter',
     },
     desc: {
         fontSize: 14,
@@ -128,6 +128,9 @@ const useStyles = makeStyles(theme => ({
             margin: '0 auto'
         }
     },
+    c: {
+        color: '#1f1313'
+    }
 }))
 function Home() {
     const classes = useStyles()
@@ -175,11 +178,11 @@ function Home() {
             <div className={classes.header}>
                 <Container className={classes.container}>
                     <Grid container alignItems="center" direction="column" justify="center" className={classes.publishBtn}>
-                        <Typography variant="h4" gutterBottom color="textSecondary" align="center">{t('solgan')}</Typography>
+                        <Typography variant="h4" gutterBottom className="classes.c" align="center">{t('solgan')}</Typography>
                         {/* <Hidden smDown> */}
-                        <Typography variant="h6" gutterBottom color="textSecondary" align="center">{t('sloganDesc1')}</Typography>
-                        <Typography variant="h6" gutterBottom color="textSecondary" align="center">{t('sloganDesc2')}</Typography>
-                        <Typography variant="h6" gutterBottom color="textSecondary" align="center">{t('sloganDesc3')}</Typography>
+                        <Typography variant="h6" gutterBottom className="classes.c" align="center">{t('sloganDesc1')}</Typography>
+                        <Typography variant="h6" gutterBottom className="classes.c" align="center">{t('sloganDesc2')}</Typography>
+                        <Typography variant="h6" gutterBottom className="classes.c" align="center">{t('sloganDesc3')}</Typography>
                         {/* </Hidden> */}
                         <Box mt={8} display={{ xs: 'none', sm: 'block' }}>
                             <Button variant="contained" color="primary" size="large" to="/publishing" component={RouterLink}>{t('aboutBtn')}</Button>
