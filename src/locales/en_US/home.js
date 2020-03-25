@@ -1,7 +1,7 @@
 const home = {
     solgan: "ULU-Dedicated to Global Publishing",
     sloganDesc1: 'ULU Games, founded in 2012, is a global game operator & publisher aiming at oversea mobile game publication.',
-    sloganDesc2: 'Within 7 years of development, we have released decades of productions in more than 30 countries and districts,',
+    sloganDesc2: 'Within 8 years of development, we have released decades of productions in more than 30 countries and districts,',
     sloganDesc3: "and ranked among top game publishers in some very regions.",
     aboutBtn: 'ABOUT US',
     ulu: 'PUBLISHER',
