@@ -140,7 +140,7 @@ const gameType = [
     'MMORPG',
     'SLG',
     'MOBA',
-    'RPG',
+    'SRPG',
     'Card',
     'RTS',
     'Action',
@@ -340,7 +340,7 @@ function Detail(props) {
                                     <Button variant="contained" color="secondary" size="medium" className={classes.facebook} href={detail.fbCommunityUrl} target="_blank">
                                         <Facebook className={classes.icon} />
                                         ULUGAMES FACEBOOK
-                                </Button>
+                                    </Button>
                                 )
                             }
                             {
@@ -348,7 +348,7 @@ function Detail(props) {
                                     <Button variant="contained" color="secondary" size="medium" className={classes.twitter} href={detail.twitterCommunityUrl} target="_blank">
                                         <Twitter className={classes.icon} />
                                         ULUGAMES TWITTER
-                                     </Button>
+                                    </Button>
                                 )
                             }
                             {
@@ -356,7 +356,7 @@ function Detail(props) {
                                     <Button variant="contained" color="primary" size="medium" className={classes.youtube} href={detail.youtubeCommunityUrl} target="_blank">
                                         <Youtube className={classes.icon} />
                                         ULUGAMES YOUTUBE
-                            </Button>)
+                                    </Button>)
                             }
                             {/* <Button variant="contained" color="secondary" size="medium" className={classes.wechat} href={detail.wechatCommunityUrl} target="_blank">
                                 <Wechat className={classes.icon} />

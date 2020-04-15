@@ -16,7 +16,7 @@ const gameDetail = {
     MMORPG: 'MMORPG',
     SLG: 'SLG',
     MOBA: 'MOBA',
-    RPG: 'Card',
+    SRPG: 'SRPG',
     Card: 'Card',
     RTS: 'RTS',
     Action: 'Action',

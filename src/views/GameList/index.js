@@ -110,6 +110,9 @@ function GameList() {
                 <div className={classes.slideWrap}>
                     <Slider {...settings}>
                         <Grid container alignItems="center" justify="center" >
+                            <img src={require('assets/imgs/gamelist/banner7.jpg')} alt="banner1" className={classes.pic} />
+                        </Grid>
+                        <Grid container alignItems="center" justify="center" >
                             <img src={require('assets/imgs/gamelist/banner.jpg')} alt="banner1" className={classes.pic} />
                         </Grid>
                         <Grid container alignItems="center" justify="center" >
