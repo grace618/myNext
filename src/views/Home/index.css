@@ -5,3 +5,21 @@
 .slick-dots li {
     margin: 0;
 }
+
+.slick-next {
+    right: 30px;
+    z-index: 2
+}
+
+.slick-prev {
+    left: 30px;
+    z-index: 2
+}
+
+.slick-next::before {
+    font-size: 40px;
+}
+
+.slick-prev::before {
+    font-size: 40px;
+}

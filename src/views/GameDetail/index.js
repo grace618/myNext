@@ -177,7 +177,7 @@ function Detail(props) {
         slidesToScroll: 4,
         initialSlide: 0,
         arrows: false,
-        // variableWidth: true,
+        autoplay: true,
         responsive: [
             {
                 breakpoint: 1280,

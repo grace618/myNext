@@ -82,6 +82,7 @@ function GameList() {
         slidesToShow: 1,
         slidesToScroll: 1,
         arrows: false,
+        autoplay: true,
     }
     const gameItem = useGameList(language.lang)
     return (

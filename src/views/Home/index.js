@@ -12,12 +12,21 @@ import person from 'assets/imgs/person.png'
 import mHeader from 'assets/imgs/mHeader.jpg'
 const useStyles = makeStyles(theme => ({
     header: {
-        background: `url(${headerBg}) center center`,
         width: '100%',
         height: 889,
+        position: 'absolute'
+    },
+    headerWrap: {
+        width: '100%',
+        height: '100%',
+        position: 'absolute'
+    },
+    headerBox: {
+        width: '100%',
+        height: 889,
+        position: 'relative',
+        marginTop: '60px',
         [theme.breakpoints.down('sm')]: {
-            background: `url(${mHeader}) top center`,
-            backgroundSize: '100% 100%',
             height: 667
         },
     },
@@ -89,6 +98,7 @@ const useStyles = makeStyles(theme => ({
         width: '100%',
         marginTop: '20px'
     },
+
     gName: {
         fontSize: 18,
         fontFamily: "Arial",
@@ -130,8 +140,15 @@ const useStyles = makeStyles(theme => ({
     },
     c: {
         color: '#1f1313'
-    }
+    },
+    pic: {
+        width: '100%',
+        height: '100%',
+        boxSizing: 'border-box',
+    },
+
 }))
+
 function Home() {
     const classes = useStyles()
     const language = useSelector(state => state.app)
@@ -144,15 +161,13 @@ function Home() {
         slidesToScroll: 4,
         initialSlide: 0,
         arrows: false,
-        // variableWidth: true,
+        autoplay: true,
         responsive: [
             {
                 breakpoint: 1280,
                 settings: {
                     slidesToShow: 3,
                     slidesToScroll: 3,
-                    infinite: true,
-                    dots: true
                 }
             },
             {
@@ -160,7 +175,6 @@ function Home() {
                 settings: {
                     slidesToShow: 2,
                     slidesToScroll: 2,
-                    initialSlide: 2
                 }
             },
             {
@@ -172,24 +186,51 @@ function Home() {
             }
         ]
     }
+    const settings1 = {
+        dots: false,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        arrows: true,
+        autoplay: true,
+
+    }
     const gameItem = useGameList(language.lang)
     return (
         <div>
-            <div className={classes.header}>
-                <Container className={classes.container}>
-                    <Grid container alignItems="center" direction="column" justify="center" className={classes.publishBtn}>
-                        <Typography variant="h4" gutterBottom className="classes.c" align="center">{t('solgan')}</Typography>
-                        {/* <Hidden smDown> */}
-                        <Typography variant="h6" gutterBottom className="classes.c" align="center">{t('sloganDesc1')}</Typography>
-                        <Typography variant="h6" gutterBottom className="classes.c" align="center">{t('sloganDesc2')}</Typography>
-                        <Typography variant="h6" gutterBottom className="classes.c" align="center">{t('sloganDesc3')}</Typography>
-                        {/* </Hidden> */}
-                        <Box mt={8} display={{ xs: 'none', sm: 'block' }}>
-                            <Button variant="contained" color="primary" size="large" to="/publishing" component={RouterLink}>{t('aboutBtn')}</Button>
-                        </Box>
-                    </Grid>
-                </Container>
+            {/* slide head img */}
+            <div className={classes.headerBox}>
+                <div className={classes.headerWrap}>
+                    <Slider {...settings1}>
+                        <Grid container alignItems="center" justify="center" >
+                            <img src={headerBg} alt="banner1" className={classes.pic} />
+                        </Grid>
+                        <Grid container alignItems="center" justify="center" >
+                            <img src={headerBg} alt="banner1" className={classes.pic} />
+                        </Grid>
+                        <Grid container alignItems="center" justify="center" >
+                            <img src={headerBg} alt="banner1" className={classes.pic} />
+                        </Grid>
+                    </Slider>
+                </div>
+                <div className={classes.header}>
+                    <Container className={classes.container}>
+                        <Grid container alignItems="center" direction="column" justify="center" className={classes.publishBtn}>
+                            <Typography variant="h4" gutterBottom className="classes.c" align="center">{t('solgan')}</Typography>
+                            {/* <Hidden smDown> */}
+                            <Typography variant="h6" gutterBottom className="classes.c" align="center">{t('sloganDesc1')}</Typography>
+                            <Typography variant="h6" gutterBottom className="classes.c" align="center">{t('sloganDesc2')}</Typography>
+                            <Typography variant="h6" gutterBottom className="classes.c" align="center">{t('sloganDesc3')}</Typography>
+                            {/* </Hidden> */}
+                            <Box mt={8} display={{ xs: 'none', sm: 'block' }}>
+                                <Button variant="contained" color="primary" size="large" to="/publishing" component={RouterLink}>{t('aboutBtn')}</Button>
+                            </Box>
+                        </Grid>
+                    </Container>
+                </div>
             </div>
+            {/* part1 */}
             <Box bgcolor="background.light">
                 <Container className={classes.panelContainer}>
                     <Grid container justify="space-between" >
@@ -217,6 +258,7 @@ function Home() {
                     </Grid>
                 </Container>
             </Box>
+            {/* part2 gamelist */}
             <Container className={classes.slide}>
                 <Grid container justify="center" direction="column" alignItems="center" >
                     <div className={classes.gTitle}>
@@ -250,6 +292,7 @@ function Home() {
                     </div>
                 </Grid>
             </Container>
+            {/* part3 about us */}
             <Box pt={8} pb={6} bgcolor="background.light">
                 <Container>
                     <Grid container justify="center" direction="column" alignItems="center" className={classes.padding}>
