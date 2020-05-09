@@ -7,12 +7,12 @@
 }
 
 .slick-next {
-    right: 30px;
+    right: 25px;
     z-index: 2
 }
 
 .slick-prev {
-    left: 30px;
+    left: 5px;
     z-index: 2
 }
 

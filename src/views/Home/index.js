@@ -8,8 +8,9 @@ import { useGameList } from 'common/CustomHooks';
 import './index.css'
 
 import headerBg from 'assets/imgs/headerBg.jpg'
+import headerBg3 from 'assets/imgs/headerBg3.jpg'
 import person from 'assets/imgs/person.png'
-import mHeader from 'assets/imgs/mHeader.jpg'
+
 const useStyles = makeStyles(theme => ({
     header: {
         width: '100%',
@@ -207,10 +208,7 @@ function Home() {
                             <img src={headerBg} alt="banner1" className={classes.pic} />
                         </Grid>
                         <Grid container alignItems="center" justify="center" >
-                            <img src={headerBg} alt="banner1" className={classes.pic} />
-                        </Grid>
-                        <Grid container alignItems="center" justify="center" >
-                            <img src={headerBg} alt="banner1" className={classes.pic} />
+                            <img src={headerBg3} alt="banner1" className={classes.pic} />
                         </Grid>
                     </Slider>
                 </div>

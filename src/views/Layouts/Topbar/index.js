@@ -331,9 +331,9 @@ function Topbar(props) {
                                     <br />
                                     <TextField
                                         id="outlined-password-input"
-                                        label="Password"
+                                        label="密码"
                                         className={classes.textField}
-                                        type="密码"
+                                        type="password"
                                         autoComplete="current-password"
                                         margin="normal"
                                         variant="outlined"

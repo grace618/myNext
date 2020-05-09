@@ -6,6 +6,9 @@ import { ReactComponent as Twitter } from 'icons/svg/twitter.svg'
 import { ReactComponent as Youtube } from 'icons/svg/youtube.svg'
 import { ReactComponent as Wechat } from 'icons/svg/wechat.svg'
 const useStyles = makeStyles(theme => ({
+    root: {
+        fontSize: '14px'
+    },
     ico: {
         marginLeft: theme.spacing(6),
         '& svg:hover': {
@@ -35,7 +38,7 @@ const useStyles = makeStyles(theme => ({
 function Footer() {
     const classes = useStyles()
     return (
-        <Box bgcolor="background.default" color="text.light" p={7}>
+        <Box bgcolor="background.default" color="text.light" p={7} className={classes.root}>
             <Container>
                 <Grid container alignItems="center" justify="space-between">
                     <span>健康游戏忠告</span>

@@ -13,6 +13,7 @@ const GameDetail = lazy(() => import('views/GameDetail'))
 const GameList = lazy(() => import('views/GameList'))
 const Publishing = lazy(() => import('views/Publishing'))
 const Jobs = lazy(() => import('views/Jobs'))
+const Accounts = lazy(() => import('views/Accounts'))
 function App() {
     return (
         <ThemeProvider theme={theme}>
@@ -22,10 +23,11 @@ function App() {
                         <Route path="/jobs" component={Jobs} exact></Route>
                         <Layout>
                             <Route path="/" exact component={Home}></Route>
-                            <Route path="/detail/:id" component={GameDetail}></Route>
+                            <Route path="/detail/:id" exact component={GameDetail}></Route>
                             <Route path="/gameslist" exact component={GameList}></Route>
                             <Route path="/publishing" exact component={Publishing}></Route>
-                            <Redirect from="/*" to="/" />
+                            <Route path="/accounts" exact component={Accounts}></Route>
+                            {/* <Redirect from="/*" to="/" /> */}
                         </Layout>
                     </Switch>
                 </Suspense>
