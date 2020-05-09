@@ -1,60 +1,51 @@
 {
-  "name": "ulugame-official",
+  "name": "learn-starter",
   "version": "0.1.0",
   "private": true,
-  "dependencies": {
-    "moment": "^2.24.0",
-    "normalize.css": "^8.0.1",
-    "react": "^16.9.0",
-    "react-dom": "^16.9.0",
-    "react-medium-image-zoom": "^3.1.1",
-    "react-player": "^1.12.0",
-    "react-scripts": "3.1.1",
-    "react-share": "^3.0.1",
-    "react-slick": "^0.25.2",
-    "slick-carousel": "^1.8.1"
-  },
   "scripts": {
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build --mode production",
-    "dev": "react-app-rewired build --mode development",
-    "test": "react-app-rewired test",
-    "eject": "react-scripts eject",
-    "lint": "eslint --ext .js --ext .jsx src --fix"
+    "dev": "cross-env NODE_ENV=development PORT=6006 node server.js",
+    "build": "next build",
+    "start": "next start NODE_ENV=production node server.js",
+    "prod": "cross-env NODE_ENV=production PORT=3000 node server.js"
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all",
-      "ie 11"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version",
-      "ie 11"
-    ]
+  "dependencies": {
+    "cross-env": "^7.0.2",
+    "next": "9.3.5",
+    "normalize.css": "^8.0.1",
+    "react": "16.13.1",
+    "react-dom": "16.13.1"
   },
   "devDependencies": {
-    "@material-ui/core": "^4.4.0",
-    "@material-ui/icons": "^4.2.1",
+    "@material-ui/core": "^4.9.12",
+    "@material-ui/icons": "^4.9.1",
     "axios": "^0.19.0",
     "babel-plugin-import": "^1.12.1",
-    "customize-cra": "^0.5.0",
+    "babel-plugin-inline-react-svg": "^1.1.1",
+    "babel-plugin-lodash": "^3.3.4",
+    "babel-plugin-module-resolver": "^4.0.0",
     "eslint-plugin-react-hooks": "^2.0.1",
+    "express": "^4.17.1",
     "http-proxy-middleware": "^0.19.1",
     "i18next": "^18.0.1",
+    "immutable": "^4.0.0-rc.12",
+    "install": "^0.13.0",
+    "isomorphic-unfetch": "^3.0.0",
+    "next-i18next": "^4.4.1",
+    "next-offline": "^5.0.1",
     "node-sass": "^4.12.0",
+    "npm": "^6.14.5",
     "react-app-polyfill": "^1.0.4",
-    "react-app-rewired": "^2.1.3",
-    "react-i18next": "^11.0.0",
+    "react-i18next": "^11.4.0",
+    "react-player": "^2.0.1",
     "react-redux": "^7.1.1",
     "react-router-dom": "^5.0.1",
+    "react-share": "^4.1.0",
+    "react-slick": "^0.25.2",
     "redux": "^4.0.4",
-    "redux-thunk": "^2.3.0"
+    "redux-devtools-extension": "^2.13.8",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.3.0",
+    "slick-carousel": "^1.8.1",
+    "webpack-bundle-analyzer": "^3.7.0"
   }
 }

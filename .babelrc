@@ -1,0 +1,21 @@
+{
+    "presets": ["next/babel"],
+    "plugins": [
+        ["module-resolver",
+            {
+                "alias": {
+                    "components": "./components/",
+                    "images": "./public/images",
+                    "icons": "./public/icons",
+                    "store": "./store",
+                    "service": "./service",
+                    "utils": "./utils",
+                    "theme": "./theme",
+                    "common": "./common"
+                }
+            }
+        ],
+        "inline-react-svg",
+        "@babel/syntax-dynamic-import"
+    ]
+}
