@@ -61,7 +61,8 @@ const useStyles = makeStyles(theme => ({
     img: {
         width: 128,
         height: 128,
-        borderRadius: '30px'
+        borderRadius: '30px',
+        cursor: 'pointer'
     },
     pic: {
         width: '100%',
@@ -95,7 +96,6 @@ function GameList(props) {
         arrows: false,
         autoplay: true,
     }
-
     return (
         <Layout>
             <Hidden smDown>
@@ -157,7 +157,7 @@ function GameList(props) {
                             <React.Fragment key={item.id}>
                                 <Grid container spacing={2} alignItems="center" >
                                     <Grid item>
-                                        <ButtonBase component={ButtonLink} href={`/detail/${item.id}`} >  <img className={classes.img} alt="complex" src={item.gameImg} /></ButtonBase>
+                                        <Link component={ButtonLink} href="/GameDetail/[id]" as={`/GameDetail/${item.id}`} ><img className={classes.img} alt="complex" src={item.gameImg} /></Link>
                                     </Grid>
                                     <Grid item xs={12} sm container>
                                         <Grid item xs container direction="column" spacing={1} justify="space-around">
@@ -176,7 +176,7 @@ function GameList(props) {
                                             }
                                         </Grid>
                                         <Grid item>
-                                            <Button component={ButtonLink} href={`/detail/${item.id}`} variant="contained" color="primary" size="small"> {t('moreDetail')}</Button>
+                                            <Button component={ButtonLink} href="/GameDetail/[id]" hrefAs={`/GameDetail/${item.id}`} variant="contained" color="primary" size="small"> {t('moreDetail')}</Button>
                                         </Grid>
                                     </Grid>
                                 </Grid>

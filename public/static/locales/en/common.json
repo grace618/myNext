@@ -1,5 +1,7 @@
  {
      "publishing": "ABOUT US",
      "GameList": "GAMES",
-     "jobs": "JOBS"
+     "jobs": "JOBS",
+     "login": "LOG IN",
+     "register": "SIGN UP"
  }

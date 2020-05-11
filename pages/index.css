@@ -1,0 +1,25 @@
+.slick-dots li button:before {
+    color: #F44242 !important;
+}
+
+.slick-dots li {
+    margin: 0;
+}
+
+.slick-next {
+    right: 25px;
+    z-index: 2
+}
+
+.slick-prev {
+    left: 5px;
+    z-index: 2
+}
+
+.slick-next::before {
+    font-size: 40px;
+}
+
+.slick-prev::before {
+    font-size: 40px;
+}

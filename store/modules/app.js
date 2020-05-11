@@ -18,6 +18,7 @@ export default function reducer(state = initialState, action) {
                 type: "APP/LANGUAGE"
             }
             */
+            console.log(action.data, 'data')
             return action.data
         default:
             return state

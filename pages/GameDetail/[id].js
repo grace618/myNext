@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 import { useSelector } from 'react-redux'
-import { makeStyles, Container, Typography, Grid, Button, Box, Hidden, Breadcrumbs, Link, Divider } from '@material-ui/core'
+import { makeStyles, Container, Typography, Grid, Button, Box, Hidden, Breadcrumbs, Divider } from '@material-ui/core'
 import Slider from "react-slick";
 import ReactPlayer from 'react-player'
-import { useTranslation } from 'react-i18next';
+import PropTypes from 'prop-types'
+import Link from 'next/link'
 import ImageZoom from 'react-medium-image-zoom'
+import { withTranslation } from '../../i18n'
+import Layout from '../../components/Layouts/index.js'
+import Router from 'next/router'
 // import {
 //     TwitterShareButton,
 //     FacebookShareButton,
@@ -134,8 +137,14 @@ const useStyles = makeStyles(theme => ({
         height: 128,
         borderRadius: '30px'
     },
-
 }))
+const ButtonLink = ({ className, href, hrefAs, children }) => (
+    <Link href={href} as={hrefAs}>
+        <a className={className}>
+            {children}
+        </a>
+    </Link>
+)
 const gameType = [
     'MMORPG',
     'SLG',
@@ -162,8 +171,8 @@ const gameType = [
 ]
 function Detail(props) {
     const classes = useStyles()
-    const { t } = useTranslation(['gameDetail'])
-    const { match: { params: { id } } } = props;
+    let id = Router.router.query.id
+    let { t } = props
     const [detail, setDetail] = useState({ gameBaseInfoList: [], recommendList: [], downloadUrlList: [] })
     const [snapshotImg, setSnapshotImg] = useState([])
     const [video, setVideo] = useState([])
@@ -235,15 +244,15 @@ function Detail(props) {
         }
     }, [language, id])
     return (
-        <div>
+        <Layout>
             <Hidden smDown>
                 <Box bgcolor="background.light" height="60px">
                     <Container className={classes.navBar}>
                         <Grid justify="space-between" container alignItems="center">
                             <Typography className={classes.logo}>ULU GAMES</Typography>
                             <Breadcrumbs aria-label="breadcrumb">
-                                <Link color="inherit" to="/" component={RouterLink} className={classes.breadcrumbs}>{t('home')} </Link>
-                                <Link color="inherit" to="/gameslist" component={RouterLink} className={classes.breadcrumbs}> {t('game')}</Link>
+                                <Link color="inherit" href="/" component={ButtonLink} className={classes.breadcrumbs}>{t('home')}</Link>
+                                <Link color="inherit" href="/gameslist" component={ButtonLink} className={classes.breadcrumbs}>{t('game')}</Link>
                                 <Typography color="textPrimary" className={classes.breadcrumbs}>{detail.gameName}</Typography>
                             </Breadcrumbs>
                         </Grid>
@@ -431,9 +440,9 @@ function Detail(props) {
                         detail.recommendList.map(item => (
                             <Grid container item xs={12} sm={12} md={12} lg={6} xl={6} key={item.id} >
                                 <Grid xs={12} sm={12} md={3} lg={3} xl={3} item container justify="center">
-                                    <RouterLink to={`/detail/${item.id}`}>
+                                    <ButtonLink href={`/detail/${item.id}`}>
                                         <img src={item.gameImg} alt="" className={classes.thumbnail} />
-                                    </RouterLink>
+                                    </ButtonLink>
                                 </Grid>
                                 <Grid xs={12} sm={12} md={8} lg={8} xl={8} item>
                                     <Grid item justify="space-between" container>
@@ -446,7 +455,7 @@ function Detail(props) {
                                             }
                                         </div>
                                         <Hidden smDown>
-                                            <Button variant="contained" color="primary" size="small" className={classes.moreDetail} component={RouterLink} to={`/detail/${item.id}`}>
+                                            <Button variant="contained" color="primary" size="small" className={classes.moreDetail} component={ButtonLink} href={`/detail/${item.id}`}>
                                                 {t('moreDetail')}
                                             </Button>
                                         </Hidden>
@@ -466,11 +475,13 @@ function Detail(props) {
                     }
                 </Grid>
                 <Grid alignItems="center" container justify="center" className={classes.space}>
-                    <Button variant="contained" color="primary" size="large" component={RouterLink} to="/gameslist">{t('seeMore')} </Button>
+                    <Button variant="contained" color="primary" size="large" component={ButtonLink} href="/gameslist">{t('seeMore')} </Button>
                 </Grid>
             </Container>
-        </div >
+        </Layout>
     );
 }
-
-export default Detail;
+Detail.propTypes = {
+    t: PropTypes.func.isRequired,
+}
+export default withTranslation('gameDetail')(Detail);

@@ -36,6 +36,7 @@
     "npm": "^6.14.5",
     "react-app-polyfill": "^1.0.4",
     "react-i18next": "^11.4.0",
+    "react-medium-image-zoom": "^4.3.0",
     "react-player": "^2.0.1",
     "react-redux": "^7.1.1",
     "react-router-dom": "^5.0.1",

@@ -4,9 +4,7 @@ import PropTypes from 'prop-types'
 
 import Layout from '../../components/Layouts/index.js'
 import { withTranslation } from '../../i18n'
-import {
-    makeStyles, Container, Typography, Grid, Button, Box, Hidden, Breadcrumbs, Divider, Snackbar
-} from '@material-ui/core'
+import { makeStyles, Container, Typography, Grid, Button, Box, Hidden, Breadcrumbs, Divider, Snackbar } from '@material-ui/core'
 import MySnackbarContentWrapper from '../../components/SnackbarWrapper'
 import { addCollaboration, uploadFile } from 'service/publishing'
 import { useSubmitForm } from 'common/CustomHooks'
@@ -172,6 +170,14 @@ const useStyles = makeStyles(theme => ({
     },
 })
 )
+const ButtonLink = ({ className, href, hrefAs, children }) => (
+    <Link href={href} as={hrefAs}>
+        <a className={className}>
+            {children}
+        </a>
+    </Link>
+)
+
 function AboutUs(props) {
     const classes = useStyles()
     const { t } = props
@@ -381,7 +387,7 @@ function AboutUs(props) {
                                 {t('desc5')} <br /><br />{t('desc6')}
                             </Typography>
                             <Box mt={5}>
-                                {/* <Button variant="outlined" size="medium" className={classes.more} to={`/detail/1`} component={RouterLink}>{t('seeMore')}</Button> */}
+                                <Button variant="outlined" size="medium" className={classes.more} href={`/detail/1`} component={ButtonLink}>{t('seeMore')}</Button>
                             </Box>
                         </Box>
                     </Grid>
@@ -399,7 +405,7 @@ function AboutUs(props) {
                                 {t('desc7')} <br /><br />{t('desc8')}
                             </Typography>
                             <Box mt={5}>
-                                {/* <Button variant="outlined" size="medium" className={classes.more} to={`/detail/2`} component={RouterLink}>{t('seeMoreBtn')}</Button> */}
+                                <Button variant="outlined" size="medium" className={classes.more} href={`/detail/2`} component={ButtonLink}>{t('seeMoreBtn')}</Button>
                             </Box>
                         </Box>
                     </Grid>
