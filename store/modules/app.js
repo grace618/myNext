@@ -12,14 +12,16 @@ const initialState = {
 export default function reducer(state = initialState, action) {
     switch (action.type) {
         case LANGUAGE:
-            Cookies.set('language', action.data.lang)
+            Cookies.set('lang-ulu', action.data.lang)
             /*{
                 data: {lang: "en"}
                 type: "APP/LANGUAGE"
             }
             */
+            console.log(action.data, 'action.ata')
             return action.data
         default:
+            console.log(state, 'stateInit')
             return state
     }
 }

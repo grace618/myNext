@@ -177,8 +177,9 @@ function Topbar(props) {
     }
     const handleSelect = (event, value) => {
         if (value === 'cn' || value === 'en') {
-            i18n.changeLanguage(value);
             dispatch(language({ lang: value }))
+            i18n.changeLanguage(value);
+            console.log(value, '选择框切换的值')
         }
         setAnchorElMenu(null);
     }

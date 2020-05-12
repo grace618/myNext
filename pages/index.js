@@ -210,7 +210,6 @@ function Home(props) {
         slidesToScroll: 1,
         arrows: false,
         autoplay: true,
-
     }
     const settings = {
         dots: true,
@@ -249,6 +248,7 @@ function Home(props) {
         ]
     }
     const language = useSelector(state => state.app)
+    console.log(language, 'index页面的语言获取值')
     const gameItem = useGameList(language.lang)
     return (
         <Layout>
