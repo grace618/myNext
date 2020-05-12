@@ -1,12 +1,12 @@
-const getLanguage = () => {
-  if (typeof window !== 'undefined') {
-    const lang = window.navigator.language || window.navigator.userLanguage
-    let language = lang.toLocaleLowerCase();
-    let str = localStorage.getItem('language') || 'en'
-    if (language.split('-')[1] == 'cn') {
-      str = 'cn'
-    }
-    return str;
+
+const Cookies = require('js-cookie')
+var getLanguage = () => {
+  // const lang = navigator.language || navigator.userLanguage
+  const lang = 'zh-CN'
+  let language = Cookies.get('language') || lang.toLocaleLowerCase().split('-')[1] || 'en';
+  if (language !== 'cn') {
+    language = 'en'
   }
+  return language
 }
 module.exports = getLanguage

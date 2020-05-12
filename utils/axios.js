@@ -4,6 +4,7 @@ const config = {
     timeout: 50000,
 };
 const service = axios.create(config);
+
 // request拦截器
 service.interceptors.request.use(config => {
     if (process.env.NODE_ENV !== 'development') {
@@ -29,4 +30,8 @@ service.interceptors.response.use(
         return Promise.reject(error)
     }
 )
+
+
+
+
 export default service;

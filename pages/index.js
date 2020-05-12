@@ -1,10 +1,12 @@
 import Layout from '../components/Layouts/index.js'
 import React from 'react';
 import PropTypes from 'prop-types'
-import Link from 'next/link'
-import { makeStyles, Container, Typography, Grid, Button, Box, Hidden, Paper } from '@material-ui/core'
-import Slider from "react-slick";
 import { useSelector } from 'react-redux'
+import Link from 'next/link'
+
+import { makeStyles, Container, Typography, Grid, Button, Box } from '@material-ui/core'
+import Slider from "react-slick";
+
 import { withTranslation } from '../i18n'
 import { useGameList } from 'common/CustomHooks';
 // import './index.css'
@@ -189,6 +191,7 @@ const useStyles = makeStyles(theme => ({
 
 }))
 
+
 const ButtonLink = ({ className, href, hrefAs, children }) => (
     <Link href={href} as={hrefAs}>
         <a className={className}>
@@ -245,7 +248,6 @@ function Home(props) {
             }
         ]
     }
-
     const language = useSelector(state => state.app)
     const gameItem = useGameList(language.lang)
     return (

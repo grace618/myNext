@@ -220,7 +220,7 @@ function Topbar(props) {
                                         if (index < 3) {
                                             return (<MenuItem key={option.name} onClick={handleClose}> <Link href={`/${option.name}`} ><a>{t(option.name)}</a></Link></MenuItem>)
                                         } else {
-                                            return (<MenuItem key={option.name} onClick={handleClose}><Link key={option.name} href={`/${option.name}`} onClick={() => handleLogin(index)}><a>{t(option.name)}</a></Link></MenuItem>)
+                                            return (<MenuItem key={option.name} onClick={handleClose}><Link key={option.name} href={`/${option.name}`} ><a onClick={() => handleLogin(index)}>{t(option.name)}</a></Link></MenuItem>)
                                         }
                                     })
                                 }
