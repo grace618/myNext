@@ -1,7 +1,7 @@
 import getLanguage from 'utils/i18n.js'
 import Cookies from 'js-cookie'
 const LANGUAGE = 'APP/LANGUAGE'
-export const language = (data => ({
+export const setLang = (data => ({
     type: LANGUAGE,
     data
 }))

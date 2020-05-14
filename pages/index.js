@@ -6,7 +6,7 @@ import Link from 'next/link'
 
 import { makeStyles, Container, Typography, Grid, Button, Box } from '@material-ui/core'
 import Slider from "react-slick";
-
+import getLanguage from 'utils/i18n'
 import { withTranslation } from '../i18n'
 import { useGameList } from 'common/CustomHooks';
 // import './index.css'
@@ -248,7 +248,6 @@ function Home(props) {
         ]
     }
     const language = useSelector(state => state.app)
-    console.log(language, 'index页面的语言获取值')
     const gameItem = useGameList(language.lang)
     return (
         <Layout>
@@ -281,7 +280,6 @@ function Home(props) {
                     </Container>
                 </div>
             </div>
-
             <Box bgcolor="background.light">
                 <Container className={classes.panelContainer}>
                     <Grid container justify="space-between" >

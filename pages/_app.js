@@ -14,7 +14,6 @@ function App({ Component, pageProps }) { //全局
     //props:{pageProps,Component,router,err}
     const store = Store();
     React.useEffect(() => {
-        // Remove the server-side injected CSS.
         const jssStyles = document.querySelector('#jss-server-side');
         if (jssStyles) {
             jssStyles.parentElement.removeChild(jssStyles);
