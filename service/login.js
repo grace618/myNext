@@ -1,9 +1,5 @@
 import axios from 'utils/axios'
-const addCollaboration = (data) => axios({
-    url: `/v1/gameList/addCollaboration`,
-    method: 'post',
-    data
-})
+
 //初始化
 const getInitConfigByWeb = (data) => axios({
     url: `/api/member/config/getInitConfigByWeb`,
@@ -55,4 +51,13 @@ const sendCaptchaByAuthCode = (data, code) => {
         headers: { 'authCode': code }
     })
 }
-export { addCollaboration, getInitConfigByWeb, logout, login, sendPhoneCode, registerByEmailValitor, sendCaptchaByAuthCode }
+//忘记密码
+const resetPassword = (data, code) => {
+    return axios({
+        url: '/api/member/user/resetPassword',
+        method: 'post',
+        data,
+        headers: { 'authCode': code }
+    })
+}
+export { getInitConfigByWeb, logout, login, sendPhoneCode, registerByEmailValitor, sendCaptchaByAuthCode, resetPassword }

@@ -6,7 +6,7 @@ import Layout from '../../components/Layouts/index.js'
 import { withTranslation } from '../../i18n'
 import { makeStyles, Container, Typography, Grid, Button, Box, Hidden, Breadcrumbs, Divider, Snackbar } from '@material-ui/core'
 import MySnackbarContentWrapper from '../../components/SnackbarWrapper'
-import { addCollaboration, uploadFile } from 'service/publishing'
+import { uploadFile } from 'service/publishing'
 import { useSubmitForm } from 'common/CustomHooks'
 
 import { ReactComponent as Facebook } from 'icons/svg/facebook.svg'
