@@ -5,5 +5,5 @@ const language = getLanguage()
 console.log(language, 'i18n插件的初始值')
 module.exports = new NextI18Next({
     defaultLanguage: language,
-    otherLanguages: ['cn', 'en']
+    otherLanguages: ['zh', 'en']
 })

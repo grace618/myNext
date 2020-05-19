@@ -1,10 +1,14 @@
 const path = require('path')
 const withOffline = require('next-offline')
+let target = ''
+if (process.env.NODE_ENV == 'development') {
+    target = 'http:192.168.1.100:8092'
+} else {
+    target = "https://official.ulugame.com"
+}
 module.exports = {
-    publicRuntimeConfig: {
-        localeSubpaths: typeof process.env.LOCALE_SUBPATHS === 'string'
-            ? process.env.LOCALE_SUBPATHS
-            : 'none',
+    env: {
+        target
     },
     webpack: (config, options) => {
         if (process.env.ANALYZE_BUNDLE) {

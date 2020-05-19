@@ -4,11 +4,11 @@ const next = require('next')
 /** */
 const nextI18NextMiddleware = require('next-i18next/middleware').default
 const nextI18next = require('./i18n')
-const cookieParser = require('cookie-parser');
 /** */
 
 const port = process.env.PORT || 3000
 const env = process.env.NODE_ENV
+const url = process.env.URL
 const dev = env !== 'production'
 const app = next({
   dir: '.',
@@ -16,11 +16,11 @@ const app = next({
 })
 const devProxy = {
   '/api': {
-    target: 'https://official.ulugame.com',
+    target: url,
     changeOrigin: true,
   },
   '/v1': {
-    target: 'https://official.ulugame.com',
+    target: url,
     changeOrigin: true,
   }
 }

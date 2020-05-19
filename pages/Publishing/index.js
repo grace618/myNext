@@ -170,13 +170,13 @@ const useStyles = makeStyles(theme => ({
     },
 })
 )
-const ButtonLink = ({ className, href, hrefAs, children }) => (
-    <Link href={href} as={hrefAs}>
+const ButtonLink = React.forwardRef(({ className, href, hrefAs, children }, ref) => (
+    <Link href={href} as={hrefAs} ref={ref}>
         <a className={className}>
             {children}
         </a>
     </Link>
-)
+));
 
 function AboutUs(props) {
     const classes = useStyles()
@@ -427,9 +427,7 @@ function AboutUs(props) {
             <Container>
                 <Grid container justify="space-between">
                     <Grid xs={12} sm={12} md={9} lg={9} xl={9} item>
-
-                        <img src="Images/publish/map.png" alt=" role" style={{ width: "90%", height: "80%", minHeight: '400px', margin: '8% auto', boxSizing: "border-box" }} />
-
+                        <img src="Images/publish/map.png" alt=" role" style={{ width: "90%", height: "80%", margin: '8% auto', boxSizing: "border-box" }} />
                     </Grid>
                     <Grid xs={12} sm={12} md={3} lg={3} xl={3} item>
                         <div className={classes.infoRight}>

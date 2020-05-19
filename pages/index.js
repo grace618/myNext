@@ -1,22 +1,20 @@
-import Layout from '../components/Layouts/index.js'
+
 import React from 'react';
 import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
 import Link from 'next/link'
-
-import { makeStyles, Container, Typography, Grid, Button, Box } from '@material-ui/core'
 import Slider from "react-slick";
-import getLanguage from 'utils/i18n'
+import Layout from '../components/Layouts/index.js'
+
+import { makeStyles, Container, Typography, Grid, Button, Box, Hidden } from '@material-ui/core'
 import { withTranslation } from '../i18n'
 import { useGameList } from 'common/CustomHooks';
 // import './index.css'
-
-
 const useStyles = makeStyles(theme => ({
     header: {
         width: '100%',
-        height: 889,
-        position: 'absolute'
+        position: 'absolute',
+        top: '10%'
     },
     headerWrap: {
         width: '100%',
@@ -32,6 +30,10 @@ const useStyles = makeStyles(theme => ({
             height: 667
         },
     },
+    ImgBox: {
+        height: '100%'
+    },
+
     container: {
         height: '100%'
     },
@@ -152,16 +154,18 @@ const useStyles = makeStyles(theme => ({
     paper: {
         margin: '100px 0 50px 0',
         '& > *': {
+            marginBottom: '67px',
             boxSizing: 'border-box',
 
         },
     },
     news_detail: {
         borderLeft: "4px solid #fe9a45",
-        height: 245,
+        height: 271,
         background: "#ffffff",
         padding: "30px 30px 25px",
-        position: 'relative'
+        position: 'relative',
+
     },
     news_tit_s: {
         fontSize: 16,
@@ -191,14 +195,13 @@ const useStyles = makeStyles(theme => ({
 
 }))
 
-
-const ButtonLink = ({ className, href, hrefAs, children }) => (
-    <Link href={href} as={hrefAs}>
+const ButtonLink = React.forwardRef(({ className, href, hrefAs, children }, ref) => (
+    <Link href={href} as={hrefAs} ref={ref}>
         <a className={className}>
             {children}
         </a>
     </Link>
-)
+));
 function Home(props) {
     const classes = useStyles()
     const { t } = props
@@ -226,8 +229,6 @@ function Home(props) {
                 settings: {
                     slidesToShow: 3,
                     slidesToScroll: 3,
-                    infinite: true,
-                    dots: true
                 }
             },
             {
@@ -235,7 +236,6 @@ function Home(props) {
                 settings: {
                     slidesToShow: 2,
                     slidesToScroll: 2,
-                    initialSlide: 2
                 }
             },
             {
@@ -255,12 +255,23 @@ function Home(props) {
             {/* slide head img */}
             <div className={classes.headerBox}>
                 <div className={classes.headerWrap}>
-                    <Slider {...settings1}>
-                        <Grid container alignItems="center" justify="center" >
-                            <img src="Images/headerBg.jpg" alt="banner1" className={classes.pic} />
+                    <Slider {...settings1} className={classes.h}>
+                        <Grid container alignItems="center" justify="center">
+                            <Hidden mdUp>
+                                <img src="Images/mHeader.jpg" alt="banner1" className={classes.pic} />
+                            </Hidden>
+                            <Hidden only={['sm', 'xs']}>
+                                <img src="Images/headerBg.jpg" alt="banner1" className={classes.pic} />
+                            </Hidden>
+
                         </Grid>
-                        <Grid container alignItems="center" justify="center" >
-                            <img src="Images/headerBg3.jpg" alt="banner1" className={classes.pic} />
+                        <Grid container alignItems="center" justify="center" className={classes.ImgBox}>
+                            <Hidden mdUp>
+                                <img src="Images/mHeader2.jpg" alt="banner1" className={classes.pic} />
+                            </Hidden>
+                            <Hidden only={['sm', 'xs']}>
+                                <img src="Images/headerBg3.jpg" alt="banner1" className={classes.pic} />
+                            </Hidden>
                         </Grid>
                     </Slider>
                 </div>
@@ -283,10 +294,10 @@ function Home(props) {
             <Box bgcolor="background.light">
                 <Container className={classes.panelContainer}>
                     <Grid container justify="space-between" >
-                        <Grid item className={classes.left} xs={12} sm={12} md={12} lg={6} xl={6}>
+                        <Grid item className={classes.left} xs={12} sm={12} md={6} lg={6} xl={6}>
                             <img src='Images/person.png' alt="role" className={classes.role} />
                         </Grid>
-                        <Grid item container direction="column" justify="center" className={classes.right} xs={12} sm={12} md={12} lg={6} xl={6}>
+                        <Grid item container direction="column" justify="center" className={classes.right} xs={12} sm={12} md={6} lg={6} xl={6}>
                             <Box width="100%">
                                 <Typography>
                                     <span className={classes.t1}>{t('ulu')}</span>
@@ -352,7 +363,7 @@ function Home(props) {
                         <Typography className={classes.slogan} align="center" > 这里有游戏相关资讯 </Typography>
                         <span className={classes.line}></span>
                         <Grid container justify="space-between" className={classes.paper}>
-                            <Grid item xs={12} sm={12} md={12} lg={4} xl={4}>
+                            <Grid item xs={12} sm={12} md={4} lg={4} xl={4} >
                                 <div className={classes.news_detail}>
                                     <p className={classes.news_tit_s}>萨顶顶倾力献唱《山海镜花》公测倒计时2天</p>
                                     <p className={classes.news_txt}> 《山海镜花》即将于4月29日正式开启全平台公测，距离大荒之旅正式启程还有2天！今日，本作公式公布了双版本主题曲预告，国际...</p>
@@ -360,10 +371,10 @@ function Home(props) {
                                 </div>
                                 <img src="Images/i1.png" alt="" />
                             </Grid>
-                            <Grid item container direction="column" justify="center" xs={12} sm={12} md={12} lg={4} xl={4} className={classes.center}>
+                            <Grid item container direction="column" justify="center" xs={12} sm={12} md={4} lg={4} xl={4} className={classes.center}>
                                 <img src="Images/i2.png" alt="" className={classes.news_center} />
                             </Grid>
-                            <Grid item xs={12} sm={12} md={12} lg={4} xl={4}>
+                            <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
                                 <img src="Images/i1.png" alt="" />
                                 <div className={classes.news_detail}>
                                     <p className={classes.news_tit_s}>萨顶顶倾力献唱《山海镜花》公测倒计时2天</p>

@@ -53,7 +53,7 @@ const useStyles = makeStyles(theme => ({
     headingBlock: {
         fontSize: 26,
         fontFamily: "Arial",
-        color: theme.palette.text.primary
+        color: theme.palette.text.primary,
     },
     img: {
         width: 188,
@@ -77,14 +77,13 @@ const useStyles = makeStyles(theme => ({
     }
 })
 )
-const ButtonLink = ({ className, href, hrefAs, children }) => (
-    <Link href={href} as={hrefAs}>
+const ButtonLink = React.forwardRef(({ className, href, hrefAs, children }, ref) => (
+    <Link href={href} as={hrefAs} ref={ref}>
         <a className={className}>
             {children}
         </a>
     </Link>
-)
-
+));
 function GameList(props) {
     const classes = useStyles()
     const { t } = props
@@ -115,7 +114,7 @@ function GameList(props) {
                 </Box>
             </Hidden>
             <Container>
-                <Box pt={7}>
+                <Box pt={10}>
                     <span className={classes.headingBlock}>资讯</span>
                     <span className={classes.line}></span>
                 </Box>
@@ -125,7 +124,7 @@ function GameList(props) {
                             <React.Fragment key={item.id}>
                                 <Grid container spacing={2} alignItems="center" >
                                     <Grid item>
-                                        <Link component={ButtonLink} href="/GameDetail/[id]" as={`/GameDetail/${item.id}`} ><img className={classes.img} alt="complex" src={item.gameImg} /></Link>
+                                        <Link component={ButtonLink} href="/NewsDetail/[id]" as={`/NewsDetail/${item.id}`} ><img className={classes.img} alt="complex" src={item.gameImg} /></Link>
                                     </Grid>
                                     <Grid item xs={12} sm={12} md={12} lg={8} xl={8} sm container justify="space-between" direction="column">
                                         <Box fontSize="16px" pb={1}><Link href="/NewsDetail/[id]" as={`/NewsDetail/${item.id}`}><a className={classes.titleColor}>萨顶顶倾力献唱《山海镜花》公测倒计时2天</a></Link></Box>

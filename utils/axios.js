@@ -23,6 +23,7 @@ service.interceptors.request.use(config => {
 // respone拦截器
 service.interceptors.response.use(
     response => {
+        // response.setHeader("Set-Cookie", "Secure;SameSite=Strict")
         return response.data
     },
     error => {

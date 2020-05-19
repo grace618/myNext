@@ -8,10 +8,7 @@ import Link from 'next/link'
 import ImageZoom from 'react-medium-image-zoom'
 import { withTranslation } from '../../i18n'
 import Layout from '../../components/Layouts/index.js'
-import Router from 'next/router'
-
-
-
+import { useRouter } from 'next/router'
 import { getGameDetail } from 'service/gameDetail'
 import { parseTime } from 'utils/format.js'
 const useStyles = makeStyles(theme => ({
@@ -31,7 +28,7 @@ const useStyles = makeStyles(theme => ({
         color: theme.palette.text.secondary
     },
     gameTitle: {
-        padding: '60px 0 30px 0'
+        padding: '90px 0 30px 0'
     },
     divider: {
         color: theme.palette.primary.main
@@ -126,27 +123,27 @@ const useStyles = makeStyles(theme => ({
         borderRadius: '30px'
     },
 }))
-const ButtonLink = ({ className, href, hrefAs, children }) => (
-    <Link href={href} as={hrefAs}>
+const ButtonLink = React.forwardRef(({ className, href, hrefAs, children }, ref) => (
+    <Link href={href} as={hrefAs} ref={ref}>
         <a className={className}>
             {children}
         </a>
     </Link>
-)
+));
 
 function Detail(props) {
     const classes = useStyles()
-    let id = Router.router.query.id
     let { t } = props
     const [detail, setDetail] = useState({ gameBaseInfoList: [], recommendList: [], downloadUrlList: [] })
     const [snapshotImg, setSnapshotImg] = useState([])
     const [video, setVideo] = useState([])
     const [carousel, setCarousel] = useState([])
     const language = useSelector(state => state.app)
-
+    const router = useRouter();
+    let id = router.query.id
     const getDetail = async (id, lang) => {
         const res = await getGameDetail(id, lang)
-        if (res.status === 200) {
+        if (res.code === 0) {
             setDetail(res.data)
             let snapshotImg = [], video = [], carousel = []
             res.data.snapshotUrlList.map(item => {
@@ -168,6 +165,8 @@ function Detail(props) {
             setCarousel(carousel)
         }
     }
+
+
     useEffect(() => {
         if (language) {
             getDetail(id, language.lang)
@@ -194,7 +193,7 @@ function Detail(props) {
                     <div>
                         <Typography gutterBottom variant="h5" color="textPrimary">万灵齐聚共赴大荒 《山海镜花》全平台公测今日启程</Typography>
                         <Divider />
-                        <Typography gutterBottom color="textSecondary">类别： 平台新闻发表于2020-04-29 12:49:25</Typography>
+                        <Typography gutterBottom color="textSecondary">类别： 平台新闻 &nbsp;发表于2020-04-29 12:49:25</Typography>
                     </div>
                 </Grid>
 

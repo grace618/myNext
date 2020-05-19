@@ -2,9 +2,9 @@
 const Cookies = require('js-cookie')
 var getLanguage = () => {
   // const lang = navigator.language || navigator.userLanguage
-  const lang = 'en-US'
-  let language = Cookies.get('lang-ulu') || lang.toLocaleLowerCase().split('-')[1] || 'en';
-  if (language !== 'cn') {
+  const lang = 'en'
+  let language = Cookies.get('lang-ulu') || lang.toLocaleLowerCase().split('-')[0] || 'en';
+  if (language !== 'zh') {
     language = 'en'
   }
   return language

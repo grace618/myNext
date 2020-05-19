@@ -138,13 +138,13 @@ const useStyles = makeStyles(theme => ({
         borderRadius: '30px'
     },
 }))
-const ButtonLink = ({ className, href, hrefAs, children }) => (
-    <Link href={href} as={hrefAs}>
+const ButtonLink = React.forwardRef(({ className, href, hrefAs, children }, ref) => (
+    <Link href={href} as={hrefAs} ref={ref}>
         <a className={className}>
             {children}
         </a>
     </Link>
-)
+));
 const gameType = [
     'MMORPG',
     'SLG',
@@ -216,7 +216,7 @@ function Detail(props) {
     }
     const getDetail = async (id, lang) => {
         const res = await getGameDetail(id, lang)
-        if (res.status === 200) {
+        if (res.code === 0) {
             setDetail(res.data)
             let snapshotImg = [], video = [], carousel = []
             res.data.snapshotUrlList.map(item => {

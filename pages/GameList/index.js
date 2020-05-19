@@ -74,13 +74,13 @@ const useStyles = makeStyles(theme => ({
     },
 })
 )
-const ButtonLink = ({ className, href, hrefAs, children }) => (
-    <Link href={href} as={hrefAs}>
+const ButtonLink = React.forwardRef(({ className, href, hrefAs, children }, ref) => (
+    <Link href={href} as={hrefAs} ref={ref}>
         <a className={className}>
             {children}
         </a>
     </Link>
-)
+));
 
 function GameList(props) {
     const classes = useStyles()

@@ -2,17 +2,24 @@ import React, { useState, useEffect, useRef } from 'react';
 
 import Link from 'next/link'
 import PropTypes from 'prop-types'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+const crypto = require('crypto')
 
 import { Container, Grid, IconButton, Hidden, MenuItem, Menu, Button, TextField, Checkbox, Box, FormControlLabel, Typography, InputLabel, FormControl, Select, Input, Snackbar } from '@material-ui/core';
 import { Language, Menu as MenuIcon, Save as SaveIcon, Clear } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles'
 
+
+
 import { setLang } from 'store/modules/app'
 import { useSubmitForm } from 'common/CustomHooks'
 import { withTranslation } from '../../../i18n'
 import MySnackbarContentWrapper from 'components/SnackbarWrapper'
-import { addCollaboration, logout } from 'service/login'
+import { logout, getInitConfigByWeb, login, sendPhoneCode, registerByEmailValitor, sendCaptchaByAuthCode } from 'service/login'
+import { getCode } from '../../../utils/index'
+import Login from '../Login'
+
+
 const useStyles = makeStyles(theme => ({
     root: props => ({
         backgroundColor: props.backgroundColor ? props.backgroundColor : theme.palette.primary.main,
@@ -41,19 +48,22 @@ const useStyles = makeStyles(theme => ({
         height: '100%'
     },
     navLink: {
-        '& a': {
+        '&>*': {
             color: theme.palette.white,
             margin: '0 10px',
             fontFamily: "Microsoft YaHei",
-            fontSize: 12
+            fontSize: 12,
+            cursor: 'pointer'
         }
     },
     svg: {
         color: 'white'
     },
     loginBox: {
-        width: '820px',
-        height: '600px',
+        width: '90%',
+        height: '60%',
+        minHeight: '603px',
+        maxWidth: '820px',
         background: 'white',
         position: 'fixed',
         top: 0,
@@ -62,19 +72,21 @@ const useStyles = makeStyles(theme => ({
         left: 0,
         margin: 'auto',
         zIndex: '999',
-        padding: '30px 45px',
+        padding: '1% 3%',
         boxSizing: 'border-box',
     },
     login: {
         textAlign: 'center',
-        fontSize: '36px',
+        fontSize: '34px',
         fontWeight: 'bold',
-        padding: '10px 0',
         color: '#444444'
     },
     button: {
-        width: '315px',
-        boxSizing: 'border-box'
+        width: '80%',
+        boxSizing: 'border-box',
+    },
+    button1: {
+        marginBottom: '10%'
     },
     close: {
         position: 'absolute',
@@ -95,11 +107,11 @@ const useStyles = makeStyles(theme => ({
         background: 'rgba(0, 0, 0, 0.7)',
     },
     left: {
-        marginTop: '60px',
-        height: '200px'
+        marginTop: '5%',
+        // height: '200px'
     },
     right: {
-        marginTop: '30px',
+        // marginTop: '30px',
     },
     buttonColor: {
         background: '#7FC75A'
@@ -117,21 +129,49 @@ const useStyles = makeStyles(theme => ({
     LoginBtn: {
         width: '100%',
         boxSizing: 'border-box',
-        margin: '20px 0 10px 0',
+        margin: '10px 0',
         display: 'block',
         fontSize: '24px'
     },
     info: {
+        clear: 'both',
         '& span': {
             cursor: 'pointer',
             fontSize: '14px',
             color: '#646581'
         }
+    },
+    asLink: {
+        cursor: 'pointer',
+        textDecoration: 'underline'
+    },
+    sendcode: {
+        "height": "55px",
+        "margin": "17px 0 0 10%",
+        "width": "89%"
+    },
+    sendcode2: {
+        "height": "42px",
+        "margin": "15px 0 0 10%",
+        "width": "89%"
+    },
+    sendCaptcha: {
+        width: '48%',
+        boxSizing: 'border-box'
+    },
+    getcode: {
+        width: '58%',
+    },
+    checked: {
+        '&+span': {
+            fontSize: '16px'
+        }
+
     }
 
 }))
 const options = [{
-    'value': 'cn',
+    'value': 'zh',
     'name': '简体中文'
 }, {
     'value': 'en',
@@ -153,7 +193,6 @@ const menu = [{
 }]
 function Topbar(props) {
     const classes = useStyles(props)
-    const inputEl = useRef(null)
     const [open, setOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const [anchorElMenu, setAnchorElMenu] = useState(null);
@@ -161,9 +200,20 @@ function Topbar(props) {
     const { t, i18n } = props
     const [LoginPup, setLoginPup] = useState(false)
     const [show, setShow] = useState(false)
-    const [token, setToken] = useState('dkhfbbgkdjfkdfj')
+    const language = useSelector(state => state.app)
+    const [authCode, setAuthCode] = useState(null)
+    const [token, setToken] = useState(null)
+    let [time, setTime] = useState(30)
+    let [time1, setTime1] = useState(30)
+    const [isSend, setSend] = useState(false)
+    const [isSend1, setSend1] = useState(false)
     const dispatch = useDispatch();
-
+    const initSnackbar = {
+        message: '',
+        variant: 'warning',
+        autoHideDuration: 0
+    }
+    const [snackBar, setSnackBar] = useState(initSnackbar)
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     }
@@ -174,13 +224,15 @@ function Topbar(props) {
         setAnchorEl(null);
     }
     const handleSelect = (event, value) => {
-        if (value === 'cn' || value === 'en') {
+        if (value === 'zh' || value === 'en') {
             dispatch(setLang({ lang: value }))
             i18n.changeLanguage(value);
         }
         setAnchorElMenu(null);
     }
     const handleLogin = (index) => {
+
+        getInit()
         if (index == 3) {
             setShow(true)
         } else {
@@ -191,6 +243,15 @@ function Topbar(props) {
     const closePup = () => {
         setLoginPup(false)
     }
+    const handleCloseSnackbar = (event, reason) => {
+        if (reason === 'clickaway') return
+        setOpen(false);
+    };
+
+    useEffect(() => {
+        setAuthCode(window.localStorage.getItem('authCode') || null)
+        setToken(window.localStorage.getItem('token') || null)
+    }, [])
     useEffect(() => {
         const hanldeScroll = () => {
             let scrollTop = document.body.scrollTop || document.documentElement.scrollTop
@@ -201,61 +262,161 @@ function Topbar(props) {
             window.removeEventListener('scroll', hanldeScroll)
         };
     })
-    /*login*/
-    const initSnackbar = {
-        message: '',
-        variant: 'warning',
-        autoHideDuration: 0
+
+    /* login*/
+    const loginInfo = () => {
+        setLoginWay(!LoginWay)
     }
+    const getInit = async () => {
+        const data = {
+            "channelId": 9,
+            "timestamp": new Date().getTime(),
+            "gameId": 100001,
+            "platform": 3,
+            "channelTag": 0,
+            "env": 3,
+            "language": language.lang,
+            "signature": "DFD29F8E1D150AB53830FB62B46E581C",
+        }
+        const res = await getInitConfigByWeb(data)
+        if (res.code == 0) {
+            localStorage.setItem('authCode', res.data.authCode)
+            setAuthCode(res.data.authCode)
+        }
+    }
+    const sendCode = () => {
+        const data = {
+            uluAccount: inputs.phoneNumber,
+            gameId: '100001'
+        }
+        sendPhoneCode(data, authCode).then(res => {
+            if (res.code != 0) {
+                getCode(res.code)
+            }
+            setSend(true)
+            let t1 = setInterval(() => {
+                setTime(time--)
+                if (time <= 0) {
+                    clearInterval(t1)
+                    setTime(30)
+                    setSend(false)
+                }
+            }, 1000)
+        })
+    }
+
     const initialFormState = {
         email: '',
         password: '',
         phoneNumber: '',
         code: ''
     }
-    const [snackBar, setSnackBar] = useState(initSnackbar)
     const [LoginWay, setLoginWay] = useState(true)
     const submitFormData = () => {
         setSnackBar(initSnackbar)
         const { password, email, phoneNumber, code } = inputs
+        let md5 = crypto.createHash('md5')
+        md5.update(password)
+        var pwd = md5.digest('hex').toUpperCase()
+        let data = {}
         if (LoginWay) {
+            data = { loginType: 2, accessId: '', accessToken: '', uluAccount: email, password: pwd, gameId: '100001' }
             if (password === '' || email === '') {
-                setSnackBar({ ...snackBar, 'message': '请输入账号或密码', 'variant': 'warning', 'autoHideDuration': 10000 })
+                setSnackBar({ ...snackBar, 'message': '请输入电子邮箱或密码', 'variant': 'warning', 'autoHideDuration': 10000 })
                 setOpen(true);
-            } else {
-                addCollaboration(inputs).then(res => {
-                    if (res.data.code == 0) {
-                        setSnackBar({ ...snackBar, 'message': 'success', 'variant': 'success', 'autoHideDuration': 1500 })
-                        setOpen(true);
-                        setInputs(initialFormState)
-                        inputEl.current.value = ''
-                    }
-                })
+                return false
             }
         } else {
+            data = { loginType: 2, accessId: '', accessToken: '', uluAccount: phoneNumber, password: code, gameId: '100001' }
             if (phoneNumber === '' || code === '') {
                 setSnackBar({ ...snackBar, 'message': '请输入手机号码或验证码', 'variant': 'warning', 'autoHideDuration': 10000 })
                 setOpen(true);
-            } else {
-                addCollaboration(inputs).then(res => {
-                    if (res.data.code == 0) {
-                        setSnackBar({ ...snackBar, 'message': 'success', 'variant': 'success', 'autoHideDuration': 1500 })
-                        setOpen(true);
-                        setInputs(initialFormState)
-                        inputEl.current.value = ''
-                    }
-                })
+                return false
             }
         }
+        login(data, authCode).then(res => {
+            if (res.code == 0) {
+                setSnackBar({ ...snackBar, 'message': 'success', 'variant': 'success', 'autoHideDuration': 1500 })
+                setOpen(true);
+                setToken(res.data.token)
+                localStorage.setItem('token', res.data.token)
+                closePup()
+                setInputs(initialFormState)
+            } else {
+                getCode(res.code)
+            }
+        })
     }
     const { inputs, setInputs, handleInputChange, handleSubmit } = useSubmitForm(initialFormState, submitFormData);
-    const handleCloseSnackbar = (event, reason) => {
-        if (reason === 'clickaway') return
-        setOpen(false);
-    };
-    const loginByPhone = () => {
-        setLoginWay(!LoginWay)
+    /*register*/
+    const initialRegState = {
+        mail: '',
+        gameId: '100001',
+        type: 1,
     }
+    const submitRegData = () => {
+        const { password, passwordAgain, mail, code, checkedA } = regInputs
+        setSnackBar(initSnackbar)
+        if ((password !== '' && passwordAgain !== '') || password !== passwordAgain) {
+            setSnackBar({ ...snackBar, 'message': '两次输入密码不一致', 'variant': 'warning', 'autoHideDuration': 10000 })
+            return false
+        }
+        if (!checkedA) {
+            setSnackBar({ ...snackBar, 'message': '请先同意服务条款', 'variant': 'warning', 'autoHideDuration': 1500 })
+            return false
+        }
+        let md5 = crypto.createHash('md5')
+        md5.update(password)
+        var pwd = md5.digest('hex').toUpperCase()
+        const data = {
+            "mail": mail,
+            "password": pwd,
+            "gameId": '100001',
+            "captcha": code
+        }
+        registerByEmailValitor(data, authCode).then(res => {
+            if (res.code == 0) {
+                setToken(res.data.token)
+                closePup()
+            } else {
+                getCode(res.code)
+            }
+        })
+    }
+    const sendCaptcha = () => {
+        let lang = ''
+        if (language.lang == 'en') {
+            lang = 'en-US'
+        }
+        if (language.lang == 'zh') {
+            lang = 'zh-CN'
+        }
+        const data = {
+            "mail": regInputs.mail,
+            "gameId": "100001",
+            "type": 1,
+            "language": lang
+        }
+        sendCaptchaByAuthCode(data, authCode).then(res => {
+            if (res.code != 0) {
+                getCode(res.code)
+            }
+            setSend1(true)
+            let t1 = setInterval(() => {
+                setTime1(time--)
+                if (time <= 0) {
+                    clearInterval(t1)
+                    setTime1(30)
+                    setSend1(false)
+                }
+            }, 1000)
+        })
+    }
+
+    const regs = useSubmitForm(initialRegState, submitRegData);
+    let regInputs = regs.inputs
+    let handleRegInputChnage = regs.handleInputChange
+    let handleRegSubmit = regs.handleSubmit
     /*facebook*/
     useEffect(() => {
         window.fbAsyncInit = function () {
@@ -358,9 +519,11 @@ function Topbar(props) {
     }
     /**sign out */
     const signout = () => {
-        logout({ gameId }).then(res => {
+        logout({ gameId: '100001' }, token).then(res => {
             if (res.code == 0) {
-                alert('退出登录')
+                localStorage.removeItem('token')
+                setToken(null)
+                setSnackBar({ ...snackBar, 'message': '退出成功', 'variant': 'success', 'autoHideDuration': 1500 })
             }
         })
     }
@@ -393,9 +556,8 @@ function Topbar(props) {
                                         } else {
                                             return (
                                                 <MenuItem key={option.name} onClick={handleClose}>
-                                                    <a key={option.name} onClick={() => handleLogin(index)} href="javascript:;">{t(option.name)}</a>
+                                                    <span key={option.name} onClick={() => handleLogin(index)}>{t(option.name)}</span>
                                                 </MenuItem>
-
                                             )
                                         }
                                     })
@@ -416,14 +578,20 @@ function Topbar(props) {
                                         return (<Link href={`/${option.name}`} key={option.name}><a>{t(option.name)}</a></Link>)
                                     } else if (!token) {
                                         return (
-                                            <a key={option.name} onClick={() => handleLogin(index)} href="javascript:;">{t(option.name)}</a>
+                                            <span key={option.name} onClick={() => handleLogin(index)}>{t(option.name)}</span>
                                         )
                                     }
                                 })
                             }
                             {/* 已登录 */}
-                            <a href="/accounts/profile">grace_xxxx</a>
-                            <a href="javascript:;" onClick={signout}>退出</a>
+                            {
+                                token &&
+                                <>
+                                    <a href="/accounts/profile">grace_xxxx</a>
+                                    <span className={classes.asLink} onClick={signout}>退出</span>
+                                </>
+                            }
+
                         </Hidden>
                         <IconButton aria-label="select" aria-controls="simple-menu" aria-haspopup="true" onClick={handleLanguage}>
                             <Language color="primary" className={classes.svg} />
@@ -441,16 +609,16 @@ function Topbar(props) {
                     <span className={classes.close} onClick={closePup}><Clear color="primary" /></span>
                     <div className={classes.login}>ULUGAMES</div>
                     <Grid container >
-                        <Grid item container justify="space-around" direction="column" lg={6} xs={12} className={classes.left}>
+                        <Grid item container direction="column" lg={6} xs={12} md={6} sm={6} xl={6} className={classes.left}>
                             <Button
                                 variant="contained"
                                 color="secondary"
                                 size="large"
-                                className={classes.button}
+                                className={`${classes.button} ${classes.button1}`}
                                 startIcon={<SaveIcon />}
                                 onClick={getFacebookInfo}
                             >
-                                通过Facebook登入
+                                Facebook登入
                                 </Button>
                             <Button
                                 variant="contained"
@@ -460,7 +628,7 @@ function Topbar(props) {
                                 startIcon={<SaveIcon />}
                                 onClick={getGooleInfo}
                             >
-                                通过Google登入
+                                Google登入
                             </Button>
                             {/* <Button
                                 variant="contained"
@@ -472,8 +640,7 @@ function Topbar(props) {
                                 通过Twitter登入
                                 </Button> */}
                         </Grid>
-                        <Grid item lg={6} xs={12} className={classes.right}>
-
+                        <Grid item lg={6} xs={12} md={6} sm={6} xl={6} className={classes.right}>
                             {
                                 show ? (
                                     <form className={classes.formData} onSubmit={handleSubmit}>
@@ -490,6 +657,7 @@ function Topbar(props) {
                                                         autoComplete="email"
                                                         margin="normal"
                                                         variant="outlined"
+                                                        size="medium"
                                                         value={inputs.email}
                                                         onChange={handleInputChange}
                                                     />
@@ -504,6 +672,7 @@ function Topbar(props) {
                                                         autoComplete="password"
                                                         margin="normal"
                                                         variant="outlined"
+                                                        size="medium"
                                                         value={inputs.password}
                                                         onChange={handleInputChange}
                                                     />
@@ -517,7 +686,6 @@ function Topbar(props) {
                                                     <TextField
                                                         label="手机号码"
                                                         className={classes.textField}
-                                                        type="number"
                                                         name="phoneNumber"
                                                         margin="normal"
                                                         variant="outlined"
@@ -525,80 +693,93 @@ function Topbar(props) {
                                                         onChange={handleInputChange}
                                                     />
                                                 </FormControl>
-                                                <FormControl className={classes.inputBox}>
-                                                    <Button variant="outlined" color="secondary"> 发送验证码</Button>
-                                                    <TextField
-                                                        label="验证码"
-                                                        type="password"
-                                                        name="password"
-                                                        autoComplete="password"
-                                                        margin="normal"
-                                                        variant="outlined"
-                                                        value={inputs.code}
-                                                        onChange={handleInputChange}
-                                                    />
-                                                </FormControl>
+                                                <Box display="flex" justifyContent="space-betwwen">
+                                                    <FormControl className={classes.getcode}>
+                                                        <TextField label="验证码" name="code" margin="normal" variant="outlined" value={inputs.code} onChange={handleInputChange} />
+                                                    </FormControl>
+                                                    <FormControl className={classes.sendCaptcha}>
+                                                        <Button variant="outlined" color="secondary" className={classes.sendcode} onClick={sendCode}> {isSend ? time : '发送验证码'}</Button>
+                                                    </FormControl>
+                                                </Box>
                                             </div>
                                         }
                                         <Box display="flex" justifyContent="space-between" alignItems="center" fontSize={16} className={classes.info}>
-                                            <span onClick={loginByPhone}> {LoginWay ? '手机号登录' : '邮箱登录'}</span>
+                                            <span onClick={loginInfo}> {LoginWay ? '手机号登录' : '邮箱登录'}</span>
                                             <span onClick={forgetPassword}>忘记密码</span>
                                         </Box>
                                         <Button variant="contained" color="primary" className={classes.LoginBtn} onClick={handleSubmit}> 登入 </Button>
-                                        <Typography color="textPrimary" variant="body2" align="center">没有游陆账号？<a href="javascript:;" onClick={() => setShow(false)}>马上注册</a></Typography>
+                                        <Typography color="textPrimary" variant="body2" align="center">没有游陆账号？<span onClick={() => setShow(false)} className={classes.asLink}>马上注册</span></Typography>
                                     </form>) :
-                                    (<form className={classes.formData} onSubmit={handleSubmit}>
-                                        <FormControl className={classes.inputBox}>
-                                            <TextField
-                                                label="电子邮箱"
-                                                className={classes.textField}
-                                                type="email"
-                                                name="email"
-                                                autoComplete="email"
-                                                margin="normal"
-                                                variant="outlined"
-                                                value={inputs.email}
-                                                onChange={handleInputChange}
-                                            />
-                                        </FormControl>
-                                        <FormControl className={classes.inputBox}>
-                                            <Button variant="outlined" color="secondary"> 发送验证码</Button>
-                                            <TextField
-                                                label="密码"
-                                                className={classes.textField}
-                                                type="password"
-                                                name="password"
-                                                autoComplete="password"
-                                                margin="normal"
-                                                variant="outlined"
-                                                value={inputs.password}
-                                                onChange={handleInputChange}
-                                            />
-                                        </FormControl>
-                                        <FormControl className={classes.inputBox}>
-                                            <TextField
-                                                label="确认密码"
-                                                className={classes.textField}
-                                                type="password"
-                                                name="password"
-                                                autoComplete="password"
-                                                margin="normal"
-                                                variant="outlined"
-                                                value={inputs.password}
-                                                onChange={handleInputChange}
-                                            />
-                                        </FormControl>
-                                        <Box display="flex" justifyContent="space-between" alignItems="center" fontSize={16}>
-                                            <FormControlLabel
-                                                value="start"
-                                                control={<Checkbox color="primary" />}
-                                                label="我已阅读并同意遵守服务条款"
-                                                labelPlacement="end"
-                                            />
-                                        </Box>
-                                        <Button variant="contained" color="primary" className={classes.LoginBtn} onClick={handleSubmit}> 注册 </Button>
-                                        <Typography color="textPrimary" variant="body2" align="center">已有账号？<a href="javascript:;" onClick={() => setShow(true)}>在此登录</a></Typography>
-                                    </form>)
+                                    (
+                                        // register
+                                        <form className={classes.formData} onSubmit={handleRegSubmit}>
+                                            <FormControl className={classes.inputBox}>
+                                                <TextField
+                                                    label="电子邮箱"
+                                                    className={classes.textField}
+                                                    type="email"
+                                                    name="mail"
+                                                    size="small"
+                                                    autoComplete="email"
+                                                    margin="normal"
+                                                    variant="outlined"
+                                                    value={regInputs.mail}
+                                                    onChange={handleRegInputChnage}
+                                                />
+                                            </FormControl>
+                                            <Box display="flex" justifyContent="space-betwwen">
+                                                <FormControl className={classes.getcode}>
+                                                    <TextField
+                                                        label="验证码"
+                                                        name="code"
+                                                        margin="normal"
+                                                        variant="outlined"
+                                                        size="small"
+                                                        value={regInputs.code}
+                                                        onChange={handleRegInputChnage}
+                                                    />
+                                                </FormControl>
+                                                <FormControl className={classes.sendCaptcha}>
+                                                    <Button variant="outlined" color="secondary" className={classes.sendcode2} onClick={sendCaptcha}> {isSend1 ? time1 : '发送验证码'}</Button>
+                                                </FormControl>
+                                            </Box>
+                                            <FormControl className={classes.inputBox}>
+                                                <TextField
+                                                    label="密码"
+                                                    className={classes.textField}
+                                                    type="password"
+                                                    name="password"
+                                                    autoComplete="password"
+                                                    margin="normal"
+                                                    size="small"
+                                                    variant="outlined"
+                                                    value={regInputs.password}
+                                                    onChange={handleRegInputChnage}
+                                                />
+                                            </FormControl>
+                                            <FormControl className={classes.inputBox}>
+                                                <TextField
+                                                    label="确认密码"
+                                                    className={classes.textField}
+                                                    type="password"
+                                                    name="passwordAgain"
+                                                    autoComplete="passwordAgain"
+                                                    margin="normal"
+                                                    size="small"
+                                                    variant="outlined"
+                                                    value={regInputs.passwordAgain}
+                                                    onChange={handleRegInputChnage}
+                                                />
+                                            </FormControl>
+                                            <Box display="flex" justifyContent="space-between" alignItems="center">
+                                                <FormControlLabel
+                                                    control={<Checkbox checked={regInputs.checkedA} name="checkedA" fontSize="small" className={classes.checked} />}
+                                                    label="我已阅读并同意遵守服务条款"
+                                                />
+                                            </Box>
+                                            <Button variant="contained" color="primary" className={classes.LoginBtn} onClick={submitRegData}> 注册 </Button>
+                                            <Typography color="textPrimary" variant="body2" align="center">已有账号？<span onClick={() => setShow(true)} className={classes.asLink}>在此登录</span></Typography>
+                                        </form>)
                             }
                         </Grid>
                     </Grid>

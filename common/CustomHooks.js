@@ -4,7 +4,7 @@ const useGameList = (language) => {
     const [list, setList] = useState([])
     const getList = async (language) => {
         const res = await gameList(language)
-        if (res.status === 200) {
+        if (res.code === 0) {
             setList(res.data)
         }
     }
