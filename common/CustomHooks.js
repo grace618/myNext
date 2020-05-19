@@ -24,7 +24,12 @@ const useSubmitForm = (initialValues, callback) => {
     }
     const handleInputChange = (event) => {
         event.persist();
-        setInputs({ ...inputs, [event.target.name]: event.target.value })
+        if (event.target.checked) {
+            setInputs({ ...inputs, [event.target.name]: event.target.checked })
+        } else {
+            setInputs({ ...inputs, [event.target.name]: event.target.value })
+        }
+
         // setInputs(inputs => ({ ...inputs, [event.target.name]: event.target.value }));
     }
     return {

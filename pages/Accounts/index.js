@@ -44,6 +44,13 @@ const useStyles = makeStyles(theme => ({
     },
     box: {
         background: '#FBFBFB'
+    },
+    title: {
+        color: 'white',
+        fontSize: "26px",
+        padding: '120px 0 0 0',
+        fontWeight: 'bold',
+        fontSize: '34px'
     }
 }))
 function ListItemLink(props) {
@@ -54,7 +61,9 @@ function Accounts(props) {
     return (
         <Layout>
             <div className={classes.box}>
-                <div className={classes.headerPart}>会员中心</div>
+                <div className={classes.headerPart}>
+                    <Container><div className={classes.title}> 会员中心</div></Container>
+                </div>
                 <Container className={classes.panelContainer}>
                     <Grid container justify="space-between" >
                         <Grid item className={classes.left} xs={12} sm={12} md={12} lg={4} xl={4}>
