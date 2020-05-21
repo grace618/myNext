@@ -7,10 +7,9 @@ const crypto = require('crypto')
 import { Grid, Button, TextField, Checkbox, Box, FormControlLabel, Typography, FormControl, Snackbar } from '@material-ui/core';
 import { Save as SaveIcon, Clear } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles'
-
+import MySnackbarContentWrapper from 'components/SnackbarWrapper'
 import { useSubmitForm } from 'common/CustomHooks'
 import { withTranslation } from '../../../i18n'
-import MySnackbarContentWrapper from 'components/SnackbarWrapper'
 import { login, sendPhoneCode, registerByEmailValitor, sendCaptchaByAuthCode } from 'service/login'
 import { getCode } from '../../../utils/index'
 
@@ -89,7 +88,7 @@ const useStyles = makeStyles(theme => ({
     },
     info: {
         clear: 'both',
-        '& span': {
+        '& *': {
             cursor: 'pointer',
             fontSize: '14px',
             color: '#646581'
@@ -131,6 +130,7 @@ function LoginComponent(props) {
         variant: 'warning',
         autoHideDuration: 0
     }
+    const [snackBar, setSnackBar] = useState(initSnackbar)
     let { show, t, i18n } = props
     const [changePanel, setShow] = useState(show)
     const language = useSelector(state => state.app)
@@ -140,7 +140,6 @@ function LoginComponent(props) {
     let [time1, setTime1] = useState(30)
     const [isSend, setSend] = useState(false)
     const [isSend1, setSend1] = useState(false)
-    const [snackBar, setSnackBar] = useState(initSnackbar)
     const [token, setToken] = useState(null)
 
     useEffect(() => {
@@ -206,9 +205,10 @@ function LoginComponent(props) {
                 setSnackBar({ ...snackBar, 'message': 'success', 'variant': 'success', 'autoHideDuration': 1500 })
                 setOpen(true);
                 setToken(res.data.token)
-                localStorage.setItem('token', res.data.token)
-                closePup()
+                localStorage.setItem('token', res.data.token)//这里用localstorage，应该不会刷新数据
+                props.closeUp()
                 setInputs(initialFormState)
+                location.reload();
             } else {
                 getCode(res.code)
             }
@@ -247,7 +247,7 @@ function LoginComponent(props) {
         registerByEmailValitor(data, authCode).then(res => {
             if (res.code == 0) {
                 setToken(res.data.token)
-                closePup()
+                props.closeUp()
             } else {
                 getCode(res.code)
             }

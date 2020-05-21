@@ -32,7 +32,8 @@ const useStyles = makeStyles(theme => ({
         minHeight: '500px',
     },
     right: {
-        padding: '20px 0 0 30px'
+        padding: '20px 0 0 1%',
+        boxSizing: 'border-box'
     },
     avatarBox: {
         textAlign: 'center'

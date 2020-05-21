@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { Container, Grid, Button, TextField, Typography, makeStyles, Box, FormControl } from '@material-ui/core';
+import { Container, Button, TextField, Typography, makeStyles, Box, FormControl, Snackbar } from '@material-ui/core';
 import { useSubmitForm } from 'common/CustomHooks'
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Layout from '../../../components/Layouts/index.js'
-
+import { resetPassword, sendCaptchaByAuthCode } from 'service/login'
+import { getCode } from '../../../utils/index'
+import MySnackbarContentWrapper from 'components/SnackbarWrapper'
+import { useRouter } from 'next/router'
+const crypto = require('crypto')
 const useStyles = makeStyles((theme) => ({
     root: {
         background: '#FBFBFB',
@@ -13,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
         position: 'relative'
     },
     textField1: {
-        width: '60%',
+        width: '50%',
         margin: '5% auto',
     },
     textField: {
@@ -48,12 +52,23 @@ function getPassword() {
     const classes = useStyles()
     const [authCode, setAuthCode] = useState(null)
     const language = useSelector(state => state.app)
-    const [isSend, setSend] = useState(false)
-    const [isSend1, setSend1] = useState(false)
-    const [step, setStep] = useState(false)
-    const initialFormState = {
-        email: ''
+    const [step, setStep] = useState(true)
+    const [open, setOpen] = useState(false);
+    const router = useRouter();
+    const initSnackbar = {
+        message: '',
+        variant: 'warning',
+        autoHideDuration: 0
     }
+    const [snackBar, setSnackBar] = useState(initSnackbar)
+    const initialFormState = {
+        mail: ''
+    }
+    const handleCloseSnackbar = (event, reason) => {
+        if (reason === 'clickaway') return
+        setOpen(false);
+    };
+    //发送验证码
     const submitFormData = () => {
         let lang = ''
         if (language.lang == 'en') {
@@ -63,40 +78,53 @@ function getPassword() {
             lang = 'zh-CN'
         }
         const data = {
-            "mail": regInputs.mail,
+            "mail": inputs.mail,
             "gameId": "100001",
-            "type": 1,
+            "type": 0,
             "language": lang
         }
         sendCaptchaByAuthCode(data, authCode).then(res => {
-            if (res.code != 0) {
+            if (res.code == 0) {
+                setStep(false)
+            } else {
                 getCode(res.code)
             }
-            setSend1(true)
-            let t1 = setInterval(() => {
-                setTime1(time--)
-                if (time <= 0) {
-                    clearInterval(t1)
-                    setTime1(30)
-                    setSend1(false)
-                }
-            }, 1000)
         })
-
     }
     useEffect(() => {
         setAuthCode(window.localStorage.getItem('authCode') || null)
     }, [])
     const { inputs, handleInputChange } = useSubmitForm(initialFormState, submitFormData);
+
     const initialRegState = {
         mail: '',
+        captcha: '',
+        password: '',
         gameId: '100001',
-        type: 1,
+        passwordAgain: ''
     }
+    //提交
     const submitData = () => {
-        sendCaptchaByAuthCode(data, authCode).then(res => {
+        const { captcha, password, passwordAgain } = regInputs
+        if ((password == '' || passwordAgain == '') || password !== passwordAgain) {
+            setSnackBar({ ...snackBar, 'message': '两次输入密码不一致', 'variant': 'warning', 'autoHideDuration': 10000 })
+            setOpen(true);
+            return false
+        }
+        let md5 = crypto.createHash('md5')
+        md5.update(password)
+        var pwd = md5.digest('hex').toUpperCase()
+        const data = {
+            mail: inputs.mail,
+            captcha: captcha,
+            password: pwd,
+            gameId: '100001'
+        }
+        resetPassword(data, authCode).then(res => {
             if (res.code == 0) {
-
+                setSnackBar({ ...snackBar, 'message': '修改成功', 'variant': 'warning', 'autoHideDuration': 10000 })
+                setOpen(true);
+                router.push('/')
             }
         })
     }
@@ -120,12 +148,11 @@ function getPassword() {
                                         label="电子邮箱"
                                         className={classes.textField1}
                                         type="email"
-                                        name="email"
-                                        autoComplete="email"
+                                        name="mail"
                                         margin="normal"
                                         variant="outlined"
-                                        size="large"
-                                        value={inputs.email}
+                                        size="medium"
+                                        value={inputs.mail}
                                         onChange={handleInputChange}
                                     />
                                     <Button variant="contained" color="primary" className={classes.LoginBtn} onClick={submitFormData} size="large"> 发送 </Button>
@@ -138,15 +165,15 @@ function getPassword() {
                                             <FormControl className={classes.getcode}>
                                                 <TextField
                                                     label="验证码"
-                                                    name="code"
+                                                    name="captcha"
                                                     margin="normal"
                                                     size="small"
                                                     className={classes.textField}
-                                                    value={regInputs.code}
+                                                    value={regInputs.captcha}
                                                     onChange={handleRegInputChnage}
                                                 />
                                             </FormControl>
-                                            <FormControl className={classes.inputBox}>
+                                            <FormControl>
                                                 <TextField
                                                     label="密码"
                                                     className={classes.textField}
@@ -160,7 +187,7 @@ function getPassword() {
                                                     helperText="请输入8-20位字母 (区别大小写)、数字或符号"
                                                 />
                                             </FormControl>
-                                            <FormControl className={classes.inputBox}>
+                                            <FormControl>
                                                 <TextField
                                                     label="确认密码"
                                                     className={classes.textField}
@@ -181,6 +208,21 @@ function getPassword() {
                     </div>
                 </Container>
             </div>
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                open={open}
+                autoHideDuration={snackBar.autoHideDuration}
+                onClose={handleCloseSnackbar}
+            >
+                <MySnackbarContentWrapper
+                    onClose={handleCloseSnackbar}
+                    variant={snackBar.variant}
+                    message={snackBar.message}
+                />
+            </Snackbar>
         </Layout >
     )
 }

@@ -180,8 +180,8 @@ function Detail(props) {
                         <Grid justify="space-between" container alignItems="center">
                             <Typography className={classes.logo}>ULU GAMES</Typography>
                             <Breadcrumbs aria-label="breadcrumb">
-                                <Link color="inherit" href="/" component={ButtonLink} className={classes.breadcrumbs}>{t('home')}</Link>
-                                <Link color="inherit" href="/gameslist" component={ButtonLink} className={classes.breadcrumbs}>{t('game')}</Link>
+                                <Link href="/" ><a className={classes.breadcrumbs}>{t('home')}</a></Link>
+                                <Link href="/gameslist"><a className={classes.breadcrumbs}>{t('game')}</a></Link>
                                 <Typography color="textPrimary" className={classes.breadcrumbs}>{detail.gameName}</Typography>
                             </Breadcrumbs>
                         </Grid>

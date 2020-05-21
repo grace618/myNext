@@ -15,7 +15,7 @@ const logout = (data, code) => {
         headers: { 'token': code }
     })
 }
-//发送手机验证码
+//登录时发送手机验证码
 const sendPhoneCode = (data, code) => {
     return axios({
         url: '/api/member/user/v3/sendPhoneCode',
@@ -42,7 +42,7 @@ const registerByEmailValitor = (data, code) => {
         headers: { 'authCode': code }
     })
 }
-//发送邮箱验证码
+//未登录发送邮箱验证码
 const sendCaptchaByAuthCode = (data, code) => {
     return axios({
         url: '/api/member/user/sendCaptchaByAuthCode',
@@ -51,7 +51,16 @@ const sendCaptchaByAuthCode = (data, code) => {
         headers: { 'authCode': code }
     })
 }
-//忘记密码
+//已登录发送邮箱验证码
+const sendBindCaptcha = (data, code) => {
+    return axios({
+        url: '/api/member/user/v3/sendBindCaptcha',
+        method: 'post',
+        data,
+        headers: { 'token': code }
+    })
+}
+//未登录忘记密码
 const resetPassword = (data, code) => {
     return axios({
         url: '/api/member/user/resetPassword',
@@ -60,4 +69,13 @@ const resetPassword = (data, code) => {
         headers: { 'authCode': code }
     })
 }
-export { getInitConfigByWeb, logout, login, sendPhoneCode, registerByEmailValitor, sendCaptchaByAuthCode, resetPassword }
+//已登录忘记密码
+const changePassword = (data, code) => {
+    return axios({
+        url: '/api/member/user/changePassword',
+        method: 'post',
+        data,
+        headers: { 'token': code }
+    })
+}
+export { getInitConfigByWeb, logout, login, sendPhoneCode, registerByEmailValitor, sendCaptchaByAuthCode, resetPassword, sendBindCaptcha, changePassword }

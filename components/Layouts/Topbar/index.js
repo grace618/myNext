@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux';
-import { Container, Grid, IconButton, Hidden, MenuItem, Menu } from '@material-ui/core';
+import { Container, Grid, IconButton, Hidden, MenuItem, Menu, Snackbar } from '@material-ui/core';
 import { Language, Menu as MenuIcon } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles'
 import { setLang } from 'store/modules/app'
 import { withTranslation } from '../../../i18n'
-
+import MySnackbarContentWrapper from 'components/SnackbarWrapper'
 import { logout, getInitConfigByWeb } from 'service/login'
 import LoginComponent from '../Login'
 
@@ -77,7 +77,6 @@ const menu = [{
 function Topbar(props) {
     const classes = useStyles(props)
     const [anchorEl, setAnchorEl] = useState(null);
-    const [authCode, setAuthCode] = useState(null)
     const [anchorElMenu, setAnchorElMenu] = useState(null);
     const [needFixed, setNeedFixed] = useState(false);
     const { t, i18n } = props
@@ -85,6 +84,8 @@ function Topbar(props) {
     const language = useSelector(state => state.app)
     const [token, setToken] = useState(null)
     const [LoginPup, setLoginPup] = useState(false)
+    const [open, setOpen] = useState(false);
+    const [authCode, setAuthCode] = useState(null)
     const dispatch = useDispatch();
     const initSnackbar = {
         message: '',
@@ -108,6 +109,10 @@ function Topbar(props) {
         }
         setAnchorElMenu(null);
     }
+    const handleCloseSnackbar = (event, reason) => {
+        if (reason === 'clickaway') return
+        setOpen(false);
+    };
     const getInit = async () => {
         const data = {
             "channelId": 9,
@@ -122,7 +127,6 @@ function Topbar(props) {
         const res = await getInitConfigByWeb(data)
         if (res.code == 0) {
             localStorage.setItem('authCode', res.data.authCode)
-            setAuthCode(res.data.authCode)
         }
     }
     const handleLogin = (index) => {
@@ -137,6 +141,10 @@ function Topbar(props) {
     const closePup = () => {
         setLoginPup(false)
     }
+    useEffect(() => {
+        setAuthCode(window.localStorage.getItem('authCode') || null)
+        setToken(window.localStorage.getItem('token') || null)
+    }, [])
     useEffect(() => {
         const hanldeScroll = () => {
             let scrollTop = document.body.scrollTop || document.documentElement.scrollTop
@@ -154,7 +162,9 @@ function Topbar(props) {
             if (res.code == 0) {
                 localStorage.removeItem('token')
                 setToken(null)
-                setSnackBar({ ...snackBar, 'message': '退出成功', 'variant': 'success', 'autoHideDuration': 1500 })
+                setSnackBar({ ...snackBar, 'message': '退出成功', 'variant': 'success', 'autoHideDuration': 1500 });
+                setOpen(true);
+                location.reload();
             }
         })
     }
@@ -236,6 +246,21 @@ function Topbar(props) {
                     </Grid>
                 </Grid>
             </Container >
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                open={open}
+                autoHideDuration={snackBar.autoHideDuration}
+                onClose={handleCloseSnackbar}
+            >
+                <MySnackbarContentWrapper
+                    onClose={handleCloseSnackbar}
+                    variant={snackBar.variant}
+                    message={snackBar.message}
+                />
+            </Snackbar>
             {
                 LoginPup && <LoginComponent show={show} closeUp={closePup} />
             }

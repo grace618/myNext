@@ -89,15 +89,7 @@ function GameList(props) {
     const { t } = props
     const language = useSelector(state => state.app)
     const gameItem = useGameList(language.lang)
-    const settings = {
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        arrows: false,
-        autoplay: true,
-    }
+
     return (
         <Layout>
             <Hidden smDown>
@@ -124,7 +116,7 @@ function GameList(props) {
                             <React.Fragment key={item.id}>
                                 <Grid container spacing={2} alignItems="center" >
                                     <Grid item>
-                                        <Link component={ButtonLink} href="/NewsDetail/[id]" as={`/NewsDetail/${item.id}`} ><img className={classes.img} alt="complex" src={item.gameImg} /></Link>
+                                        <Link href="/NewsDetail/[id]" as={`/NewsDetail/${item.id}`} ><img className={classes.img} alt="complex" src={item.gameImg} /></Link>
                                     </Grid>
                                     <Grid item xs={12} sm={12} md={12} lg={8} xl={8} sm container justify="space-between" direction="column">
                                         <Box fontSize="16px" pb={1}><Link href="/NewsDetail/[id]" as={`/NewsDetail/${item.id}`}><a className={classes.titleColor}>萨顶顶倾力献唱《山海镜花》公测倒计时2天</a></Link></Box>
