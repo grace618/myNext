@@ -1,14 +1,14 @@
 
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import Layout from '../../components/Layouts/index.js'
 import Link from 'next/link'
 import Slider from "react-slick";
-import { useSelector } from 'react-redux'
 import { withTranslation } from '../../i18n'
-import { useGameList } from 'common/CustomHooks';
-import { makeStyles, Container, Typography, Grid, Button, Box, Hidden, Breadcrumbs, Divider, ButtonBase } from '@material-ui/core'
-
-
+import { gameList } from 'service/gameList'
+import { makeStyles, Container, Typography, Grid, Button, Box, Hidden, Breadcrumbs, Divider } from '@material-ui/core'
+import Pagination from '@material-ui/lab/Pagination';
+import { useSelector } from 'react-redux'
 const useStyles = makeStyles(theme => ({
     navBar: {
         height: '100%',
@@ -82,11 +82,10 @@ const ButtonLink = React.forwardRef(({ className, href, hrefAs, children }, ref)
     </Link>
 ));
 
+
 function GameList(props) {
     const classes = useStyles()
     const { t } = props
-    const language = useSelector(state => state.app)
-    const gameItem = useGameList(language.lang)
     const settings = {
         dots: true,
         infinite: true,
@@ -95,6 +94,34 @@ function GameList(props) {
         slidesToScroll: 1,
         arrows: false,
         autoplay: true,
+    }
+    const [gameItem, setGameItem] = useState([])
+    const [current, setCurrent] = useState(1)
+    const [total, setTotal] = useState(0)
+    const language = useSelector(state => state.app)
+    const getInfo = async (current) => {
+        const data = {
+            "language": language.lang,
+            "platformId": 3,
+            "size": 12,
+            "current": current,
+        }
+        const res = await gameList(data)
+        setGameItem([])
+        setCurrent(1)
+        setTotal(0)
+        if (res.code == 0) {
+            setGameItem(res.data.records)
+            setCurrent(res.data.current)
+            setTotal(Math.ceil(res.data.total / 10))
+            window.scrollTo(0, 600);
+        }
+    }
+    useEffect(() => {
+        getInfo(current)
+    }, [language])
+    const handleChange = (event, val) => {
+        getInfo(val)
     }
     return (
         <Layout>
@@ -153,27 +180,17 @@ function GameList(props) {
                 </Box>
                 <div className={classes.gameList}>
                     {
-                        gameItem.map(item => (
+                        gameItem.length > 0 && gameItem.map(item => (
                             <React.Fragment key={item.id}>
                                 <Grid container spacing={2} alignItems="center" >
                                     <Grid item>
-                                        <Link component={ButtonLink} href="/GameDetail/[id]" as={`/GameDetail/${item.id}`} ><img className={classes.img} alt="complex" src={item.gameImg} /></Link>
+                                        <Link href="/GameDetail/[id]" as={`/GameDetail/${item.id}`} ><img className={classes.img} alt="complex" src={item.gameImg} /></Link>
                                     </Grid>
                                     <Grid item xs={12} sm container>
                                         <Grid item xs container direction="column" spacing={1} justify="space-around">
                                             <Box fontSize="18px" className={classes.textInfo} pb={1}>{item.gameName}</Box>
-                                            {
-                                                item.gameDetails.map(value => (
-                                                    <React.Fragment key={value.type}>
-                                                        {
-                                                            value.type === '1' && <Typography variant="body2" color="textSecondary">{value.gameDescription}</Typography>
-                                                        }
-                                                        {
-                                                            value.type === '2' && <Box fontSize="14px" lineHeight="1.7"> {value.gameDescription} </Box>
-                                                        }
-                                                    </React.Fragment>
-                                                ))
-                                            }
+                                            <Typography variant="body2" color="textSecondary">{item.simpleDescription}</Typography>
+                                            <Box fontSize="14px" lineHeight="1.7"> {item.shortDescription} </Box>
                                         </Grid>
                                         <Grid item>
                                             <Button component={ButtonLink} href="/GameDetail/[id]" hrefAs={`/GameDetail/${item.id}`} variant="contained" color="primary" size="small"> {t('moreDetail')}</Button>
@@ -185,6 +202,7 @@ function GameList(props) {
                         ))
                     }
                 </div>
+                <Grid container justify="center" className={classes.gameList}><Pagination count={total} onChange={handleChange} page={current} color="primary" variant="outlined" /></Grid>
             </Container>
         </Layout>
     )

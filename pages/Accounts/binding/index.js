@@ -17,13 +17,13 @@ const useStyles = makeStyles(theme => ({
         display: 'flex'
     },
     facebookIcon: {
-        width: 60,
-        height: 60,
+        width: 40,
+        height: 40,
         color: '#4865B3',
     },
     twitterIcon: {
-        width: 60,
-        height: 60,
+        width: 40,
+        height: 40,
         color: '#1EADE5'
     },
     list: {
@@ -32,17 +32,24 @@ const useStyles = makeStyles(theme => ({
         margin: '0 20px'
     },
     text: {
-        margin: '30px 0 0 0'
+        margin: '30px 0 0 0',
+        fontSize: '16px'
+    },
+    title: {
+        fontWeight: '600',
+        color: 'rgb(100, 101, 105)'
+    },
+    textSize: {
+        fontSize: '16px'
     }
-
 }))
 function Profile() {
     const classes = useStyles()
     return (
         <Account>
             <Box width="100%">
-                <Typography variant="h5"> 绑定账号</Typography>
-                <p>你的社交网络账号绑定后，你可以使用已绑定的社交网络账号来登录。</p>
+                <span className={classes.title}> 绑定账号</span>
+                <p className={classes.textSize}>你的社交网络账号绑定后，你可以使用已绑定的社交网络账号来登录。</p>
                 <div className={classes.socail}>
                     <div className={classes.list}>
                         <Facebook className={classes.facebookIcon} />

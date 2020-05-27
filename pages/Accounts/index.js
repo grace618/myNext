@@ -1,7 +1,7 @@
 import React from 'react';
-import { makeStyles, Container, Grid, List, ListItem, ListItemText, ListItemIcon, Divider, Avatar, CardActions, CardContent, Card } from '@material-ui/core'
+import { makeStyles, Container, Grid, List, ListItem, ListItemText, ListItemIcon, Divider, Avatar, CardContent, Card } from '@material-ui/core'
 import { PersonOutline, LockOpen } from '@material-ui/icons';
-
+import { useRouter } from 'next/router'
 import Layout from '../../components/Layouts/index.js'
 const useStyles = makeStyles(theme => ({
     headerPart: {
@@ -9,9 +9,6 @@ const useStyles = makeStyles(theme => ({
         width: '100%',
         height: 250,
         marginTop: '60px'
-    },
-    content: {
-
     },
     avatar: {
         margin: 10,
@@ -28,7 +25,8 @@ const useStyles = makeStyles(theme => ({
     },
     left: {
         padding: '20px',
-        borderRight: '1px solid rgb(224, 224, 224)',
+    },
+    card: {
         minHeight: '500px',
     },
     right: {
@@ -52,15 +50,31 @@ const useStyles = makeStyles(theme => ({
         padding: '120px 0 0 0',
         fontWeight: 'bold',
         fontSize: '34px'
+    },
+    textSize: {
+        fontSize: '18px'
     }
 }))
 function ListItemLink(props) {
     return <ListItem button component="a" {...props} />;
 }
+
 function Accounts(props) {
     const classes = useStyles()
+    const router = useRouter();
+    // router.beforePopState(({ url, as, options }) => {
+    //     // I only want to allow these two routes!
+    //     if (as !== "/" || as !== "/other") {
+    //         // Have SSR render bad routes as a 404.
+    //         window.location.href = as
+    //         return false
+    //     }
+
+    //     return true
+    // });
     return (
         <Layout>
+
             <div className={classes.box}>
                 <div className={classes.headerPart}>
                     <Container><div className={classes.title}> 会员中心</div></Container>
@@ -68,38 +82,37 @@ function Accounts(props) {
                 <Container className={classes.panelContainer}>
                     <Grid container justify="space-between" >
                         <Grid item className={classes.left} xs={12} sm={12} md={12} lg={4} xl={4}>
-                            <div className={classes.avatarBox}>
-                                <Avatar alt="Remy Sharp" src='../../images/accounts/snow1.jpg' className={classes.avatar} />
-                                <div className={classes.userName}>
-                                    garce_xxx
-                                </div>
-                            </div>
-                            <Card className={classes.root}>
+                            <Card className={classes.card}>
                                 <CardContent>
+                                    <div className={classes.avatarBox}>
+                                        <Avatar alt="Remy Sharp" src='../../images/accounts/snow1.jpg' className={classes.avatar} />
+                                        <div className={classes.userName}>
+                                            garce_xxx
+                                    </div>
+                                    </div>
                                     <List component="nav" aria-label="secondary mailbox folders">
                                         <ListItemLink href="/accounts/profile">
                                             <ListItemIcon>
                                                 <PersonOutline />
                                             </ListItemIcon>
-                                            <ListItemText primary="个人资料" />
+                                            <ListItemText primary="个人资料" className={classes.textSize} />
                                         </ListItemLink>
                                         <Divider />
                                         <ListItemLink href="/accounts/binding">
                                             <ListItemIcon>
                                                 <LockOpen />
                                             </ListItemIcon>
-                                            <ListItemText primary="绑定服务" />
+                                            <ListItemText primary="绑定服务" className={classes.textSize} />
                                         </ListItemLink>
                                         <Divider />
                                     </List>
                                 </CardContent>
                             </Card>
                         </Grid>
-                        <Grid item className={classes.right} xs={12} sm={12} md={12} lg={8} xl={8}>
+                        <Grid item className={classes.right} xs={12} sm={12} md={12} lg={7} xl={7}>
                             {props.children}
                         </Grid>
                     </Grid>
-
                 </Container>
             </div>
         </Layout>

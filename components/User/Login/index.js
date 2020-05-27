@@ -2,16 +2,19 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link'
 import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux';
+import Phone from 'react-phone-number-input'
+import { withTranslation } from '../../../i18n'
 const crypto = require('crypto')
 
 import { Grid, Button, TextField, Checkbox, Box, FormControlLabel, Typography, FormControl, Snackbar } from '@material-ui/core';
 import { Save as SaveIcon, Clear } from '@material-ui/icons';
+
 import { makeStyles } from '@material-ui/styles'
 import MySnackbarContentWrapper from 'components/SnackbarWrapper'
 import { useSubmitForm } from 'common/CustomHooks'
-import { withTranslation } from '../../../i18n'
 import { login, sendPhoneCode, registerByEmailValitor, sendCaptchaByAuthCode } from 'service/login'
-import { getCode } from '../../../utils/index'
+
+
 
 const useStyles = makeStyles(theme => ({
 
@@ -119,6 +122,12 @@ const useStyles = makeStyles(theme => ({
         '&+span': {
             fontSize: '16px'
         }
+    },
+    phoneCode: {
+        height: '58px',
+        '& input': {
+            height: '58px',
+        }
 
     }
 
@@ -131,7 +140,7 @@ function LoginComponent(props) {
         autoHideDuration: 0
     }
     const [snackBar, setSnackBar] = useState(initSnackbar)
-    let { show, t, i18n } = props
+    let { show, t } = props
     const [changePanel, setShow] = useState(show)
     const language = useSelector(state => state.app)
     const [authCode, setAuthCode] = useState(null)
@@ -141,7 +150,8 @@ function LoginComponent(props) {
     const [isSend, setSend] = useState(false)
     const [isSend1, setSend1] = useState(false)
     const [token, setToken] = useState(null)
-
+    const [uid, setUid] = useState(null)
+    const [phoneValue, setPhoneValue] = useState(null)
     useEffect(() => {
         setAuthCode(window.localStorage.getItem('authCode') || null)
         setToken(window.localStorage.getItem('token') || null)
@@ -152,12 +162,13 @@ function LoginComponent(props) {
     }
     const sendCode = () => {
         const data = {
-            uluAccount: inputs.phoneNumber,
+            uluAccount: phoneValue,
             gameId: '100001'
         }
         sendPhoneCode(data, authCode).then(res => {
             if (res.code != 0) {
-                getCode(res.code)
+                setSnackBar({ ...snackBar, 'message': res.msg, 'variant': 'warning', 'autoHideDuration': 1500 })
+                setOpen(true);
             }
             setSend(true)
             let t1 = setInterval(() => {
@@ -178,6 +189,17 @@ function LoginComponent(props) {
         code: ''
     }
     const [LoginWay, setLoginWay] = useState(true)
+    const checkEmail = (email) => {
+        setSnackBar(initSnackbar)
+        const isEmail = /^([A-Za-z0-9_\-\.\u4e00-\u9fa5])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,8})$/.test(email)
+        if (email === '' || !isEmail) {
+            setSnackBar({ ...snackBar, 'message': '请输入合理的邮箱', 'variant': 'warning', 'autoHideDuration': 5000 })
+            setOpen(true);
+            return false
+        }
+        return true
+    }
+
     const submitFormData = () => {
         setSnackBar(initSnackbar)
         const { password, email, phoneNumber, code } = inputs
@@ -187,8 +209,9 @@ function LoginComponent(props) {
         let data = {}
         if (LoginWay) {
             data = { loginType: 2, accessId: '', accessToken: '', uluAccount: email, password: pwd, gameId: '100001' }
-            if (password === '' || email === '') {
-                setSnackBar({ ...snackBar, 'message': '请输入电子邮箱或密码', 'variant': 'warning', 'autoHideDuration': 10000 })
+            if (!checkEmail(email)) return false
+            if (password === '') {
+                setSnackBar({ ...snackBar, 'message': '请输入密码', 'variant': 'warning', 'autoHideDuration': 5000 })
                 setOpen(true);
                 return false
             }
@@ -205,12 +228,15 @@ function LoginComponent(props) {
                 setSnackBar({ ...snackBar, 'message': 'success', 'variant': 'success', 'autoHideDuration': 1500 })
                 setOpen(true);
                 setToken(res.data.token)
+                setUid(res.data.uid)
                 localStorage.setItem('token', res.data.token)//这里用localstorage，应该不会刷新数据
                 props.closeUp()
                 setInputs(initialFormState)
-                location.reload();
+                location.reload()
             } else {
-                getCode(res.code)
+                getCode()
+                // setSnackBar({ ...snackBar, 'message': res.msg, 'variant': 'warning', 'autoHideDuration': 1500 })
+                // setOpen(true);
             }
         })
     }
@@ -227,12 +253,20 @@ function LoginComponent(props) {
     const submitRegData = () => {
         const { password, passwordAgain, mail, captcha, checkedA } = regInputs
         setSnackBar(initSnackbar)
-        if ((password == '' || passwordAgain == '') || password !== passwordAgain) {
-            setSnackBar({ ...snackBar, 'message': '两次输入密码不一致', 'variant': 'warning', 'autoHideDuration': 10000 })
+        if (!checkEmail(mail)) return false
+        if (password.length < 8) {
+            setSnackBar({ ...snackBar, 'message': '请输入8-20位字母 (区别大小写)、数字或符号', 'variant': 'warning', 'autoHideDuration': 5000 })
+            setOpen(true);
+            return false
+        }
+        if ((password == '' || passwordAgain == '') || (password !== passwordAgain)) {
+            setSnackBar({ ...snackBar, 'message': '两次输入密码不一致', 'variant': 'warning', 'autoHideDuration': 5000 })
+            setOpen(true);
             return false
         }
         if (!checkedA) {
             setSnackBar({ ...snackBar, 'message': '请先同意服务条款', 'variant': 'warning', 'autoHideDuration': 1500 })
+            setOpen(true);
             return false
         }
         let md5 = crypto.createHash('md5')
@@ -249,7 +283,8 @@ function LoginComponent(props) {
                 setToken(res.data.token)
                 props.closeUp()
             } else {
-                getCode(res.code)
+                setSnackBar({ ...snackBar, 'message': res.msg, 'variant': 'warning', 'autoHideDuration': 1500 })
+                setOpen(true);
             }
         })
     }
@@ -269,7 +304,8 @@ function LoginComponent(props) {
         }
         sendCaptchaByAuthCode(data, authCode).then(res => {
             if (res.code != 0) {
-                getCode(res.code)
+                setSnackBar({ ...snackBar, 'message': res.msg, 'variant': 'warning', 'autoHideDuration': 1500 })
+                setOpen(true);
             }
             setSend1(true)
             let t1 = setInterval(() => {
@@ -379,7 +415,8 @@ function LoginComponent(props) {
             if (res.code == 0) {
                 alert('成功')
             } else {
-                getCode(res.code)
+                setSnackBar({ ...snackBar, 'message': res.msg, 'variant': 'warning', 'autoHideDuration': 1500 })
+                setOpen(true);
             }
         })
     }
@@ -404,7 +441,7 @@ function LoginComponent(props) {
                             onClick={getFacebookInfo}
                         >
                             Facebook登入
-                                </Button>
+                        </Button>
                         <Button
                             variant="contained"
                             color="primary"
@@ -467,8 +504,21 @@ function LoginComponent(props) {
                                     {/* login by phoneNumber */}
                                     {
                                         !LoginWay && <div>
+
                                             <FormControl className={classes.inputBox}>
-                                                <TextField
+                                                <Phone
+                                                    placeholder="Enter phone number"
+                                                    className={classes.phoneCode}
+                                                    label="手机号码"
+                                                    name="phoneNumber"
+                                                    margin="normal"
+                                                    variant="outlined"
+                                                    country="US"
+                                                    value={phoneValue}
+                                                    defaultCountry="CN"
+                                                    onChange={setPhoneValue}
+                                                />
+                                                {/* <TextField
                                                     label="手机号码"
                                                     className={classes.textField}
                                                     name="phoneNumber"
@@ -476,7 +526,7 @@ function LoginComponent(props) {
                                                     variant="outlined"
                                                     value={inputs.phoneNumber}
                                                     onChange={handleInputChange}
-                                                />
+                                                /> */}
                                             </FormControl>
                                             <Box display="flex" justifyContent="space-betwwen">
                                                 <FormControl className={classes.getcode}>

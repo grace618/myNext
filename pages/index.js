@@ -1,15 +1,16 @@
 
 import React from 'react';
 import PropTypes from 'prop-types'
-import { useSelector } from 'react-redux'
 import Link from 'next/link'
 import Slider from "react-slick";
 import Layout from '../components/Layouts/index.js'
-
+import { gameList } from 'service/gameList'
+import { getList } from 'service/news'
 import { makeStyles, Container, Typography, Grid, Button, Box, Hidden } from '@material-ui/core'
 import { withTranslation } from '../i18n'
-import { useGameList } from 'common/CustomHooks';
-// import './index.css'
+import { parseTime } from 'utils/format.js'
+import './index.module.css'
+import { useRouter } from 'next/router'
 const useStyles = makeStyles(theme => ({
     header: {
         width: '100%',
@@ -153,6 +154,7 @@ const useStyles = makeStyles(theme => ({
     },
     paper: {
         margin: '100px 0 50px 0',
+        height: '630px',
         '& > *': {
             marginBottom: '67px',
             boxSizing: 'border-box',
@@ -185,14 +187,31 @@ const useStyles = makeStyles(theme => ({
         color: "#747474"
     },
     center: {
-        marginTop: '-42px'
+        position: 'relative',
+        color: 'white',
+
     },
     news_center: {
-        margin: "0 10px",
+        margin: "-42px 10px 0 10px",
+        boxSizing: 'border-box',
+        position: 'absolute',
+        top: 0,
+        left: 0,
         borderLeft: "4px solid #fe9a45",
-        boxSizing: 'border-box'
+    },
+    center_text: {
+        zIndex: 2,
+        position: 'absolute',
+        bottom: 78,
+        left: 34
+    },
+    center_time: {
+        position: 'absolute',
+        zIndex: '2',
+        bottom: 28,
+        left: 34,
+        fontSize: '12px'
     }
-
 }))
 
 const ButtonLink = React.forwardRef(({ className, href, hrefAs, children }, ref) => (
@@ -202,9 +221,47 @@ const ButtonLink = React.forwardRef(({ className, href, hrefAs, children }, ref)
         </a>
     </Link>
 ));
+
+export async function getServerSideProps(context) {
+    let list = []
+    const data = {
+        "language": context.req.language,
+        "platformId": 3,
+        "size": 12,
+        "current": 1,
+    }
+    const res = await gameList(data)
+    if (res.code == 0) {
+        list = res.data.records
+    }
+
+    let newList = []
+    const item = {
+        "language": context.req.language,
+        "platformId": 3,
+        "label": 1,
+        "size": 12,
+        "current": 1
+    }
+    const response = await getList(item)
+    if (response.code == 0) {
+        newList = response.data.records
+    }
+    return {
+        props: {
+            "gameItem": list,
+            'newList': newList
+        }
+    }
+}
+
 function Home(props) {
     const classes = useStyles()
-    const { t } = props
+    const { t, gameItem, newList } = props
+    const router = useRouter();
+    const toDetail = (e, id) => {
+        router.push(`/NewsDetail/${id}`)
+    }
     const settings1 = {
         dots: false,
         infinite: true,
@@ -247,11 +304,8 @@ function Home(props) {
             }
         ]
     }
-    const language = useSelector(state => state.app)
-    const gameItem = useGameList(language.lang)
     return (
         <Layout>
-
             {/* slide head img */}
             <div className={classes.headerBox}>
                 <div className={classes.headerWrap}>
@@ -333,18 +387,13 @@ function Home(props) {
                     <div className={classes.slideWrap}>
                         <Slider {...settings} className={classes.box}>
                             {
-                                gameItem && gameItem.map(item => (
+                                gameItem.length > 0 && gameItem.map(item => (
                                     <Grid container alignItems="center" direction="column" justify="space-around" key={item.id} className={classes.slideImg}>
                                         <Link href="/GameDetail/[id]" as={`/GameDetail/${item.id}`}>
                                             <img src={item.gameImg} alt="" />
                                         </Link>
-
                                         <Typography className={classes.gName} align="center">{item.gameName}</Typography>
-                                        {
-                                            item.gameDetails.length > 0 && item.gameDetails.map(value => (
-                                                value.type === '1' && <Typography className={classes.slogan} key={value.type} align="center"> {value.gameDescription} </Typography>
-                                            ))
-                                        }
+                                        <Typography className={classes.slogan} align="center"> {item.simpleDescription} </Typography>
                                     </Grid>
                                 ))
                             }
@@ -363,23 +412,25 @@ function Home(props) {
                         <Typography className={classes.slogan} align="center" > 这里有游戏相关资讯 </Typography>
                         <span className={classes.line}></span>
                         <Grid container justify="space-between" className={classes.paper}>
-                            <Grid item xs={12} sm={12} md={4} lg={4} xl={4} >
+                            <Grid item xs={12} sm={12} md={4} lg={4} xl={4} onClick={(e) => toDetail(e, newList[1].id)}>
                                 <div className={classes.news_detail}>
-                                    <p className={classes.news_tit_s}>萨顶顶倾力献唱《山海镜花》公测倒计时2天</p>
-                                    <p className={classes.news_txt}> 《山海镜花》即将于4月29日正式开启全平台公测，距离大荒之旅正式启程还有2天！今日，本作公式公布了双版本主题曲预告，国际...</p>
-                                    <p className={classes.news_time}> 04/28 2020</p>
+                                    <p className={classes.news_tit_s}>{newList[1].title}</p>
+                                    <p className={classes.news_txt}>{newList[1].content}</p>
+                                    <p className={classes.news_time}> {parseTime(newList[1].createTime)}</p>
                                 </div>
-                                <img src="Images/i1.png" alt="" />
+                                <img src={newList[1].imgUrl} alt="" />
                             </Grid>
-                            <Grid item container direction="column" justify="center" xs={12} sm={12} md={4} lg={4} xl={4} className={classes.center}>
-                                <img src="Images/i2.png" alt="" className={classes.news_center} />
+                            <Grid item container direction="column" justify="center" xs={12} sm={12} md={4} lg={4} xl={4} className={classes.center} onClick={(e) => toDetail(e, newList[1].id)}>
+                                <img src={newList[0].backgroundImgUrl} alt="" className={classes.news_center} />
+                                <p className={classes.center_text}>{newList[0].title}</p>
+                                <p className={classes.center_time}> {parseTime(newList[0].createTime)}</p>
                             </Grid>
-                            <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
-                                <img src="Images/i1.png" alt="" />
+                            <Grid item xs={12} sm={12} md={4} lg={4} xl={4} onClick={(e) => toDetail(e, newList[1].id)}>
+                                <img src={newList[2].imgUrl} alt="" />
                                 <div className={classes.news_detail}>
-                                    <p className={classes.news_tit_s}>萨顶顶倾力献唱《山海镜花》公测倒计时2天</p>
-                                    <p className={classes.news_txt}> 《山海镜花》即将于4月29日正式开启全平台公测，距离大荒之旅正式启程还有2天！今日，本作公式公布了双版本主题曲预告，国际...</p>
-                                    <p className={classes.news_time}> 04/28 2020</p>
+                                    <p className={classes.news_tit_s}>{newList[2].title}</p>
+                                    <p className={classes.news_txt}> {newList[2].content}</p>
+                                    <p className={classes.news_time}>  {parseTime(newList[2].createTime)}</p>
                                 </div>
                             </Grid>
                         </Grid>

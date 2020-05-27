@@ -1,6 +1,12 @@
 import axios from 'utils/axios'
-const newsDetail = (id) => axios({
-    url: `/api/news/info/id/${id}`,
-    method: 'get',
+const newsDetail = (data) => axios({
+    url: `/api/news/info/getDetail`,
+    method: 'post',
+    data
 })
-export { newsDetail }
+const getList = (data) => axios({
+    url: `/api/news/info/list`,
+    method: 'post',
+    data
+})
+export { getList, newsDetail }

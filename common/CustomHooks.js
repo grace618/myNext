@@ -1,20 +1,4 @@
 import { useState, useEffect } from 'react'
-import { gameList } from 'service/gameList'
-const useGameList = (language) => {
-    const [list, setList] = useState([])
-    const getList = async (language) => {
-        const res = await gameList(language)
-        if (res.code === 0) {
-            setList(res.data)
-        }
-    }
-    useEffect(() => {
-        if (language) {
-            getList(language)
-        }
-    }, [language])
-    return list
-}
 const useSubmitForm = (initialValues, callback) => {
     const [inputs, setInputs] = useState(initialValues);
     const handleSubmit = (event) => {
@@ -23,13 +7,12 @@ const useSubmitForm = (initialValues, callback) => {
         // setInputs(initialValues)
     }
     const handleInputChange = (event) => {
-        event.persist();
+        // event.persist();
         if (event.target.checked) {
             setInputs({ ...inputs, [event.target.name]: event.target.checked })
         } else {
             setInputs({ ...inputs, [event.target.name]: event.target.value })
         }
-
         // setInputs(inputs => ({ ...inputs, [event.target.name]: event.target.value }));
     }
     return {
@@ -39,4 +22,4 @@ const useSubmitForm = (initialValues, callback) => {
         setInputs
     };
 }
-export { useGameList, useSubmitForm }
+export { useSubmitForm }

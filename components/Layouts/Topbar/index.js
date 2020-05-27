@@ -9,7 +9,7 @@ import { setLang } from 'store/modules/app'
 import { withTranslation } from '../../../i18n'
 import MySnackbarContentWrapper from 'components/SnackbarWrapper'
 import { logout, getInitConfigByWeb } from 'service/login'
-import LoginComponent from '../Login'
+import LoginComponent from '../../User/Login'
 
 
 const useStyles = makeStyles(theme => ({
@@ -130,7 +130,6 @@ function Topbar(props) {
         }
     }
     const handleLogin = (index) => {
-        getInit()
         if (index == 3) {
             setShow(true)
         } else {
@@ -144,6 +143,7 @@ function Topbar(props) {
     useEffect(() => {
         setAuthCode(window.localStorage.getItem('authCode') || null)
         setToken(window.localStorage.getItem('token') || null)
+        getInit()
     }, [])
     useEffect(() => {
         const hanldeScroll = () => {
@@ -161,9 +161,10 @@ function Topbar(props) {
         logout({ gameId: '100001' }, token).then(res => {
             if (res.code == 0) {
                 localStorage.removeItem('token')
+                localStorage.removeItem('authCode')
                 setToken(null)
-                setSnackBar({ ...snackBar, 'message': '退出成功', 'variant': 'success', 'autoHideDuration': 1500 });
                 setOpen(true);
+                setSnackBar({ ...snackBar, 'message': '退出成功', 'variant': 'success', 'autoHideDuration': 1500 });
                 location.reload();
             }
         })
@@ -228,7 +229,7 @@ function Topbar(props) {
                             {
                                 token &&
                                 <>
-                                    <a href="/accounts/profile">grace_xxxx</a>
+                                    <a href="/accounts/profile">{'garce_ecilid'}</a>
                                     <span className={classes.asLink} onClick={signout}>退出</span>
                                 </>
                             }

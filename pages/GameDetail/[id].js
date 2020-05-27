@@ -1,18 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux'
+import React, { useState, useEffect } from 'react';
 import { makeStyles, Container, Typography, Grid, Button, Box, Hidden, Breadcrumbs, Divider } from '@material-ui/core'
 import Slider from "react-slick";
 import ReactPlayer from 'react-player'
 import PropTypes from 'prop-types'
 import Link from 'next/link'
-import ImageZoom from 'react-medium-image-zoom'
 import { withTranslation } from '../../i18n'
 import Layout from '../../components/Layouts/index.js'
-import Router from 'next/router'
-// import {
-//     TwitterShareButton,
-//     FacebookShareButton,
-// } from 'react-share';
+
 import { ReactComponent as DateIcon } from 'icons/svg/date.svg'
 import { ReactComponent as LightIcon } from 'icons/svg/light.svg'
 import { ReactComponent as UserIcon } from 'icons/svg/user.svg'
@@ -23,9 +17,13 @@ import { ReactComponent as IOS } from 'icons/svg/IOS.svg'
 import { ReactComponent as Android } from 'icons/svg/andriod.svg'
 import { ReactComponent as Twitch } from 'icons/svg/twitch.svg'
 
-
 import { getGameDetail } from 'service/gameDetail'
 import { parseTime } from 'utils/format.js'
+
+// import {
+//     TwitterShareButton,
+//     FacebookShareButton,
+// } from 'react-share';
 const useStyles = makeStyles(theme => ({
     navBar: {
         height: '100%',
@@ -109,7 +107,8 @@ const useStyles = makeStyles(theme => ({
         '& img': {
             width: '100%',
             padding: '3%',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
+            cursor: 'zoom-in'
         }
     },
     textInfo: {
@@ -137,6 +136,27 @@ const useStyles = makeStyles(theme => ({
         height: 128,
         borderRadius: '30px'
     },
+    mask: {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: '888',
+        background: 'rgba(0, 0, 0, 0.7)',
+    },
+    bigImg: {
+        position: 'fixed',
+        left: 0,
+        right: 0,
+        bottom: 0,
+        top: 0,
+        margin: 'auto',
+        width: '80%',
+        height: '80%',
+        zIndex: '889',
+        cursor: 'zoom-out'
+    }
 }))
 const ButtonLink = React.forwardRef(({ className, href, hrefAs, children }, ref) => (
     <Link href={href} as={hrefAs} ref={ref}>
@@ -169,15 +189,51 @@ const gameType = [
     'IdleGame',
     'CasualGame'
 ]
+export async function getServerSideProps(context) {
+    let list = []
+    const data = {
+        "id": context.query.id,
+        "language": context.req.language,
+        "platformId": 3,
+        "gameId": 100010,
+    }
+    const res = await getGameDetail(data)
+    if (res.code === 0) {
+        list = res.data
+    }
+    return {
+        props: {
+            "detail": list
+        }
+    }
+}
 function Detail(props) {
     const classes = useStyles()
-    let id = Router.router.query.id
-    let { t } = props
-    const [detail, setDetail] = useState({ gameBaseInfoList: [], recommendList: [], downloadUrlList: [] })
-    const [snapshotImg, setSnapshotImg] = useState([])
-    const [video, setVideo] = useState([])
-    const [carousel, setCarousel] = useState([])
-    const language = useSelector(state => state.app)
+    let { t, detail } = props
+    let snapshotUrlList = [], video = [], carousel = [];
+    if (detail.snapshotUrlList.length > 0) {
+        detail.snapshotUrlList.map(item => {
+            if (item.type === '1') {
+                snapshotUrlList.push(item.imgUrl)
+            }
+            // if (item.type === '3') {
+            //     if (item.imgUrl && item.imgUrl != '') {
+            //         video.push(item.imgUrl)
+            //     }
+            // }
+            if (item.type === '2') {
+                carousel.push(item.imgUrl)
+            }
+            return null
+        })
+    }
+
+    const [isShow, setShow] = useState(false)
+    const [bigimgUrl, setBigimgUrl] = useState(false)
+    const showBigImg = (e, url) => {
+        setShow(true)
+        setBigimgUrl(url)
+    }
     const settings = {
         dots: true,
         infinite: true,
@@ -214,35 +270,6 @@ function Detail(props) {
             }
         ]
     }
-    const getDetail = async (id, lang) => {
-        const res = await getGameDetail(id, lang)
-        if (res.code === 0) {
-            setDetail(res.data)
-            let snapshotImg = [], video = [], carousel = []
-            res.data.snapshotUrlList.map(item => {
-                if (item.type === '1') {
-                    snapshotImg.push(item.snapshotUrl)
-                }
-                if (item.type === '3') {
-                    if (item.snapshotUrl && item.snapshotUrl != '') {
-                        video.push(item.snapshotUrl)
-                    }
-                }
-                if (item.type === '2') {
-                    carousel.push(item.snapshotUrl)
-                }
-                return null
-            })
-            setSnapshotImg(snapshotImg)
-            setVideo(video)
-            setCarousel(carousel)
-        }
-    }
-    useEffect(() => {
-        if (language) {
-            getDetail(id, language.lang)
-        }
-    }, [language, id])
     return (
         <Layout>
             <Hidden smDown>
@@ -251,8 +278,8 @@ function Detail(props) {
                         <Grid justify="space-between" container alignItems="center">
                             <Typography className={classes.logo}>ULU GAMES</Typography>
                             <Breadcrumbs aria-label="breadcrumb">
-                                <Link color="inherit" href="/" component={ButtonLink} className={classes.breadcrumbs}>{t('home')}</Link>
-                                <Link color="inherit" href="/gameslist" component={ButtonLink} className={classes.breadcrumbs}>{t('game')}</Link>
+                                <Link href="/"><a className={classes.breadcrumbs}>{t('home')}</a></Link>
+                                <Link href="/gameslist"><a className={classes.breadcrumbs}>{t('game')}</a></Link>
                                 <Typography color="textPrimary" className={classes.breadcrumbs}>{detail.gameName}</Typography>
                             </Breadcrumbs>
                         </Grid>
@@ -266,11 +293,7 @@ function Detail(props) {
                     </Box>
                     <div>
                         <Typography gutterBottom variant="h5" color="textPrimary">{detail.gameName}</Typography>
-                        {
-                            detail.gameBaseInfoList.map(value => (
-                                value.type === '1' && <Typography color="textSecondary" key={value.type}>{value.gameDescription}</Typography>
-                            ))
-                        }
+                        <Typography color="textSecondary">{detail.simpleDescription}</Typography>
                     </div>
                 </Grid>
                 <Divider />
@@ -278,27 +301,15 @@ function Detail(props) {
                     {/* spacing={spacing}  */}
                     <Grid item xs={12} sm={12} md={7} lg={7} xl={7}>
                         {
-                            snapshotImg.map(item => (
+                            snapshotUrlList.length > 0 && snapshotUrlList.map(item => (
                                 <img src={item} alt="" width="100%" className={classes.source} key={item} />
                             ))
                         }
-                        {
-                            video.length > 0 && video.map(item => (
-                                <ReactPlayer url={item} width="100%" className={classes.source} key={item} />
-                            ))
-                        }
+                        <ReactPlayer url={detail.introductVideoUrl} width="100%" className={classes.source} />
                     </Grid>
                     <Grid item xs={12} sm={12} md={5} lg={5} xl={5} className={classes.rightPanel}>
                         <Box color="text.secondary" mb={3}>
-                            {
-                                detail.gameBaseInfoList.map(value => (
-                                    <React.Fragment key={value.type}>
-                                        {/* {value.type === '2' && <Typography color="textSecondary" key={value.type}>{value.gameDescription}</Typography>} */}
-                                        {value.type === '3' && <div className={classes.m} dangerouslySetInnerHTML={{ __html: value.gameDescription }}
-                                        />}
-                                    </React.Fragment>
-                                ))
-                            }
+                            <div className={classes.m} dangerouslySetInnerHTML={{ __html: detail.longDescription }}></div>
                         </Box>
                         <Divider />
                         <Grid className={classes.infoPanel} container direction="column">
@@ -321,20 +332,20 @@ function Detail(props) {
                                 <Grid className={classes.infoPanel} container direction="column">
                                     <div className={classes.textInfo} >{t('download')}</div>
                                     {
-                                        detail.downloadUrlList.map(item => (
+                                        detail.downloadUrlList.length > 0 && detail.downloadUrlList.map(item => (
                                             <React.Fragment key={item.type}>
                                                 {item.type === '2' &&
-                                                    <Button variant="contained" color="secondary" size="large" className={classes.downloadiOS} href={item.downloadUrl} target="_blank">
+                                                    (<Button variant="contained" color="secondary" size="large" className={classes.downloadiOS} href={item.downloadUrl} target="_blank">
                                                         <IOS className={classes.icon} />
                                                         APP STORE
-                                            </Button>
+                                                    </Button>)
                                                 }
                                                 {
                                                     item.type === '1' &&
-                                                    <Button variant="contained" color="primary" size="large" className={classes.downloadGoogleplay} href={item.downloadUrl} target="_blank">
+                                                    (<Button variant="contained" color="primary" size="large" className={classes.downloadGoogleplay} href={item.downloadUrl} target="_blank">
                                                         <Android className={classes.icon} />
                                                         GOOGLE PLAY
-                                            </Button>
+                                                    </Button>)
                                                 }
                                             </React.Fragment>
                                         ))
@@ -423,21 +434,24 @@ function Detail(props) {
                         {/* <Skeleton variant="rect" width={210} height={118} /> */}
                         {
                             carousel.map(item => (
-                                <div key={item} className={classes.slideImg}>
-                                    <ImageZoom
-                                        image={{ src: item, alt: '', }}
-                                        zoomImage={{ src: item, alt: '' }}
-                                    />
+                                <div key={item} className={classes.slideImg} onClick={(e) => showBigImg(e, item)}>
+                                    <img src={item} alt="" />
                                 </div>
                             ))
                         }
                     </Slider>
+                    {
+                        isShow && (<div onClick={() => { setShow(false) }}>
+                            <div className={classes.mask}></div>
+                            <img src={bigimgUrl} alt="" className={classes.bigImg} />
+                        </div>)
+                    }
                 </div>
                 <Divider />
                 <Box pt={3} pb={4} fontSize="20px" className={classes.textInfo}>{t('recommended')}</Box>
                 <Grid justify="space-between" container>
                     {
-                        detail.recommendList.map(item => (
+                        detail.recommendList && detail.recommendList.map(item => (
                             <Grid container item xs={12} sm={12} md={12} lg={6} xl={6} key={item.id} >
                                 <Grid xs={12} sm={12} md={3} lg={3} xl={3} item container justify="center">
                                     <ButtonLink href={`/detail/${item.id}`}>
@@ -448,11 +462,7 @@ function Detail(props) {
                                     <Grid item justify="space-between" container>
                                         <div>
                                             <Box fontSize="18px" className={classes.textInfo}>{item.gameName}</Box>
-                                            {
-                                                item.gameDetails.map(value => (
-                                                    value.type === '1' && <Typography variant="body2" color="textSecondary" key={value.type}>{value.gameDescription}</Typography>
-                                                ))
-                                            }
+                                            <Typography variant="body2" color="textSecondary" >{item.simpleDescription}</Typography>
                                         </div>
                                         <Hidden smDown>
                                             <Button variant="contained" color="primary" size="small" className={classes.moreDetail} component={ButtonLink} href={`/detail/${item.id}`}>
@@ -462,11 +472,7 @@ function Detail(props) {
                                     </Grid>
                                     <Grid>
                                         <Box fontSize="14px" pt={2} lineHeight="1.7" pb={2}>
-                                            {
-                                                item.gameDetails.map(value => (
-                                                    value.type === '2' && <Typography variant="body2" color="textSecondary" key={value.type}>{value.gameDescription}</Typography>
-                                                ))
-                                            }
+                                            <Typography variant="body2" color="textSecondary" >{item.shortDescription}</Typography>
                                         </Box>
                                     </Grid>
                                 </Grid>
@@ -477,6 +483,7 @@ function Detail(props) {
                 <Grid alignItems="center" container justify="center" className={classes.space}>
                     <Button variant="contained" color="primary" size="large" component={ButtonLink} href="/gameslist">{t('seeMore')} </Button>
                 </Grid>
+
             </Container>
         </Layout>
     );

@@ -1,5 +1,6 @@
 const path = require('path')
 const withOffline = require('next-offline')
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 let target = ''
 if (process.env.NODE_ENV == 'development') {
     target = 'http:192.168.1.100:8092'
@@ -20,6 +21,7 @@ module.exports = {
                     statsFilename: 'stats.json',
                 }));
         }
+
         config.resolve.alias['Component'] = path.join(__dirname, 'components')
         config.resolve.alias['Images'] = path.join(__dirname, 'public/images')
         config.resolve.alias['Public'] = path.join(__dirname, 'public')
@@ -35,6 +37,7 @@ module.exports = {
             },
             use: ['@svgr/webpack'],
         });
+        config.plugins.push(new CleanWebpackPlugin())
         return config
     },
 }

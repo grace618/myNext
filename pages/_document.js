@@ -13,10 +13,23 @@ class Documents extends Document {
         const { req, res } = ctx;
         if (req) {
             const { headers } = req;
-            console.log(req.headers, 'req')
         } else {
             bestCountryCodes = resolveBrowserBestCountryCodes();
         }
+
+        // if (window) {
+        //     router.beforePopState(({ url, as, options }) => {
+        //         // I only want to allow these two routes!
+        //         if (as !== "/" || as !== "/other") {
+        //             // Have SSR render bad routes as a 404.
+        //             window.location.href = as
+        //             return false
+        //         }
+
+        //         return true
+        //     });
+        // }
+
         return {
             ...initialProps,
             styles: (
@@ -27,7 +40,6 @@ class Documents extends Document {
             )
         }
     }
-
     render() {
         return (
             <Html>

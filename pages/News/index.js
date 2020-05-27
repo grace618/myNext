@@ -1,13 +1,13 @@
-
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import Layout from '../../components/Layouts/index.js'
 import Link from 'next/link'
-import Slider from "react-slick";
-import { useSelector } from 'react-redux'
 import { withTranslation } from '../../i18n'
-import { useGameList } from 'common/CustomHooks';
-import { makeStyles, Container, Typography, Grid, Button, Box, Hidden, Breadcrumbs, Divider, ButtonBase } from '@material-ui/core'
-
+import { makeStyles, Container, Typography, Grid, Box, Hidden, Breadcrumbs, Divider } from '@material-ui/core'
+import Pagination from '@material-ui/lab/Pagination';
+import { getList } from 'service/news'
+import { parseTime } from 'utils/format.js'
+import { useSelector } from 'react-redux'
 
 const useStyles = makeStyles(theme => ({
     navBar: {
@@ -42,7 +42,8 @@ const useStyles = makeStyles(theme => ({
         margin: '25px 0'
     },
     gameList: {
-        margin: '50px 0 110px 0'
+        margin: '50px 0 20px 0',
+
     },
     gameDesc: {
         fontSize: 44,
@@ -69,27 +70,51 @@ const useStyles = makeStyles(theme => ({
         width: '100%',
     },
     linkColor: {
-        color: '#7c7c7c'
+        color: '#7c7c7c',
+        height: '100px'
     },
     titleColor: {
         color: "#000",
         fontWeight: "bold"
+    },
+    box: {
+        minHeight: '500px'
     }
 })
 )
-const ButtonLink = React.forwardRef(({ className, href, hrefAs, children }, ref) => (
-    <Link href={href} as={hrefAs} ref={ref}>
-        <a className={className}>
-            {children}
-        </a>
-    </Link>
-));
-function GameList(props) {
+
+
+function NewList(props) {
     const classes = useStyles()
     const { t } = props
+    const [infoItem, setInfoItem] = useState([])
+    const [current, setCurrent] = useState(1)
+    const [total, setTotal] = useState(0)
     const language = useSelector(state => state.app)
-    const gameItem = useGameList(language.lang)
-
+    const getInfo = async (current) => {
+        const data = {
+            "language": language.lang,
+            "platformId": 3,
+            "label": 1,
+            "size": 10,
+            "current": current
+        }
+        const res = await getList(data)
+        setInfoItem([])
+        setCurrent(1)
+        setTotal(0)
+        if (res.code == 0) {
+            setInfoItem(res.data.records)
+            setCurrent(res.data.current)
+            setTotal(Math.ceil(res.data.total / 10))
+        }
+    }
+    useEffect(() => {
+        getInfo(current)
+    }, [language])
+    const handleChange = (event, val) => {
+        getInfo(val)
+    }
     return (
         <Layout>
             <Hidden smDown>
@@ -110,18 +135,18 @@ function GameList(props) {
                     <span className={classes.headingBlock}>资讯</span>
                     <span className={classes.line}></span>
                 </Box>
-                <div className={classes.gameList}>
+                <div className={`${classes.gameList} ${classes.box}`}>
                     {
-                        gameItem.map(item => (
+                        infoItem.length > 0 && infoItem.map(item => (
                             <React.Fragment key={item.id}>
                                 <Grid container spacing={2} alignItems="center" >
                                     <Grid item>
-                                        <Link href="/NewsDetail/[id]" as={`/NewsDetail/${item.id}`} ><img className={classes.img} alt="complex" src={item.gameImg} /></Link>
+                                        <Link href="/NewsDetail/[id]" as={`/NewsDetail/${item.id}`} ><img className={classes.img} alt="complex" src={item.imgUrl} /></Link>
                                     </Grid>
                                     <Grid item xs={12} sm={12} md={12} lg={8} xl={8} sm container justify="space-between" direction="column">
-                                        <Box fontSize="16px" pb={1}><Link href="/NewsDetail/[id]" as={`/NewsDetail/${item.id}`}><a className={classes.titleColor}>萨顶顶倾力献唱《山海镜花》公测倒计时2天</a></Link></Box>
-                                        <Box fontSize="14px" lineHeight="1.7" pb={3}> <Link href="/NewsDetail/[id]" as={`/NewsDetail/${item.id}`}><a className={classes.linkColor}>《山海镜花》即将于4月29日正式开启全平台公测，距离大荒之旅正式启程还有2天！今日，本作公式公布了双版本主题曲预告，国际音乐人萨顶顶重磅加盟，倾情献唱山盟版主题曲《星辰守候》，用音乐讲述山海故事，溯源...</a></Link>  </Box>
-                                        <Box fontSize="14px" lineHeight="1.7" color="#7c7c7c">发布于：2020-04-29 12:49:25</Box>
+                                        <Link href="/NewsDetail/[id]" as={`/NewsDetail/${item.id}`}><a className={classes.titleColor}>{item.title}</a></Link>
+                                        <Link href="/NewsDetail/[id]" as={`/NewsDetail/${item.id}`}><a className={classes.linkColor}>{item.content}</a></Link>
+                                        <Box fontSize="14px" lineHeight="1.7" color="#7c7c7c">发布于：{parseTime(item.createTime, '{y}-{m}-{d}')}</Box>
                                     </Grid>
                                 </Grid>
                                 <Divider className={classes.divider} />
@@ -129,13 +154,14 @@ function GameList(props) {
                         ))
                     }
                 </div>
+                <Grid container justify="center" className={classes.gameList}><Pagination count={total} onChange={handleChange} page={current} color="primary" variant="outlined" /></Grid>
             </Container>
         </Layout>
     )
 }
 
 
-GameList.propTypes = {
+NewList.propTypes = {
     t: PropTypes.func.isRequired,
 }
-export default withTranslation('gameList')(GameList);
+export default withTranslation('gameList')(NewList);

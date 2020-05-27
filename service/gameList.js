@@ -1,6 +1,7 @@
 import axios from 'utils/axios'
-const gameList = (language) => axios({
-    url: `/api/website/official/gameInfoList/${language}`,
-    method: 'get',
+const gameList = (data) => axios({
+    url: `/api/news/introduct/gameInfoList`,
+    method: 'post',
+    data
 })
 export { gameList }

@@ -1,8 +1,10 @@
 import axios from 'axios';
-
+// import getCode from './index'
 const config = {
     timeout: 50000,
+    baseURL: process.env.URL,
 };
+
 const service = axios.create(config);
 
 // request拦截器
@@ -23,16 +25,20 @@ service.interceptors.request.use(config => {
 // respone拦截器
 service.interceptors.response.use(
     response => {
-        // response.setHeader("Set-Cookie", "Secure;SameSite=Strict")
-        return response.data
+        const res = response.data
+        if (response.status === 401 || res.code === 30300) {
+            alert('error~')
+            localStorage.removeItem('token')
+            localStorage.removeItem('authCode')
+            location.reload()
+        }
+        return res
     },
     error => {
         console.log(error); // for debug
         return Promise.reject(error)
     }
 )
-
-
 
 
 export default service;

@@ -18,10 +18,8 @@ export default function reducer(state = initialState, action) {
                 type: "APP/LANGUAGE"
             }
             */
-            console.log(action.data, 'action.ata')
             return action.data
         default:
-            console.log(state, 'stateInit')
             return state
     }
 }
