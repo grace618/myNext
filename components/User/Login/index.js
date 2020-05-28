@@ -373,7 +373,7 @@ function LoginComponent(props) {
     }
     //google login
     useEffect(() => {
-        window.setGoogleLoginData = setGoogleLoginData
+        // window.setGoogleLoginData = setGoogleLoginData
     })
     const googleLogin = () => {
         gapi.load('auth2', function () {
@@ -400,7 +400,7 @@ function LoginComponent(props) {
     }
     return (
         <div>
-            {(<div className={classes.loginBox}>
+            <div className={classes.loginBox}>
                 <span className={classes.close} onClick={() => { props.closeUp() }}><Clear color="primary" /></span>
                 <div className={classes.login}>ULUGAMES</div>
                 <Grid container >
@@ -583,7 +583,7 @@ function LoginComponent(props) {
                         }
                     </Grid>
                 </Grid>
-            </div >)}
+            </div >
             <Snackbar
                 anchorOrigin={{
                     vertical: 'top',

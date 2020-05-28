@@ -14,7 +14,7 @@ function Layout(props) {
                     name="description"
                     content={description}
                 />
-                <script src="https://apis.google.com/js/platform.js" async defer></script>
+             
             </Head>
             <Topbar />
             {props.children}

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import Account from '../index'
+import { FacebookProvider, LoginButton } from 'react-facebook';
 import { makeStyles, Box, Divider, Typography, Button, Container, Grid } from '@material-ui/core'
 import { Facebook, Twitter } from '@material-ui/icons';
 import { withTranslation } from '../../../i18n'
@@ -42,6 +43,13 @@ const useStyles = makeStyles(theme => ({
     },
     textSize: {
         fontSize: '16px'
+    },
+    ulPart: {
+        '& li': {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+        }
     }
 }))
 function Profile() {
@@ -99,24 +107,24 @@ function Profile() {
 
     //fb login
     const getFacebookInfo = (status) => {
-        FB.login(function (response) {
-            if (response.status === 'connected') {
-                let accessId = response.authResponse.userID
-                let accessToken = response.authResponse.accessToken
-                if (status == 1) {
-                    facebookSignIn(3, accessId, accessToken)
-                } else {
-                    unBinding(3, accessId, accessToken)
-                }
-                FB.logout(function () {
-                    console.log('User signed out.')
-                })
-            } else {
-                FB.logout(function () {
-                    console.log('User signed out.')
-                })
-            }
-        })
+        // FB.login(function (response) {
+        //     if (response.status === 'connected') {
+        //         let accessId = response.authResponse.userID
+        //         let accessToken = response.authResponse.accessToken
+        //         if (status == 1) {
+        //             facebookSignIn(3, accessId, accessToken)
+        //         } else {
+        //             unBinding(3, accessId, accessToken)
+        //         }
+        //         FB.logout(function () {
+        //             console.log('User signed out.')
+        //         })
+        //     } else {
+        //         FB.logout(function () {
+        //             console.log('User signed out.')
+        //         })
+        //     }
+        // })
     }
     //fb binding
     const facebookSignIn = (loginType, accessId, accessToken) => {
@@ -159,33 +167,33 @@ function Profile() {
     }
     //google 
     useEffect(() => {
-        window.setGoogleLoginData = setGoogleLoginData
+        // window.setGoogleLoginData = setGoogleLoginData
     })
     const getGoogleInfo = (status) => {
-        gapi.load('auth2', function () {
-            let auth2 = gapi.auth2.init({
-                // client_id:
-                //   '372395845963-qidir2a8uasj8ari12m345fq93fquu36.apps.googleusercontent.com',
-                client_id:
-                    '554596168927-2fi16qqmcjhgousr6id9h6h33mc7jvrn.apps.googleusercontent.com',
-                cookiepolicy: 'single_host_origin'
-            })
-            auth2.signIn().then(function () {
-                let accessToken = auth2.currentUser.get().getAuthResponse().id_token
-                let accessId = auth2.currentUser
-                    .get()
-                    .getBasicProfile()
-                    .getId()
-                if (status == 1) {
-                    googleSignIn(accessId, accessToken)
-                } else {
-                    unBinding(4, accessId, accessToken)
-                }
-                auth2.signOut().then(function () {
-                    console.log('User signed out.')
-                })
-            })
-        })
+        // gapi.load('auth2', function () {
+        //     let auth2 = gapi.auth2.init({
+        //         // client_id:
+        //         //   '372395845963-qidir2a8uasj8ari12m345fq93fquu36.apps.googleusercontent.com',
+        //         client_id:
+        //             '554596168927-2fi16qqmcjhgousr6id9h6h33mc7jvrn.apps.googleusercontent.com',
+        //         cookiepolicy: 'single_host_origin'
+        //     })
+        //     auth2.signIn().then(function () {
+        //         let accessToken = auth2.currentUser.get().getAuthResponse().id_token
+        //         let accessId = auth2.currentUser
+        //             .get()
+        //             .getBasicProfile()
+        //             .getId()
+        //         if (status == 1) {
+        //             googleSignIn(accessId, accessToken)
+        //         } else {
+        //             unBinding(4, accessId, accessToken)
+        //         }
+        //         auth2.signOut().then(function () {
+        //             console.log('User signed out.')
+        //         })
+        //     })
+        // })
     }
     //google binding
     const googleSignIn = (accessId, accessToken) => {
@@ -209,47 +217,63 @@ function Profile() {
             }
         })
     }
+    const handleResponse = (data) => {
+        console.log(data);
+    }
+
+    const handleError = (error) => {
+        this.setState({ error });
+    }
+
     return (
         <Account>
             <div>
                 <span className={classes.title}> 绑定账号</span>
                 <p className={classes.textSize}>绑定你的社交网络账号后，你可以使用已绑定的社交网络账号来登录。</p>
-                <Grid Container justifyContent="space-between" alignItems="center">
-                    <Grid item>
-                        <Facebook className={classes.facebookIcon} />
-                        <span>Facebook</span>
-                    </Grid>
-                    <Grid item>
-                        <Button variant="contained" color="primary" size="small" onClick={getFacebookInfo(0)}>解绑</Button>
-                    </Grid>
-                </Grid>
-                <Grid Container>
-                    <Grid item>
-                        <Twitter className={classes.twitterIcon} />
-                        <span>Google</span>
-                    </Grid>
-                    <Grid item>
-                        <Button variant="contained" color="primary" size="small" onClick={getGoogleInfo(1)}>解绑</Button>
-                    </Grid>
-                </Grid>
-                <Grid Container justifyContent="space-between" alignItems="center">
-                    <Grid item>
-                        <Facebook className={classes.facebookIcon} />
-                        <span>Facebook</span>
-                    </Grid>
-                    <Grid item>
+                <ul class={classes.ulPart}>
+                    <li>
+                        <div>
+                            {/* <FacebookProvider appId="123456789">
+                                <LoginButton
+                                    scope="email"
+                                    onCompleted={handleResponse}
+                                    onError={handleError}
+                                >
+                                    <span>Login via Facebook</span>
+                                </LoginButton>
+                            </FacebookProvider> */}
+                            <Facebook className={classes.facebookIcon} />
+                            <span>Facebook</span>
+                        </div>
+                        <div>
+                            <Button variant="outlined" color="primary" size="small" onClick={getFacebookInfo(0)}>解绑</Button>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <Twitter className={classes.twitterIcon} />
+                            <span>Google</span>
+                        </div>
+                        <div>
+                            <Button variant="outlined" color="primary" size="small" onClick={getGoogleInfo(1)}>解绑</Button>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <Facebook className={classes.facebookIcon} />
+                            <span>Facebook</span>
+                        </div>
                         <Button variant="contained" color="primary" size="small" onClick={getFacebookInfo(1)}>绑定</Button>
-                    </Grid>
-                </Grid>
-                <Grid Container>
-                    <Grid item>
-                        <Twitter className={classes.twitterIcon} />
-                        <span>Google</span>
-                    </Grid>
-                    <Grid item>
+                    </li>
+                    <li>
+                        <div>
+                            <Twitter className={classes.twitterIcon} />
+                            <span>Google</span>
+                        </div>
                         <Button variant="contained" color="primary" size="small" onClick={getGoogleInfo(1)}>绑定</Button>
-                    </Grid>
-                </Grid>
+                    </li>
+                </ul>
+
             </div>
         </Account>
     )

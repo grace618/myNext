@@ -45,6 +45,9 @@ class Documents extends Document {
             <Html>
                 <Head />
                 <body>
+                    <script src="https://apis.google.com/js/platform.js" async defer></script>
+                    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/zh_CN/sdk.js#xfbml=1&version=v3.3">
+                    </script>
                     <Main />
                     <NextScript />
                 </body>
