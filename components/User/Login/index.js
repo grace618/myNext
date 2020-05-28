@@ -12,7 +12,7 @@ import { Save as SaveIcon, Clear } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles'
 import MySnackbarContentWrapper from 'components/SnackbarWrapper'
 import { useSubmitForm } from 'common/CustomHooks'
-import { login, sendPhoneCode, registerByEmailValitor, sendCaptchaByAuthCode } from 'service/login'
+import { login, sendPhoneCode, registerByEmailValitor, sendCaptchaByAuthCode, binding } from 'service/login'
 
 
 
@@ -223,6 +223,9 @@ function LoginComponent(props) {
                 return false
             }
         }
+        loginByWay(data)
+    }
+    const loginByWay = (data) => {
         login(data, authCode).then(res => {
             if (res.code == 0) {
                 setSnackBar({ ...snackBar, 'message': 'success', 'variant': 'success', 'autoHideDuration': 1500 })
@@ -234,9 +237,8 @@ function LoginComponent(props) {
                 setInputs(initialFormState)
                 location.reload()
             } else {
-                getCode()
-                // setSnackBar({ ...snackBar, 'message': res.msg, 'variant': 'warning', 'autoHideDuration': 1500 })
-                // setOpen(true);
+                setSnackBar({ ...snackBar, 'message': res.msg, 'variant': 'warning', 'autoHideDuration': 1500 })
+                setOpen(true);
             }
         })
     }
@@ -304,7 +306,7 @@ function LoginComponent(props) {
         }
         sendCaptchaByAuthCode(data, authCode).then(res => {
             if (res.code != 0) {
-                setSnackBar({ ...snackBar, 'message': res.msg, 'variant': 'warning', 'autoHideDuration': 1500 })
+                setSnackBar({ ...snackBar, 'message': res.msg, 'variant': 'success', 'autoHideDuration': 1500 })
                 setOpen(true);
             }
             setSend1(true)
@@ -323,8 +325,23 @@ function LoginComponent(props) {
     let regInputs = regs.inputs
     let handleRegInputChnage = regs.handleInputChange
     let handleRegSubmit = regs.handleSubmit
+
+    const handleCloseSnackbar = (event, reason) => {
+        if (reason === 'clickaway') return
+        setOpen(false);
+    };
     /*facebook*/
     useEffect(() => {
+        (function (d, s, id) {
+            var js,
+                fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s);
+            js.id = id;
+            js.src = "https://connect.facebook.net/zh_CN/sdk.js#xfbml=1&version=v3.3";
+            fjs.parentNode.insertBefore(js, fjs);
+        })(document, "script", "facebook-jssdk");
+
         window.fbAsyncInit = function () {
             FB.init({
                 appId: '1070581506477121',
@@ -336,38 +353,14 @@ function LoginComponent(props) {
             })
             FB.AppEvents.logPageView()
         }
-            ; (function (d, s, id) {
-                var js,
-                    fjs = d.getElementsByTagName(s)[0]
-                if (d.getElementById(id)) {
-                    return
-                }
-                js = d.createElement(s)
-                js.id = id
-                js.src = 'https://connect.facebook.net/en_US/sdk.js'
-                fjs.parentNode.insertBefore(js, fjs)
-            })(document, 'script', 'facebook-jssdk')
     }, [])
-
-    const getFacebookInfo = () => {
+    const facebookLogin = () => {
         FB.login(function (response) {
             if (response.status === 'connected') {
                 let accessId = response.authResponse.userID
                 let accessToken = response.authResponse.accessToken
-                const data = {
-                    loginType: 3,
-                    accessId,
-                    accessToken,
-                    gameId: this.clientId,
-                    mail: '',
-                    password: '',
-                    captcha: ''
-                }
-                binding(data).then(res => {
-                    if (res.code == 0) {
-                        alert('成功')
-                    }
-                })
+                const data = { loginType: 3, accessId, accessToken, uluAccount: '', password: '', gameId: '100001' }
+                loginByWay(data)
                 FB.logout(function () {
                     console.log('User signed out.')
                 })
@@ -378,8 +371,11 @@ function LoginComponent(props) {
             }
         })
     }
-    // google
-    const getGooleInfo = () => {
+    //google login
+    useEffect(() => {
+        window.setGoogleLoginData = setGoogleLoginData
+    })
+    const googleLogin = () => {
         gapi.load('auth2', function () {
             let auth2 = gapi.auth2.init({
                 // client_id:
@@ -394,37 +390,14 @@ function LoginComponent(props) {
                     .get()
                     .getBasicProfile()
                     .getId()
-                googleSignIn(accessId, accessToken)
+                const data = { loginType: 4, accessId, accessToken, uluAccount: '', password: '', gameId: '100001' }
+                loginByWay(data)
                 auth2.signOut().then(function () {
                     console.log('User signed out.')
                 })
             })
         })
     }
-    const googleSignIn = (accessId, accessToken) => {
-        const data = {
-            loginType: 4,
-            accessId,
-            accessToken,
-            gameId: this.clientId,
-            mail: '',
-            password: '',
-            captcha: ''
-        }
-        binding(data).then(res => {
-            if (res.code == 0) {
-                alert('成功')
-            } else {
-                setSnackBar({ ...snackBar, 'message': res.msg, 'variant': 'warning', 'autoHideDuration': 1500 })
-                setOpen(true);
-            }
-        })
-    }
-    const handleCloseSnackbar = (event, reason) => {
-        if (reason === 'clickaway') return
-        setOpen(false);
-    };
-
     return (
         <div>
             {(<div className={classes.loginBox}>
@@ -438,7 +411,7 @@ function LoginComponent(props) {
                             size="large"
                             className={`${classes.button} ${classes.button1}`}
                             startIcon={<SaveIcon />}
-                            onClick={getFacebookInfo}
+                            onClick={facebookLogin}
                         >
                             Facebook登入
                         </Button>
@@ -448,19 +421,10 @@ function LoginComponent(props) {
                             size="large"
                             className={`${classes.button} ${classes.buttonGoogle}`}
                             startIcon={<SaveIcon />}
-                            onClick={getGooleInfo}
+                            onClick={googleLogin}
                         >
                             Google登入
                             </Button>
-                        {/* <Button
-                                variant="contained"
-                                size="large"
-                                color="secondary"
-                                className={`${classes.button} ${classes.buttonColor}`}
-                                startIcon={<SaveIcon />}
-                            >
-                                通过Twitter登入
-                                </Button> */}
                     </Grid>
                     <Grid item lg={6} xs={12} md={6} sm={6} xl={6} className={classes.right}>
                         {

@@ -78,4 +78,31 @@ const changePassword = (data, code) => {
         headers: { 'token': code }
     })
 }
-export { getInitConfigByWeb, logout, login, sendPhoneCode, registerByEmailValitor, sendCaptchaByAuthCode, resetPassword, sendBindCaptcha, changePassword }
+//账号绑定
+const binding = (data, code) => {
+    return axios({
+        url: '/api/member/user/v3/binding',
+        method: 'post',
+        data,
+        headers: { 'token': code }
+    })
+}
+//解绑
+const unBind = (data, code) => {
+    return axios({
+        url: '/api/member/user/unBind',
+        method: 'post',
+        data,
+        headers: { 'token': code }
+    })
+}
+//获取用户信息
+const getUserInfo = (data, code) => {
+    return axios({
+        url: '/api/member/user/v3/getUserInfo',
+        method: 'post',
+        data,
+        headers: { 'token': code }
+    })
+}
+export { getInitConfigByWeb, logout, login, sendPhoneCode, registerByEmailValitor, sendCaptchaByAuthCode, resetPassword, sendBindCaptcha, changePassword, binding, unBind, getUserInfo }

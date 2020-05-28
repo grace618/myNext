@@ -109,7 +109,7 @@ function Accounts(props) {
                                 </CardContent>
                             </Card>
                         </Grid>
-                        <Grid item className={classes.right} xs={12} sm={12} md={12} lg={7} xl={7}>
+                        <Grid item className={classes.right} xs={12} sm={12} md={12} lg={8} xl={8}>
                             {props.children}
                         </Grid>
                     </Grid>

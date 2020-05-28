@@ -10,7 +10,6 @@ import '../styles/global.css'
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Router from 'next/router';
-import { useRouter } from 'next/router'
 import NProgress from 'nprogress'; //nprogress module
 import 'nprogress/nprogress.css'; //styles of nprogress
 import 'react-phone-number-input/style.css'
@@ -22,7 +21,6 @@ Router.events.on('routeChangeError', () => NProgress.done());
 function App({ Component, pageProps }) { //全局
     //props:{pageProps,Component,router,err}
     const store = Store();
-    const router = useRouter();
     React.useEffect(() => {
         const jssStyles = document.querySelector('#jss-server-side');
         if (jssStyles) {
