@@ -47,7 +47,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export async function getServerSideProps(context) {
-    let list = []
+    let list = {}
     const data = {
         "language": context.req.language,
         "platformId": 3,

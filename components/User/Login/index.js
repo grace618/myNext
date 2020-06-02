@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link'
 import PropTypes from 'prop-types'
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Phone from 'react-phone-number-input'
 import { withTranslation } from '../../../i18n'
+import { setToken, setUid } from 'store/modules/app'
 const crypto = require('crypto')
 
 import { Grid, Button, TextField, Checkbox, Box, FormControlLabel, Typography, FormControl, Snackbar } from '@material-ui/core';
@@ -12,26 +13,23 @@ import { Save as SaveIcon, Clear } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles'
 import MySnackbarContentWrapper from 'components/SnackbarWrapper'
 import { useSubmitForm } from 'common/CustomHooks'
-import { login, sendPhoneCode, registerByEmailValitor, sendCaptchaByAuthCode, binding } from 'service/login'
-
+import { sendPhoneCode, sendCaptchaByAuthCode } from 'service/login'
+import { getUserInfo, register } from 'store/modules/app.js';
 
 
 const useStyles = makeStyles(theme => ({
 
     loginBox: {
         width: '90%',
-        height: '60%',
-        minHeight: '603px',
         maxWidth: '820px',
         background: 'white',
         position: 'fixed',
-        top: 0,
+        top: '15%',
         right: 0,
-        bottom: 0,
         left: 0,
         margin: 'auto',
         zIndex: '999',
-        padding: '1% 3%',
+        padding: '2% 3% 5% 3%',
         boxSizing: 'border-box',
     },
     login: {
@@ -142,21 +140,16 @@ function LoginComponent(props) {
     const [snackBar, setSnackBar] = useState(initSnackbar)
     let { show, t } = props
     const [changePanel, setShow] = useState(show)
-    const language = useSelector(state => state.app)
-    const [authCode, setAuthCode] = useState(null)
+    const user = useSelector(state => state.app)
     const [open, setOpen] = useState(false);
     let [time, setTime] = useState(30)
     let [time1, setTime1] = useState(30)
     const [isSend, setSend] = useState(false)
     const [isSend1, setSend1] = useState(false)
-    const [token, setToken] = useState(null)
-    const [uid, setUid] = useState(null)
     const [phoneValue, setPhoneValue] = useState(null)
-    useEffect(() => {
-        setAuthCode(window.localStorage.getItem('authCode') || null)
-        setToken(window.localStorage.getItem('token') || null)
-    }, [])
-    /* login*/
+    const dispatch = useDispatch();
+
+
     const loginInfo = () => {
         setLoginWay(!LoginWay)
     }
@@ -165,7 +158,7 @@ function LoginComponent(props) {
             uluAccount: phoneValue,
             gameId: '100001'
         }
-        sendPhoneCode(data, authCode).then(res => {
+        sendPhoneCode(data, user.authcode).then(res => {
             if (res.code != 0) {
                 setSnackBar({ ...snackBar, 'message': res.msg, 'variant': 'warning', 'autoHideDuration': 1500 })
                 setOpen(true);
@@ -202,37 +195,34 @@ function LoginComponent(props) {
 
     const submitFormData = () => {
         setSnackBar(initSnackbar)
-        const { password, email, phoneNumber, code } = inputs
+        const { password, email, code } = inputs
         let md5 = crypto.createHash('md5')
         md5.update(password)
         var pwd = md5.digest('hex').toUpperCase()
         let data = {}
         if (LoginWay) {
-            data = { loginType: 2, accessId: '', accessToken: '', uluAccount: email, password: pwd, gameId: '100001' }
             if (!checkEmail(email)) return false
             if (password === '') {
                 setSnackBar({ ...snackBar, 'message': '请输入密码', 'variant': 'warning', 'autoHideDuration': 5000 })
                 setOpen(true);
                 return false
             }
+            data = { loginType: 2, accessId: '', accessToken: '', uluAccount: email, password: pwd, gameId: '100001' }
         } else {
-            data = { loginType: 2, accessId: '', accessToken: '', uluAccount: phoneNumber, password: code, gameId: '100001' }
-            if (phoneNumber === '' || code === '') {
+            if (phoneValue === '' || code === '') {
                 setSnackBar({ ...snackBar, 'message': '请输入手机号码或验证码', 'variant': 'warning', 'autoHideDuration': 10000 })
                 setOpen(true);
                 return false
             }
+            data = { loginType: 2, accessId: '', accessToken: '', uluAccount: phoneValue, password: code, gameId: '100001' }
         }
         loginByWay(data)
     }
     const loginByWay = (data) => {
-        login(data, authCode).then(res => {
+        dispatch(getUserInfo(data, user.authcode)).then((res) => {
             if (res.code == 0) {
                 setSnackBar({ ...snackBar, 'message': 'success', 'variant': 'success', 'autoHideDuration': 1500 })
                 setOpen(true);
-                setToken(res.data.token)
-                setUid(res.data.uid)
-                localStorage.setItem('token', res.data.token)//这里用localstorage，应该不会刷新数据
                 props.closeUp()
                 setInputs(initialFormState)
                 location.reload()
@@ -240,7 +230,7 @@ function LoginComponent(props) {
                 setSnackBar({ ...snackBar, 'message': res.msg, 'variant': 'warning', 'autoHideDuration': 1500 })
                 setOpen(true);
             }
-        })
+        });
     }
     const { inputs, setInputs, handleInputChange, handleSubmit } = useSubmitForm(initialFormState, submitFormData);
     /*register*/
@@ -280,33 +270,29 @@ function LoginComponent(props) {
             "gameId": '100001',
             "captcha": captcha
         }
-        registerByEmailValitor(data, authCode).then(res => {
+        dispatch(register(data, user.authcode)).then((res) => {
             if (res.code == 0) {
-                setToken(res.data.token)
+                setSnackBar({ ...snackBar, 'message': 'success', 'variant': 'warning', 'autoHideDuration': 1500 })
+                setOpen(true);
                 props.closeUp()
+                location.reload()
             } else {
                 setSnackBar({ ...snackBar, 'message': res.msg, 'variant': 'warning', 'autoHideDuration': 1500 })
                 setOpen(true);
             }
-        })
+        });
     }
     const sendCaptcha = () => {
-        let lang = ''
-        if (language.lang == 'en') {
-            lang = 'en-US'
-        }
-        if (language.lang == 'zh') {
-            lang = 'zh-CN'
-        }
+        let lang = user.lang == 'en' ? 'en-US' : 'zh-CN'
         const data = {
             "mail": regInputs.mail,
             "gameId": "100001",
             "type": 1,
             "language": lang
         }
-        sendCaptchaByAuthCode(data, authCode).then(res => {
+        sendCaptchaByAuthCode(data, user.authcode).then(res => {
             if (res.code != 0) {
-                setSnackBar({ ...snackBar, 'message': res.msg, 'variant': 'success', 'autoHideDuration': 1500 })
+                setSnackBar({ ...snackBar, 'message': res.msg, 'variant': 'warning', 'autoHideDuration': 1500 })
                 setOpen(true);
             }
             setSend1(true)
@@ -372,9 +358,6 @@ function LoginComponent(props) {
         })
     }
     //google login
-    useEffect(() => {
-        // window.setGoogleLoginData = setGoogleLoginData
-    })
     const googleLogin = () => {
         gapi.load('auth2', function () {
             let auth2 = gapi.auth2.init({
@@ -426,6 +409,7 @@ function LoginComponent(props) {
                             Google登入
                             </Button>
                     </Grid>
+
                     <Grid item lg={6} xs={12} md={6} sm={6} xl={6} className={classes.right}>
                         {
                             changePanel ? (

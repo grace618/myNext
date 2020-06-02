@@ -90,10 +90,10 @@ function NewList(props) {
     const [infoItem, setInfoItem] = useState([])
     const [current, setCurrent] = useState(1)
     const [total, setTotal] = useState(0)
-    const language = useSelector(state => state.app)
+    const user = useSelector(state => state.app)
     const getInfo = async (current) => {
         const data = {
-            "language": language.lang,
+            "language": user.lang,
             "platformId": 3,
             "label": 1,
             "size": 10,
@@ -111,7 +111,7 @@ function NewList(props) {
     }
     useEffect(() => {
         getInfo(current)
-    }, [language])
+    }, [user])
     const handleChange = (event, val) => {
         getInfo(val)
     }

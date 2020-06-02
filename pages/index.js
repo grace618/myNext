@@ -411,30 +411,36 @@ function Home(props) {
                         </Typography>
                         <Typography className={classes.slogan} align="center" > 这里有游戏相关资讯 </Typography>
                         <span className={classes.line}></span>
-                        <Grid container justify="space-between" className={classes.paper}>
-                            <Grid item xs={12} sm={12} md={4} lg={4} xl={4} onClick={(e) => toDetail(e, newList[1].id)}>
-                                <div className={classes.news_detail}>
-                                    <p className={classes.news_tit_s}>{newList[1].title}</p>
-                                    <p className={classes.news_txt}>{newList[1].content}</p>
-                                    <p className={classes.news_time}> {parseTime(newList[1].createTime)}</p>
-                                </div>
-                                <img src={newList[1].imgUrl} alt="" />
-                            </Grid>
-                            <Grid item container direction="column" justify="center" xs={12} sm={12} md={4} lg={4} xl={4} className={classes.center} onClick={(e) => toDetail(e, newList[1].id)}>
-                                <img src={newList[0].backgroundImgUrl} alt="" className={classes.news_center} />
-                                <p className={classes.center_text}>{newList[0].title}</p>
-                                <p className={classes.center_time}> {parseTime(newList[0].createTime)}</p>
-                            </Grid>
-                            <Grid item xs={12} sm={12} md={4} lg={4} xl={4} onClick={(e) => toDetail(e, newList[1].id)}>
-                                <img src={newList[2].imgUrl} alt="" />
-                                <div className={classes.news_detail}>
-                                    <p className={classes.news_tit_s}>{newList[2].title}</p>
-                                    <p className={classes.news_txt}> {newList[2].content}</p>
-                                    <p className={classes.news_time}>  {parseTime(newList[2].createTime)}</p>
-                                </div>
-                            </Grid>
-                        </Grid>
-                        <Box textAlign="center" pb={8}><Button component={ButtonLink} href={'/news'} variant="outlined" size="large">查看更多</Button></Box>
+                        {
+                            newList.length > 0 && (
+                                <>
+                                    <Grid container justify="space-between" className={classes.paper}>
+                                        <Grid item xs={12} sm={12} md={4} lg={4} xl={4} onClick={(e) => toDetail(e, newList[1].id)}>
+                                            <div className={classes.news_detail}>
+                                                <p className={classes.news_tit_s}>{newList[1].title}</p>
+                                                <p className={classes.news_txt}>{newList[1].content}</p>
+                                                <p className={classes.news_time}> {parseTime(newList[1].createTime)}</p>
+                                            </div>
+                                            <img src={newList[1].imgUrl} alt="" />
+                                        </Grid>
+                                        <Grid item container direction="column" justify="center" xs={12} sm={12} md={4} lg={4} xl={4} className={classes.center} onClick={(e) => toDetail(e, newList[1].id)}>
+                                            <img src={newList[0].backgroundImgUrl} alt="" className={classes.news_center} />
+                                            <p className={classes.center_text}>{newList[0].title}</p>
+                                            <p className={classes.center_time}> {parseTime(newList[0].createTime)}</p>
+                                        </Grid>
+                                        <Grid item xs={12} sm={12} md={4} lg={4} xl={4} onClick={(e) => toDetail(e, newList[1].id)}>
+                                            <img src={newList[2].imgUrl} alt="" />
+                                            <div className={classes.news_detail}>
+                                                <p className={classes.news_tit_s}>{newList[2].title}</p>
+                                                <p className={classes.news_txt}> {newList[2].content}</p>
+                                                <p className={classes.news_time}>  {parseTime(newList[2].createTime)}</p>
+                                            </div>
+                                        </Grid>
+                                    </Grid>
+                                    <Box textAlign="center" pb={8}><Button component={ButtonLink} href={'/news'} variant="outlined" size="large">查看更多</Button></Box>
+                                </>
+                            )
+                        }
                     </Box>
                 </Container>
             </Box>

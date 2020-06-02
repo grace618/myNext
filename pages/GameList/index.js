@@ -98,10 +98,10 @@ function GameList(props) {
     const [gameItem, setGameItem] = useState([])
     const [current, setCurrent] = useState(1)
     const [total, setTotal] = useState(0)
-    const language = useSelector(state => state.app)
+    const user = useSelector(state => state.app)
     const getInfo = async (current) => {
         const data = {
-            "language": language.lang,
+            "language": user.lang,
             "platformId": 3,
             "size": 12,
             "current": current,
@@ -119,7 +119,7 @@ function GameList(props) {
     }
     useEffect(() => {
         getInfo(current)
-    }, [language])
+    }, [user.lang])
     const handleChange = (event, val) => {
         getInfo(val)
     }

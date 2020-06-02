@@ -29,8 +29,7 @@ const useStyles = makeStyles((theme) => ({
 )
 function PasswordComponent() {
     const classes = useStyles()
-    const [authCode, setAuthCode] = useState(null)
-    const language = useSelector(state => state.app)
+    const user = useSelector(state => state.app)
     const [step, setStep] = useState(true)
     const [open, setOpen] = useState(false);
     const router = useRouter();
@@ -59,7 +58,7 @@ function PasswordComponent() {
     }
     //发送验证码
     const submitFormData = () => {
-        let lang = language.lang == 'en' ? 'en-US' : 'zh-CN'
+        let lang = user.lang == 'en' ? 'en-US' : 'zh-CN'
         if (!checkEmail(inputs.mail)) return false
         const data = {
             "mail": inputs.mail,
@@ -67,7 +66,8 @@ function PasswordComponent() {
             "type": 0,
             "language": lang
         }
-        sendCaptchaByAuthCode(data, authCode).then(res => {
+
+        sendCaptchaByAuthCode(data, user.authcode).then(res => {
             if (res.code == 0) {
                 setStep(false)
             } else {
@@ -76,9 +76,7 @@ function PasswordComponent() {
             }
         })
     }
-    useEffect(() => {
-        setAuthCode(window.localStorage.getItem('authCode') || null)
-    }, [])
+
     const { inputs, handleInputChange } = useSubmitForm(initialFormState, submitFormData);
 
     const initialRegState = {
@@ -115,7 +113,7 @@ function PasswordComponent() {
             password: pwd,
             gameId: '100001'
         }
-        resetPassword(data, authCode).then(res => {
+        resetPassword(data, user.authcode).then(res => {
             if (res.code == 0) {
                 setSnackBar({ ...snackBar, 'message': '修改成功', 'variant': 'warning', 'autoHideDuration': 10000 })
                 setOpen(true);

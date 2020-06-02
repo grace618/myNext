@@ -81,7 +81,6 @@ function Profile() {
     }
     /*facebook*/
     useEffect(() => {
-
         (function (d, s, id) {
             var js,
                 fjs = d.getElementsByTagName(s)[0];
@@ -107,24 +106,24 @@ function Profile() {
 
     //fb login
     const getFacebookInfo = (status) => {
-        // FB.login(function (response) {
-        //     if (response.status === 'connected') {
-        //         let accessId = response.authResponse.userID
-        //         let accessToken = response.authResponse.accessToken
-        //         if (status == 1) {
-        //             facebookSignIn(3, accessId, accessToken)
-        //         } else {
-        //             unBinding(3, accessId, accessToken)
-        //         }
-        //         FB.logout(function () {
-        //             console.log('User signed out.')
-        //         })
-        //     } else {
-        //         FB.logout(function () {
-        //             console.log('User signed out.')
-        //         })
-        //     }
-        // })
+        FB.login(function (response) {
+            if (response.status === 'connected') {
+                let accessId = response.authResponse.userID
+                let accessToken = response.authResponse.accessToken
+                if (status == 1) {
+                    facebookSignIn(3, accessId, accessToken)
+                } else {
+                    unBinding(3, accessId, accessToken)
+                }
+                FB.logout(function () {
+                    console.log('User signed out.')
+                })
+            } else {
+                FB.logout(function () {
+                    console.log('User signed out.')
+                })
+            }
+        })
     }
     //fb binding
     const facebookSignIn = (loginType, accessId, accessToken) => {
@@ -166,9 +165,6 @@ function Profile() {
         })
     }
     //google 
-    useEffect(() => {
-        // window.setGoogleLoginData = setGoogleLoginData
-    })
     const getGoogleInfo = (status) => {
         // gapi.load('auth2', function () {
         //     let auth2 = gapi.auth2.init({
@@ -218,7 +214,7 @@ function Profile() {
         })
     }
     const handleResponse = (data) => {
-        console.log(data);
+
     }
 
     const handleError = (error) => {
@@ -230,7 +226,7 @@ function Profile() {
             <div>
                 <span className={classes.title}> 绑定账号</span>
                 <p className={classes.textSize}>绑定你的社交网络账号后，你可以使用已绑定的社交网络账号来登录。</p>
-                <ul class={classes.ulPart}>
+                <ul className={classes.ulPart}>
                     <li>
                         <div>
                             {/* <FacebookProvider appId="123456789">

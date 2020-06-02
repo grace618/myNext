@@ -10,7 +10,7 @@ import { withTranslation } from '../../../i18n'
 import MySnackbarContentWrapper from 'components/SnackbarWrapper'
 import { logout, getInitConfigByWeb } from 'service/login'
 import LoginComponent from '../../User/Login'
-
+import { setCode } from 'store/modules/app'
 
 const useStyles = makeStyles(theme => ({
     root: props => ({
@@ -81,12 +81,10 @@ function Topbar(props) {
     const [needFixed, setNeedFixed] = useState(false);
     const { t, i18n } = props
     const [show, setShow] = useState(false)
-    const language = useSelector(state => state.app)
-    const [token, setToken] = useState(null)
     const [LoginPup, setLoginPup] = useState(false)
     const [open, setOpen] = useState(false);
-    const [authCode, setAuthCode] = useState(null)
     const dispatch = useDispatch();
+    const user = useSelector(state => state.app)
     const initSnackbar = {
         message: '',
         variant: 'warning',
@@ -113,22 +111,7 @@ function Topbar(props) {
         if (reason === 'clickaway') return
         setOpen(false);
     };
-    const getInit = async () => {
-        const data = {
-            "channelId": 9,
-            "timestamp": new Date().getTime(),
-            "gameId": 100001,
-            "platform": 3,
-            "channelTag": 0,
-            "env": 3,
-            "language": language.lang,
-            "signature": "DFD29F8E1D150AB53830FB62B46E581C",
-        }
-        const res = await getInitConfigByWeb(data)
-        if (res.code == 0) {
-            localStorage.setItem('authCode', res.data.authCode)
-        }
-    }
+
     const handleLogin = (index) => {
         if (index == 3) {
             setShow(true)
@@ -140,9 +123,36 @@ function Topbar(props) {
     const closePup = () => {
         setLoginPup(false)
     }
+
+    /* login*/
+    const getInit = async () => {
+        const data = {
+            "channelId": 9,
+            "timestamp": new Date().getTime(),
+            "gameId": 100001,
+            "platform": 3,
+            "channelTag": 0,
+            "env": 3,
+            "language": user.lang,
+            "signature": "DFD29F8E1D150AB53830FB62B46E581C",
+        }
+
+        const res = await getInitConfigByWeb(data)
+        if (res.code == 0) {
+            dispatch(setCode({ authcode: res.data.authCode }))
+        }
+    }
+    /**sign out */
+    const signout = () => {
+        logout({ gameId: '100001' }, user.token).then(res => {
+            if (res.code == 0) {
+                setOpen(true);
+                setSnackBar({ ...snackBar, 'message': '退出成功', 'variant': 'success', 'autoHideDuration': 1500 });
+                location.reload();
+            }
+        })
+    }
     useEffect(() => {
-        setAuthCode(window.localStorage.getItem('authCode') || null)
-        setToken(window.localStorage.getItem('token') || null)
         getInit()
     }, [])
     useEffect(() => {
@@ -155,20 +165,6 @@ function Topbar(props) {
             window.removeEventListener('scroll', hanldeScroll)
         };
     })
-
-    /**sign out */
-    const signout = () => {
-        logout({ gameId: '100001' }, token).then(res => {
-            if (res.code == 0) {
-                localStorage.removeItem('token')
-                localStorage.removeItem('authCode')
-                setToken(null)
-                setOpen(true);
-                setSnackBar({ ...snackBar, 'message': '退出成功', 'variant': 'success', 'autoHideDuration': 1500 });
-                location.reload();
-            }
-        })
-    }
     return (
         <div id="menu" className={`${classes.root} ${needFixed ? classes.fixed : ''}`}>
             <Container className={classes.container}>
@@ -218,7 +214,7 @@ function Topbar(props) {
                                     //未登录
                                     if (index < 3) {
                                         return (<Link href={`/${option.name}`} key={option.name}><a>{t(option.name)}</a></Link>)
-                                    } else if (!token) {
+                                    } else if (!user.uid) {
                                         return (
                                             <span key={option.name} onClick={() => handleLogin(index)}>{t(option.name)}</span>
                                         )
@@ -227,9 +223,9 @@ function Topbar(props) {
                             }
                             {/* 已登录 */}
                             {
-                                token &&
+                                user.uid &&
                                 <>
-                                    <a href="/accounts/profile">{'garce_ecilid'}</a>
+                                    <a href="/accounts/profile">{user.uid}</a>
                                     <span className={classes.asLink} onClick={signout}>退出</span>
                                 </>
                             }
