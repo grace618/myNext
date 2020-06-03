@@ -1,10 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Account from '../index'
-import { FacebookProvider, LoginButton } from 'react-facebook';
-import { makeStyles, Box, Divider, Typography, Button, Container, Grid } from '@material-ui/core'
-import { Facebook, Twitter } from '@material-ui/icons';
+import { FacebookProvider, Login } from 'react-facebook';
+import { makeStyles, Button, Snackbar } from '@material-ui/core'
+import { Facebook } from '@material-ui/icons';
 import { withTranslation } from '../../../i18n'
-import { unBind, binding, getUserInfo } from 'service/login'
+import { unBind, bindingAccounts, getUserInfo } from 'service/login'
+import Google from 'icons/svg/google.svg'
+import { useSelector } from 'react-redux';
+import MySnackbarContentWrapper from 'components/SnackbarWrapper'
+
+
 const useStyles = makeStyles(theme => ({
     avatar: {
         margin: 10,
@@ -48,20 +53,48 @@ const useStyles = makeStyles(theme => ({
         '& li': {
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center'
+            alignItems: 'center',
+            padding: '10px 0'
+        }
+    },
+    iconStyle: {
+        display: 'flex',
+        alignItems: 'center',
+        '& span': {
+            fontSize: '14px',
+            fontWeight: '600'
         }
     }
 }))
 function Profile() {
     const classes = useStyles()
+    const initSnackbar = {
+        message: '',
+        variant: 'warning',
+        autoHideDuration: 0
+    }
+
+    const [snackBar, setSnackBar] = useState(initSnackbar)
+    const [open, setOpen] = useState(false);
+    const app = useSelector(state => state.app)
+    let isBinding = {
+        facebook: false,
+        twitter: false,
+        gameCenter: false,
+        google: false,
+        ulu: false,
+        amazon: false
+    }
+    const [binding, setBinding] = useState(isBinding)
+    const handleCloseSnackbar = (event, reason) => {
+        if (reason === 'clickaway') return
+        setOpen(false);
+    };
     const init = () => {
         //获取用户信息
-        getUserInfo({ gameId: '100001' }).then(res => {
-            this.$toast.clear()
+        getUserInfo({ gameId: '100001' }, app.token).then(res => {
             if (res.code == 0) {
-                const data = parseInt(res.data.bingValue)
-                this.bingValue = data
-                this.emailBind = res.data.email
+                let data = parseInt(res.data.bingValue)
                 const facebookBind = 2,
                     twitterBind = 4,
                     gameCenterBind = 8,
@@ -69,39 +102,28 @@ function Profile() {
                     uluBind = 32,
                     amazonBind = 64
 
-                if (this.check(data, facebookBind)) {
-                    this.isBinding.facebook = true
+                if (check(data, facebookBind)) {
+                    setBinding({ facebook: true })
+                } else {
+                    setBinding({ facebook: false })
                 }
-
+                if (check(data, googleBind)) {
+                    setBinding({ google: true })
+                } else {
+                    setBinding({ google: false })
+                }
             } else {
                 setSnackBar({ ...snackBar, 'message': res.msg, 'variant': 'warning', 'autoHideDuration': 1500 })
                 setOpen(true);
             }
         })
     }
+    const check = (userPermission, specificPermission) => {
+        return (userPermission & specificPermission) === specificPermission
+    }
     /*facebook*/
     useEffect(() => {
-        (function (d, s, id) {
-            var js,
-                fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) return;
-            js = d.createElement(s);
-            js.id = id;
-            js.src = "https://connect.facebook.net/zh_CN/sdk.js#xfbml=1&version=v3.3";
-            fjs.parentNode.insertBefore(js, fjs);
-        })(document, "script", "facebook-jssdk");
-
-        window.fbAsyncInit = function () {
-            FB.init({
-                appId: '1070581506477121',
-                xfbml: true,
-                status: true,
-                cookie: true,
-                autoLogAppEvents: true,
-                version: 'v5.0'
-            })
-            FB.AppEvents.logPageView()
-        }
+        init();
     }, [])
 
     //fb login
@@ -136,28 +158,34 @@ function Profile() {
             captcha: '',
             gameId: '100001'
         }
-        binding(data).then(res => {
+        bingUser(data)
+    }
+    const bingUser = (data) => {
+        bindingAccounts(data, app.token).then(res => {
             if (res.code == 0) {
                 setSnackBar({ ...snackBar, 'message': '绑定成功', 'variant': 'success', 'autoHideDuration': 1500 })
                 setOpen(true);
+                init()
             } else {
                 setSnackBar({ ...snackBar, 'message': res.msg, 'variant': 'warning', 'autoHideDuration': 1500 })
                 setOpen(true);
             }
         })
     }
+
     //fb  unbind
     const unBinding = (loginType, accessId, accessToken) => {
         const data = {
             loginType,
-            accessId: accessId,
-            accessToken: accessToken,
+            accessId,
+            accessToken,
             gameId: '100001'
         }
-        unBind(data).then(res => {
+        unBind(data, app.token).then(res => {
             if (res.code == 0) {
-                this.init()
-                uluAccount
+                setSnackBar({ ...snackBar, 'message': '解绑成功', 'variant': 'success', 'autoHideDuration': 1500 })
+                setOpen(true);
+                init()
             } else {
                 setSnackBar({ ...snackBar, 'message': res.msg, 'variant': 'warning', 'autoHideDuration': 1500 })
                 setOpen(true);
@@ -166,30 +194,30 @@ function Profile() {
     }
     //google 
     const getGoogleInfo = (status) => {
-        // gapi.load('auth2', function () {
-        //     let auth2 = gapi.auth2.init({
-        //         // client_id:
-        //         //   '372395845963-qidir2a8uasj8ari12m345fq93fquu36.apps.googleusercontent.com',
-        //         client_id:
-        //             '554596168927-2fi16qqmcjhgousr6id9h6h33mc7jvrn.apps.googleusercontent.com',
-        //         cookiepolicy: 'single_host_origin'
-        //     })
-        //     auth2.signIn().then(function () {
-        //         let accessToken = auth2.currentUser.get().getAuthResponse().id_token
-        //         let accessId = auth2.currentUser
-        //             .get()
-        //             .getBasicProfile()
-        //             .getId()
-        //         if (status == 1) {
-        //             googleSignIn(accessId, accessToken)
-        //         } else {
-        //             unBinding(4, accessId, accessToken)
-        //         }
-        //         auth2.signOut().then(function () {
-        //             console.log('User signed out.')
-        //         })
-        //     })
-        // })
+        gapi.load('auth2', function () {
+            let auth2 = gapi.auth2.init({
+                client_id:
+                    '372395845963-qidir2a8uasj8ari12m345fq93fquu36.apps.googleusercontent.com',
+                // client_id:
+                //     '554596168927-2fi16qqmcjhgousr6id9h6h33mc7jvrn.apps.googleusercontent.com',
+                cookiepolicy: 'single_host_origin'
+            })
+            auth2.signIn().then(function () {
+                let accessToken = auth2.currentUser.get().getAuthResponse().id_token
+                let accessId = auth2.currentUser
+                    .get()
+                    .getBasicProfile()
+                    .getId()
+                if (status == 1) {
+                    googleSignIn(accessId, accessToken)
+                } else {
+                    unBinding(4, accessId, accessToken)
+                }
+                auth2.signOut().then(function () {
+                    console.log('User signed out.')
+                })
+            })
+        })
     }
     //google binding
     const googleSignIn = (accessId, accessToken) => {
@@ -202,25 +230,8 @@ function Profile() {
             password: '',
             captcha: ''
         }
-        binding(data).then(res => {
-            if (res.code == 0) {
-                this.init()
-                setSnackBar({ ...snackBar, 'message': '绑定成功', 'variant': 'success', 'autoHideDuration': 1500 })
-                setOpen(true);
-            } else {
-                setSnackBar({ ...snackBar, 'message': res.msg, 'variant': 'warning', 'autoHideDuration': 1500 })
-                setOpen(true);
-            }
-        })
+        bingUser(data)
     }
-    const handleResponse = (data) => {
-
-    }
-
-    const handleError = (error) => {
-        this.setState({ error });
-    }
-
     return (
         <Account>
             <div>
@@ -228,49 +239,44 @@ function Profile() {
                 <p className={classes.textSize}>绑定你的社交网络账号后，你可以使用已绑定的社交网络账号来登录。</p>
                 <ul className={classes.ulPart}>
                     <li>
-                        <div>
-                            {/* <FacebookProvider appId="123456789">
-                                <LoginButton
-                                    scope="email"
-                                    onCompleted={handleResponse}
-                                    onError={handleError}
-                                >
-                                    <span>Login via Facebook</span>
-                                </LoginButton>
-                            </FacebookProvider> */}
+                        <div className={classes.iconStyle}>
                             <Facebook className={classes.facebookIcon} />
-                            <span>Facebook</span>
+                            <span>FACEBOOK</span>
                         </div>
                         <div>
-                            <Button variant="outlined" color="primary" size="small" onClick={getFacebookInfo(0)}>解绑</Button>
+                            {
+                                binding.facebook ? <Button variant="outlined" color="primary" size="small" onClick={() => getFacebookInfo(0)}>解绑</Button> :
+                                    <Button variant="contained" color="primary" size="small" onClick={() => getFacebookInfo(1)}>绑定</Button>
+                            }
                         </div>
                     </li>
                     <li>
-                        <div>
-                            <Twitter className={classes.twitterIcon} />
-                            <span>Google</span>
+                        <div className={classes.iconStyle}>
+                            <Google className={classes.twitterIcon} />
+                            <span>GOOGLE</span>
                         </div>
                         <div>
-                            <Button variant="outlined" color="primary" size="small" onClick={getGoogleInfo(1)}>解绑</Button>
+                            {binding.google ? <Button variant="outlined" color="primary" size="small" onClick={() => getGoogleInfo(0)}>解绑</Button> :
+                                <Button variant="contained" color="primary" size="small" onClick={() => getGoogleInfo(1)}>绑定</Button>}
                         </div>
-                    </li>
-                    <li>
-                        <div>
-                            <Facebook className={classes.facebookIcon} />
-                            <span>Facebook</span>
-                        </div>
-                        <Button variant="contained" color="primary" size="small" onClick={getFacebookInfo(1)}>绑定</Button>
-                    </li>
-                    <li>
-                        <div>
-                            <Twitter className={classes.twitterIcon} />
-                            <span>Google</span>
-                        </div>
-                        <Button variant="contained" color="primary" size="small" onClick={getGoogleInfo(1)}>绑定</Button>
                     </li>
                 </ul>
-
             </div>
+            <Snackbar
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                open={open}
+                autoHideDuration={snackBar.autoHideDuration}
+                onClose={handleCloseSnackbar}
+            >
+                <MySnackbarContentWrapper
+                    onClose={handleCloseSnackbar}
+                    variant={snackBar.variant}
+                    message={snackBar.message}
+                />
+            </Snackbar>
         </Account>
     )
 }

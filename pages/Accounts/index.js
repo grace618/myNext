@@ -2,6 +2,7 @@ import React from 'react';
 import { makeStyles, Container, Grid, List, ListItem, ListItemText, ListItemIcon, Divider, Avatar, CardContent, Card } from '@material-ui/core'
 import { PersonOutline, LockOpen } from '@material-ui/icons';
 import { useRouter } from 'next/router'
+import { useSelector } from 'react-redux';
 import Layout from '../../components/Layouts/index.js'
 const useStyles = makeStyles(theme => ({
     headerPart: {
@@ -42,7 +43,9 @@ const useStyles = makeStyles(theme => ({
         fontWeight: "bold"
     },
     box: {
-        background: '#FBFBFB'
+        background: '#FBFBFB',
+        height: '100%',
+        paddingBottom: '45px'
     },
     title: {
         color: 'white',
@@ -62,6 +65,7 @@ function ListItemLink(props) {
 function Accounts(props) {
     const classes = useStyles()
     const router = useRouter();
+    const user = useSelector(state => state.app)
     // router.beforePopState(({ url, as, options }) => {
     //     // I only want to allow these two routes!
     //     if (as !== "/" || as !== "/other") {
@@ -86,9 +90,7 @@ function Accounts(props) {
                                 <CardContent>
                                     <div className={classes.avatarBox}>
                                         <Avatar alt="Remy Sharp" src='../../images/accounts/snow1.jpg' className={classes.avatar} />
-                                        <div className={classes.userName}>
-                                            garce_xxx
-                                    </div>
+                                        <div className={classes.userName}> {user.uid} </div>
                                     </div>
                                     <List component="nav" aria-label="secondary mailbox folders">
                                         <ListItemLink href="/accounts/profile">

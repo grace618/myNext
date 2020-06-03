@@ -79,7 +79,7 @@ const changePassword = (data, code) => {
     })
 }
 //账号绑定
-const binding = (data, code) => {
+const bindingAccounts = (data, code) => {
     return axios({
         url: '/api/member/user/v3/binding',
         method: 'post',
@@ -105,4 +105,4 @@ const getUserInfo = (data, code) => {
         headers: { 'token': code }
     })
 }
-export { getInitConfigByWeb, logout, login, sendPhoneCode, registerByEmailValitor, sendCaptchaByAuthCode, resetPassword, sendBindCaptcha, changePassword, binding, unBind, getUserInfo }
+export { getInitConfigByWeb, logout, login, sendPhoneCode, registerByEmailValitor, sendCaptchaByAuthCode, resetPassword, sendBindCaptcha, changePassword, bindingAccounts, unBind, getUserInfo }

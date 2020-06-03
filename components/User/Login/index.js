@@ -4,17 +4,18 @@ import PropTypes from 'prop-types'
 import { useSelector, useDispatch } from 'react-redux';
 import Phone from 'react-phone-number-input'
 import { withTranslation } from '../../../i18n'
-import { setToken, setUid } from 'store/modules/app'
 const crypto = require('crypto')
 
 import { Grid, Button, TextField, Checkbox, Box, FormControlLabel, Typography, FormControl, Snackbar } from '@material-ui/core';
-import { Save as SaveIcon, Clear } from '@material-ui/icons';
+import { Save as SaveIcon, Clear, Facebook } from '@material-ui/icons';
 
 import { makeStyles } from '@material-ui/styles'
 import MySnackbarContentWrapper from 'components/SnackbarWrapper'
 import { useSubmitForm } from 'common/CustomHooks'
 import { sendPhoneCode, sendCaptchaByAuthCode } from 'service/login'
 import { getUserInfo, register } from 'store/modules/app.js';
+
+import { FacebookProvider, Login } from 'react-facebook';
 
 
 const useStyles = makeStyles(theme => ({
@@ -130,6 +131,7 @@ const useStyles = makeStyles(theme => ({
     }
 
 }))
+/*global FB*/
 function LoginComponent(props) {
     const classes = useStyles(props)
     const initSnackbar = {
@@ -137,6 +139,7 @@ function LoginComponent(props) {
         variant: 'warning',
         autoHideDuration: 0
     }
+
     const [snackBar, setSnackBar] = useState(initSnackbar)
     let { show, t } = props
     const [changePanel, setShow] = useState(show)
@@ -317,54 +320,50 @@ function LoginComponent(props) {
         setOpen(false);
     };
     /*facebook*/
-    useEffect(() => {
-        (function (d, s, id) {
-            var js,
-                fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) return;
-            js = d.createElement(s);
-            js.id = id;
-            js.src = "https://connect.facebook.net/zh_CN/sdk.js#xfbml=1&version=v3.3";
-            fjs.parentNode.insertBefore(js, fjs);
-        })(document, "script", "facebook-jssdk");
-
-        window.fbAsyncInit = function () {
-            FB.init({
-                appId: '1070581506477121',
-                xfbml: true,
-                status: true,
-                cookie: true,
-                autoLogAppEvents: true,
-                version: 'v5.0'
-            })
-            FB.AppEvents.logPageView()
-        }
-    }, [])
     const facebookLogin = () => {
-        FB.login(function (response) {
-            if (response.status === 'connected') {
-                let accessId = response.authResponse.userID
-                let accessToken = response.authResponse.accessToken
-                const data = { loginType: 3, accessId, accessToken, uluAccount: '', password: '', gameId: '100001' }
-                loginByWay(data)
-                FB.logout(function () {
-                    console.log('User signed out.')
-                })
-            } else {
-                FB.logout(function () {
-                    console.log('User signed out.')
-                })
-            }
-        })
+        // FB.login(function (response) {
+        //     if (response.status === 'connected') {
+        //         let accessId = response.authResponse.userID
+        //         let accessToken = response.authResponse.accessToken
+        //         const data = { loginType: 3, accessId, accessToken, uluAccount: '', password: '', gameId: '100001' }
+        //         loginByWay(data)
+        //         FB.logout(function () {
+        //             console.log('User signed out.')
+        //         })
+        //     } else {
+        //         FB.logout(function () {
+        //             console.log('User signed out.')
+        //         })
+        //     }
+        // })
+    }
+    const handleResponse = (response) => {
+        if (response.status === 'connected') {
+            let accessId = response.authResponse.userID
+            let accessToken = response.authResponse.accessToken
+            const data = { loginType: 3, accessId, accessToken, uluAccount: '', password: '', gameId: '100001' }
+            loginByWay(data)
+            FB.logout(function () {
+                console.log('User signed out.')
+            })
+        } else {
+            FB.logout(function () {
+                console.log('User signed out.')
+            })
+        }
+    }
+
+    const handleError = (error) => {
+        console.log(error, 'error')
     }
     //google login
     const googleLogin = () => {
         gapi.load('auth2', function () {
             let auth2 = gapi.auth2.init({
-                // client_id:
-                //   '372395845963-qidir2a8uasj8ari12m345fq93fquu36.apps.googleusercontent.com',
                 client_id:
-                    '554596168927-2fi16qqmcjhgousr6id9h6h33mc7jvrn.apps.googleusercontent.com',
+                    '372395845963-qidir2a8uasj8ari12m345fq93fquu36.apps.googleusercontent.com',
+                // client_id:
+                //     '554596168927-2fi16qqmcjhgousr6id9h6h33mc7jvrn.apps.googleusercontent.com',
                 cookiepolicy: 'single_host_origin'
             })
             auth2.signIn().then(function () {
@@ -388,16 +387,27 @@ function LoginComponent(props) {
                 <div className={classes.login}>ULUGAMES</div>
                 <Grid container >
                     <Grid item container direction="column" lg={6} xs={12} md={6} sm={6} xl={6} className={classes.left}>
-                        <Button
-                            variant="contained"
-                            color="secondary"
-                            size="large"
-                            className={`${classes.button} ${classes.button1}`}
-                            startIcon={<SaveIcon />}
-                            onClick={facebookLogin}
-                        >
-                            Facebook登入
-                        </Button>
+                        <FacebookProvider appId="1070581506477121">
+                            <Login
+                                scope="email"
+                                onCompleted={handleResponse}
+                                onError={handleError}
+                            >
+                                {({ loading, handleClick, error, data }) => (
+                                    <span onClick={handleClick}>
+                                        <Button
+                                            variant="contained"
+                                            color="secondary"
+                                            size="large"
+                                            className={`${classes.button} ${classes.button1}`}
+                                            startIcon={<Facebook />}
+                                        >
+                                            Facebook登入
+                                 </Button>
+                                    </span>
+                                )}
+                            </Login>
+                        </FacebookProvider>
                         <Button
                             variant="contained"
                             color="primary"
@@ -409,7 +419,6 @@ function LoginComponent(props) {
                             Google登入
                             </Button>
                     </Grid>
-
                     <Grid item lg={6} xs={12} md={6} sm={6} xl={6} className={classes.right}>
                         {
                             changePanel ? (
@@ -466,15 +475,6 @@ function LoginComponent(props) {
                                                     defaultCountry="CN"
                                                     onChange={setPhoneValue}
                                                 />
-                                                {/* <TextField
-                                                    label="手机号码"
-                                                    className={classes.textField}
-                                                    name="phoneNumber"
-                                                    margin="normal"
-                                                    variant="outlined"
-                                                    value={inputs.phoneNumber}
-                                                    onChange={handleInputChange}
-                                                /> */}
                                             </FormControl>
                                             <Box display="flex" justifyContent="space-betwwen">
                                                 <FormControl className={classes.getcode}>

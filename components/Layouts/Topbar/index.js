@@ -11,7 +11,7 @@ import MySnackbarContentWrapper from 'components/SnackbarWrapper'
 import { logout, getInitConfigByWeb } from 'service/login'
 import LoginComponent from '../../User/Login'
 import { setCode } from 'store/modules/app'
-
+import Cookies from 'js-cookie'
 const useStyles = makeStyles(theme => ({
     root: props => ({
         backgroundColor: props.backgroundColor ? props.backgroundColor : theme.palette.primary.main,
@@ -148,6 +148,9 @@ function Topbar(props) {
             if (res.code == 0) {
                 setOpen(true);
                 setSnackBar({ ...snackBar, 'message': '退出成功', 'variant': 'success', 'autoHideDuration': 1500 });
+                Cookies.remove('token')
+                Cookies.remove('uid')
+                Cookies.remove('authCode')
                 location.reload();
             }
         })

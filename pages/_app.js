@@ -26,6 +26,17 @@ function App({ Component, pageProps }) { //全局
         if (jssStyles) {
             jssStyles.parentElement.removeChild(jssStyles);
         }
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: '1070581506477121',
+                xfbml: true,
+                status: true,
+                cookie: true,
+                autoLogAppEvents: true,
+                version: 'v5.0'
+            })
+            FB.AppEvents.logPageView()
+        }
     }, []);
     return (
         <Provider store={store}>
