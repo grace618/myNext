@@ -20,10 +20,6 @@ import { ReactComponent as Twitch } from 'icons/svg/twitch.svg'
 import { getGameDetail } from 'service/gameDetail'
 import { parseTime } from 'utils/format.js'
 
-// import {
-//     TwitterShareButton,
-//     FacebookShareButton,
-// } from 'react-share';
 const useStyles = makeStyles(theme => ({
     navBar: {
         height: '100%',
@@ -207,6 +203,7 @@ export async function getServerSideProps(context) {
         }
     }
 }
+
 function Detail(props) {
     const classes = useStyles()
     let { t, detail } = props
@@ -216,11 +213,6 @@ function Detail(props) {
             if (item.type === '1') {
                 snapshotUrlList.push(item.imgUrl)
             }
-            // if (item.type === '3') {
-            //     if (item.imgUrl && item.imgUrl != '') {
-            //         video.push(item.imgUrl)
-            //     }
-            // }
             if (item.type === '2') {
                 carousel.push(item.imgUrl)
             }

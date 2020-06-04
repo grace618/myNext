@@ -29,7 +29,6 @@ const initialState = {
 }
 export default function reducer(state = initialState, action) {
     switch (action.type) {
-
         case LANGUAGE:
             Cookies.set('lang-ulu', action.data.lang)
             return {

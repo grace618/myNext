@@ -1,7 +1,9 @@
 import axios from 'utils/axios'
-const getGameDetail = (data) => axios({
-    url: `/api/news/introduct/getDetail`,
-    method: 'post',
-    data
-})
+const getGameDetail = (data) => {
+    return axios({
+        url: `/api/news/introduct/getDetail`,
+        method: 'post',
+        data
+    })
+}
 export { getGameDetail }

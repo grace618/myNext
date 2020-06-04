@@ -46,6 +46,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
+
 export async function getServerSideProps(context) {
     let list = {}
     const data = {

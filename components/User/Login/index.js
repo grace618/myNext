@@ -15,9 +15,6 @@ import { useSubmitForm } from 'common/CustomHooks'
 import { sendPhoneCode, sendCaptchaByAuthCode } from 'service/login'
 import { getUserInfo, register } from 'store/modules/app.js';
 
-import { FacebookProvider, Login } from 'react-facebook';
-
-
 const useStyles = makeStyles(theme => ({
 
     loginBox: {
@@ -127,9 +124,7 @@ const useStyles = makeStyles(theme => ({
         '& input': {
             height: '58px',
         }
-
     }
-
 }))
 /*global FB*/
 function LoginComponent(props) {
@@ -321,40 +316,17 @@ function LoginComponent(props) {
     };
     /*facebook*/
     const facebookLogin = () => {
-        // FB.login(function (response) {
-        //     if (response.status === 'connected') {
-        //         let accessId = response.authResponse.userID
-        //         let accessToken = response.authResponse.accessToken
-        //         const data = { loginType: 3, accessId, accessToken, uluAccount: '', password: '', gameId: '100001' }
-        //         loginByWay(data)
-        //         FB.logout(function () {
-        //             console.log('User signed out.')
-        //         })
-        //     } else {
-        //         FB.logout(function () {
-        //             console.log('User signed out.')
-        //         })
-        //     }
-        // })
-    }
-    const handleResponse = (response) => {
-        if (response.status === 'connected') {
-            let accessId = response.authResponse.userID
-            let accessToken = response.authResponse.accessToken
-            const data = { loginType: 3, accessId, accessToken, uluAccount: '', password: '', gameId: '100001' }
-            loginByWay(data)
+        FB.login(function (response) {
+            if (response.status === 'connected') {
+                let accessId = response.authResponse.userID
+                let accessToken = response.authResponse.accessToken
+                const data = { loginType: 3, accessId, accessToken, uluAccount: '', password: '', gameId: '100001' }
+                loginByWay(data)
+            }
             FB.logout(function () {
                 console.log('User signed out.')
             })
-        } else {
-            FB.logout(function () {
-                console.log('User signed out.')
-            })
-        }
-    }
-
-    const handleError = (error) => {
-        console.log(error, 'error')
+        })
     }
     //google login
     const googleLogin = () => {
@@ -387,27 +359,16 @@ function LoginComponent(props) {
                 <div className={classes.login}>ULUGAMES</div>
                 <Grid container >
                     <Grid item container direction="column" lg={6} xs={12} md={6} sm={6} xl={6} className={classes.left}>
-                        <FacebookProvider appId="1070581506477121">
-                            <Login
-                                scope="email"
-                                onCompleted={handleResponse}
-                                onError={handleError}
-                            >
-                                {({ loading, handleClick, error, data }) => (
-                                    <span onClick={handleClick}>
-                                        <Button
-                                            variant="contained"
-                                            color="secondary"
-                                            size="large"
-                                            className={`${classes.button} ${classes.button1}`}
-                                            startIcon={<Facebook />}
-                                        >
-                                            Facebook登入
-                                 </Button>
-                                    </span>
-                                )}
-                            </Login>
-                        </FacebookProvider>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            size="large"
+                            className={`${classes.button} ${classes.button1}`}
+                            startIcon={<Facebook />}
+                            onClick={facebookLogin}
+                        >
+                            Facebook登入
+                            </Button>
                         <Button
                             variant="contained"
                             color="primary"

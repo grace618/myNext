@@ -387,7 +387,7 @@ function AboutUs(props) {
                                 {t('desc5')} <br /><br />{t('desc6')}
                             </Typography>
                             <Box mt={5}>
-                                <Button variant="outlined" size="medium" className={classes.more} href={`/detail/1`} component={ButtonLink}>{t('seeMore')}</Button>
+                                <Button variant="outlined" size="medium" className={classes.more} href={`/GameDetail/31`} component={ButtonLink}>{t('seeMore')}</Button>
                             </Box>
                         </Box>
                     </Grid>
@@ -405,7 +405,7 @@ function AboutUs(props) {
                                 {t('desc7')} <br /><br />{t('desc8')}
                             </Typography>
                             <Box mt={5}>
-                                <Button variant="outlined" size="medium" className={classes.more} href={`/detail/2`} component={ButtonLink}>{t('seeMoreBtn')}</Button>
+                                <Button variant="outlined" size="medium" className={classes.more} href={`/GameDetail/29`} component={ButtonLink}>{t('seeMoreBtn')}</Button>
                             </Box>
                         </Box>
                     </Grid>

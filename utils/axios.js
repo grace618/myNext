@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Cookies from 'js-cookie'
 // import getCode from './index'
 const config = {
     timeout: 50000,
@@ -28,8 +29,8 @@ service.interceptors.response.use(
         const res = response.data
         if (response.status === 401 || res.code === 30300) {
             alert('error~')
-            localStorage.removeItem('token')
-            localStorage.removeItem('authCode')
+            Cookies.remove('token')
+            Cookies.remove('authCode')
             location.reload()
         }
         return res

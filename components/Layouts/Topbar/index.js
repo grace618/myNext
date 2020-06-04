@@ -194,12 +194,21 @@ function Topbar(props) {
                                     menu.map((option, index) => {
                                         if (index < 3) {
                                             return (<MenuItem key={option.name} onClick={handleClose}> <Link href={`/${option.name}`} ><a>{t(option.name)}</a></Link></MenuItem>)
-                                        } else {
+                                        } else if (!user.uid) {
                                             return (
                                                 <MenuItem key={option.name} onClick={handleClose}>
                                                     <span key={option.name} onClick={() => handleLogin(index)}>{t(option.name)}</span>
                                                 </MenuItem>
                                             )
+                                        } else {
+                                            <>
+                                                <MenuItem>
+                                                    <a href="/accounts/profile">{user.uid}</a>
+                                                </MenuItem>
+                                                <MenuItem>
+                                                    <span className={classes.asLink} onClick={signout}>退出</span>
+                                                </MenuItem>
+                                            </>
                                         }
                                     })
                                 }
@@ -221,16 +230,13 @@ function Topbar(props) {
                                         return (
                                             <span key={option.name} onClick={() => handleLogin(index)}>{t(option.name)}</span>
                                         )
+                                    } else {
+                                        <>
+                                            <a href="/accounts/profile">{user.uid}</a>
+                                            <span className={classes.asLink} onClick={signout}>退出</span>
+                                        </>
                                     }
                                 })
-                            }
-                            {/* 已登录 */}
-                            {
-                                user.uid &&
-                                <>
-                                    <a href="/accounts/profile">{user.uid}</a>
-                                    <span className={classes.asLink} onClick={signout}>退出</span>
-                                </>
                             }
                         </Hidden>
                         <IconButton aria-label="select" aria-controls="simple-menu" aria-haspopup="true" onClick={handleLanguage}>

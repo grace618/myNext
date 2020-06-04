@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import Account from '../index'
-import { FacebookProvider, Login } from 'react-facebook';
 import { makeStyles, Button, Snackbar } from '@material-ui/core'
 import { Facebook } from '@material-ui/icons';
 import { withTranslation } from '../../../i18n'

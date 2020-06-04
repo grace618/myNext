@@ -99,7 +99,6 @@ function GameList(props) {
     const [current, setCurrent] = useState(1)
     const [total, setTotal] = useState(0)
     const user = useSelector(state => state.app)
-    console.log(user.lang, 'dkjf')
     const getInfo = async (current) => {
         const data = {
             "language": user.lang,
