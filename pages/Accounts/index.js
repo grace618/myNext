@@ -3,7 +3,8 @@ import { makeStyles, Container, Grid, List, ListItem, ListItemText, ListItemIcon
 import { PersonOutline, LockOpen } from '@material-ui/icons';
 import { useRouter } from 'next/router'
 import { useSelector } from 'react-redux';
-import Layout from '../../components/Layouts/index.js'
+import Layout from 'components/Layouts/index.js'
+import { withTranslation } from '../../i18n'
 const useStyles = makeStyles(theme => ({
     headerPart: {
         background: "url('../../images/accounts/star4.jpg') center center",
@@ -64,24 +65,14 @@ function ListItemLink(props) {
 
 function Accounts(props) {
     const classes = useStyles()
-    const router = useRouter();
     const user = useSelector(state => state.app)
-    // router.beforePopState(({ url, as, options }) => {
-    //     // I only want to allow these two routes!
-    //     if (as !== "/" || as !== "/other") {
-    //         // Have SSR render bad routes as a 404.
-    //         window.location.href = as
-    //         return false
-    //     }
-
-    //     return true
-    // });
+    const { t } = props
     return (
         <Layout>
 
             <div className={classes.box}>
                 <div className={classes.headerPart}>
-                    <Container><div className={classes.title}> 会员中心</div></Container>
+                    <Container><div className={classes.title}> {t('member')}</div></Container>
                 </div>
                 <Container className={classes.panelContainer}>
                     <Grid container justify="space-between" >
@@ -97,14 +88,14 @@ function Accounts(props) {
                                             <ListItemIcon>
                                                 <PersonOutline />
                                             </ListItemIcon>
-                                            <ListItemText primary="个人资料" className={classes.textSize} />
+                                            <ListItemText primary={t('userinfo')} className={classes.textSize} />
                                         </ListItemLink>
                                         <Divider />
                                         <ListItemLink href="/accounts/binding">
                                             <ListItemIcon>
                                                 <LockOpen />
                                             </ListItemIcon>
-                                            <ListItemText primary="绑定服务" className={classes.textSize} />
+                                            <ListItemText primary={t('bindingService')} className={classes.textSize} />
                                         </ListItemLink>
                                         <Divider />
                                     </List>
@@ -120,4 +111,4 @@ function Accounts(props) {
         </Layout>
     )
 }
-export default Accounts
+export default withTranslation('accounts')(Accounts);

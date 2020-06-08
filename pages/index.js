@@ -3,43 +3,59 @@ import React from 'react';
 import PropTypes from 'prop-types'
 import Link from 'next/link'
 import Slider from "react-slick";
-import Layout from '../components/Layouts/index.js'
+import Layout from 'components/Layouts/index.js'
 import { gameList } from 'service/gameList'
 import { getList } from 'service/news'
+import { getTurnList } from 'service/home'
 import { makeStyles, Container, Typography, Grid, Button, Box, Hidden } from '@material-ui/core'
-import { withTranslation } from '../i18n'
+import { ArrowRightAlt } from '@material-ui/icons'
 import { parseTime } from 'utils/format.js'
 import './index.module.css'
 import { useRouter } from 'next/router'
+import { withTranslation, i18n } from '../i18n'
+
+
 const useStyles = makeStyles(theme => ({
-    header: {
-        width: '100%',
-        position: 'absolute',
-        top: '10%'
-    },
-    headerWrap: {
-        width: '100%',
-        height: '100%',
-        position: 'absolute'
-    },
     headerBox: {
-        width: '100%',
-        height: 889,
-        position: 'relative',
         marginTop: '60px',
+    },
+    bgImg: {
+        width: '100%',
+        height: 830,
+        color: "white",
+        padding: '0px 0px 14px 0px',
         [theme.breakpoints.down('sm')]: {
             height: 667
         },
     },
-    ImgBox: {
-        height: '100%'
+    gameIcon: {
+        height: '110px',
+        display: 'flex',
+        '& img': {
+            width: '110px',
+            height: '110px',
+            marginRight: '20px'
+        }
     },
-
+    headContent: {
+        paddingTop: '10%',
+    },
+    description: {
+        padding: '16px 0px 10px 0px',
+        width: '420px',
+        borderTop: '1px solid #f90',
+        fontSize: 18,
+        [theme.breakpoints.down('md')]: {
+            width: 350
+        },
+    },
+    gametitle: {
+        fontSize: 64,
+        fontWeight: 'bold',
+        padding: '16px 0px 0px 0px',
+    },
     container: {
-        height: '100%'
-    },
-    publishBtn: {
-        height: '100%'
+        padding: '5%'
     },
     panelContainer: {
         padding: '5% 0',
@@ -145,7 +161,7 @@ const useStyles = makeStyles(theme => ({
         }
     },
     c: {
-        color: '#1f1313'
+        color: '#1f1313',
     },
     pic: {
         width: '100%',
@@ -154,11 +170,11 @@ const useStyles = makeStyles(theme => ({
     },
     paper: {
         margin: '100px 0 50px 0',
-        height: '630px',
+        minHeight: '630px',
         '& > *': {
             marginBottom: '67px',
             boxSizing: 'border-box',
-
+            height: '100%',
         },
     },
     news_detail: {
@@ -197,17 +213,22 @@ const useStyles = makeStyles(theme => ({
         position: 'absolute',
         top: 0,
         left: 0,
+        zIndex: '2',
+        maxWidth: 412,
         borderLeft: "4px solid #fe9a45",
+        [theme.breakpoints.down('md')]: {
+            position: 'static'
+        },
     },
     center_text: {
-        zIndex: 2,
+        zIndex: 3,
         position: 'absolute',
         bottom: 78,
         left: 34
     },
     center_time: {
         position: 'absolute',
-        zIndex: '2',
+        zIndex: '3',
         bottom: 28,
         left: 34,
         fontSize: '12px'
@@ -247,17 +268,23 @@ export async function getServerSideProps(context) {
     if (response.code == 0) {
         newList = response.data.records
     }
+    let slide = []
+    const resData = await getTurnList(context.req.language)
+    if (resData.code == 0) {
+        slide = resData.data
+    }
     return {
         props: {
             "gameItem": list,
-            'newList': newList
+            'newList': newList,
+            "slide": slide
         }
     }
 }
 
 function Home(props) {
     const classes = useStyles()
-    const { t, gameItem, newList } = props
+    const { t, gameItem, newList, slide } = props
     const router = useRouter();
     const toDetail = (e, id) => {
         router.push(`/NewsDetail/${id}`)
@@ -308,43 +335,37 @@ function Home(props) {
         <Layout>
             {/* slide head img */}
             <div className={classes.headerBox}>
-                <div className={classes.headerWrap}>
-                    <Slider {...settings1} className={classes.h}>
-                        <Grid container alignItems="center" justify="center">
-                            <Hidden mdUp>
-                                <img src="Images/mHeader.jpg" alt="banner1" className={classes.pic} />
-                            </Hidden>
-                            <Hidden only={['sm', 'xs']}>
-                                <img src="Images/headerBg.jpg" alt="banner1" className={classes.pic} />
-                            </Hidden>
-
-                        </Grid>
-                        <Grid container alignItems="center" justify="center" className={classes.ImgBox}>
-                            <Hidden mdUp>
-                                <img src="Images/mHeader2.jpg" alt="banner1" className={classes.pic} />
-                            </Hidden>
-                            <Hidden only={['sm', 'xs']}>
-                                <img src="Images/headerBg3.jpg" alt="banner1" className={classes.pic} />
-                            </Hidden>
-                        </Grid>
-                    </Slider>
-                </div>
-                <div className={classes.header}>
-                    <Container className={classes.container}>
-                        <Grid container alignItems="center" direction="column" justify="center" className={classes.publishBtn}>
-                            <Typography variant="h4" gutterBottom className="classes.c" align="center">{t('solgan')}</Typography>
-                            {/* <Hidden smDown> */}
-                            <Typography variant="h6" gutterBottom className="classes.c" align="center">{t('sloganDesc1')}</Typography>
-                            <Typography variant="h6" gutterBottom className="classes.c" align="center">{t('sloganDesc2')}</Typography>
-                            <Typography variant="h6" gutterBottom className="classes.c" align="center">{t('sloganDesc3')}</Typography>
-                            {/* </Hidden> */}
-                            <Box mt={8} display={{ xs: 'none', sm: 'block' }}>
-                                <Button variant="contained" color="primary" size="large" href="/publishing" component={ButtonLink}>{t('aboutBtn')}</Button>
-                            </Box>
-                        </Grid>
-                    </Container>
-                </div>
+                <Slider {...settings1}>
+                    {
+                        slide.length > 0 && slide.map(value => (
+                            <Grid container key={value.id} justify="flex-start">
+                                <div style={{ 'background': `url(${value.backImg}) center top` }} className={classes.bgImg}>
+                                    <Container className={classes.headContent}>
+                                        <div className={classes.gameIcon}>
+                                            <img src={value.gameImg} alt="" />
+                                            <img src={value.qrCodeImg} alt="" />
+                                        </div>
+                                        <Typography variant="h4" gutterBottom className={classes.gametitle}>{value.title}</Typography>
+                                        <Typography variant="h6" gutterBottom className={classes.description}>{value.description}</Typography>
+                                        <a target="_blank" href={value.reserveUrl} style={{ color: 'white' }}> <Button color="primary" size="large" variant="contained">查看详情<ArrowRightAlt /></Button></a>
+                                    </Container>
+                                </div>
+                            </Grid>
+                        ))
+                    }
+                </Slider>
             </div>
+            <Container className={classes.container}>
+                <Grid container alignItems="center" direction="column" justify="center" >
+                    <Typography variant="h4" gutterBottom className="classes.c" >{t('solgan')}</Typography>
+                    <Typography variant="h6" gutterBottom className="classes.c" >{t('sloganDesc1')}</Typography>
+                    <Typography variant="h6" gutterBottom className="classes.c" >{t('sloganDesc2')}</Typography>
+                    <Typography variant="h6" gutterBottom className="classes.c">{t('sloganDesc3')}</Typography>
+                    <Box mt={8}>
+                        <Button color="primary" size="large" href="/publishing" component={ButtonLink} variant="outlined">{t('aboutBtn')}</Button>
+                    </Box>
+                </Grid>
+            </Container>
             <Box bgcolor="background.light">
                 <Container className={classes.panelContainer}>
                     <Grid container justify="space-between" >
@@ -365,7 +386,7 @@ function Home(props) {
                                     {t('gameDesc')}
                                 </Typography>
                                 <Box mt={5}>
-                                    <Button component={ButtonLink} href={'/GameList'} variant="outlined" size="large" className={classes.more}>{t('moreBtn')}</Button>
+                                    <Button component={ButtonLink} href={'/GameList'} color="primary" variant="outlined" size="large" className={classes.more}>{t('moreBtn')}</Button>
                                 </Box>
                             </Box>
                         </Grid>
@@ -399,7 +420,7 @@ function Home(props) {
                             }
                         </Slider>
                     </div>
-                    <Button component={ButtonLink} href={'/GameList'} variant="outlined" pt={8}>查看更多</Button>
+                    <Button component={ButtonLink} href={'/GameList'} variant="outlined" pt={8} color="primary" size="large">{t('moreBtn')}</Button>
                 </Grid>
             </Container>
             <Box bgcolor="background.light">
@@ -407,9 +428,9 @@ function Home(props) {
                 <Container>
                     <Box pt={8} >
                         <Typography gutterBottom align="center">
-                            <span className={classes.t4}>新闻公告</span>
+                            <span className={classes.t4}>{t('news')}</span>
                         </Typography>
-                        <Typography className={classes.slogan} align="center" > 这里有游戏相关资讯 </Typography>
+                        <Typography className={classes.slogan} align="center" > {t('newsTitle')} </Typography>
                         <span className={classes.line}></span>
                         {
                             newList.length > 0 && (
@@ -423,10 +444,13 @@ function Home(props) {
                                             </div>
                                             <img src={newList[1].imgUrl} alt="" />
                                         </Grid>
-                                        <Grid item container direction="column" justify="center" xs={12} sm={12} md={4} lg={4} xl={4} className={classes.center} onClick={(e) => toDetail(e, newList[1].id)}>
-                                            <img src={newList[0].backgroundImgUrl} alt="" className={classes.news_center} />
-                                            <p className={classes.center_text}>{newList[0].title}</p>
-                                            <p className={classes.center_time}> {parseTime(newList[0].createTime)}</p>
+                                        <Grid item xs={12} sm={12} md={4} lg={4} xl={4} onClick={(e) => toDetail(e, newList[1].id)}>
+                                            <Grid container direction="column" justify="center" className={classes.center} >
+                                                <img src={newList[0].backgroundImgUrl} alt="" className={classes.news_center} />
+                                                <p className={classes.center_text}>{newList[0].title}</p>
+                                                <p className={classes.center_time}> {parseTime(newList[0].createTime)}</p>
+                                            </Grid>
+
                                         </Grid>
                                         <Grid item xs={12} sm={12} md={4} lg={4} xl={4} onClick={(e) => toDetail(e, newList[1].id)}>
                                             <img src={newList[2].imgUrl} alt="" />
@@ -437,7 +461,7 @@ function Home(props) {
                                             </div>
                                         </Grid>
                                     </Grid>
-                                    <Box textAlign="center" pb={8}><Button component={ButtonLink} href={'/news'} variant="outlined" size="large">查看更多</Button></Box>
+                                    <Box textAlign="center" pb={8}><Button component={ButtonLink} href={'/news'} variant="outlined" color="primary" size="large">{t('moreBtn')}</Button></Box>
                                 </>
                             )
                         }
@@ -455,9 +479,10 @@ function Home(props) {
                     </Grid>
                 </Container>
             </Box>
-        </Layout>
+        </Layout >
     );
 }
+
 Home.propTypes = {
     t: PropTypes.func.isRequired,
 }

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import Layout from '../../components/Layouts/index.js'
+import Layout from 'components/Layouts/index.js'
 import Link from 'next/link'
-import { withTranslation } from '../../i18n'
+import { withTranslation, i18n } from '../../i18n'
 import { makeStyles, Container, Typography, Grid, Box, Hidden, Breadcrumbs, Divider } from '@material-ui/core'
 import Pagination from '@material-ui/lab/Pagination';
 import { getList } from 'service/news'
@@ -71,19 +71,25 @@ const useStyles = makeStyles(theme => ({
     },
     linkColor: {
         color: '#7c7c7c',
-        height: '100px'
+        height: '80px',
+        textOverflow: 'ellipsis',
+        overflow: 'hidden',
+        width: '100%',
+        display: '-webkit-box',
+        '-webkit-box-orient': 'vertical',
+        '-webkit-line-clamp': 3,
+        marginBottom: '10px'
     },
     titleColor: {
         color: "#000",
         fontWeight: "bold"
     },
     box: {
-        minHeight: '500px'
+        minHeight: '500px',
+        width: '100%'
     }
 })
 )
-
-
 function NewList(props) {
     const classes = useStyles()
     const { t } = props
@@ -93,7 +99,7 @@ function NewList(props) {
     const user = useSelector(state => state.app)
     const getInfo = async (current) => {
         const data = {
-            "language": user.lang,
+            "language": i18n.language,
             "platformId": 3,
             "label": 1,
             "size": 10,
@@ -111,7 +117,7 @@ function NewList(props) {
     }
     useEffect(() => {
         getInfo(current)
-    }, [user])
+    }, [i18n.language])
     const handleChange = (event, val) => {
         getInfo(val)
     }
@@ -132,21 +138,21 @@ function NewList(props) {
             </Hidden>
             <Container>
                 <Box pt={10}>
-                    <span className={classes.headingBlock}>资讯</span>
+                    <span className={classes.headingBlock}>{t('news')}</span>
                     <span className={classes.line}></span>
                 </Box>
                 <div className={`${classes.gameList} ${classes.box}`}>
                     {
                         infoItem.length > 0 && infoItem.map(item => (
                             <React.Fragment key={item.id}>
-                                <Grid container spacing={2} alignItems="center" >
-                                    <Grid item>
+                                <Grid container spacing={1} alignItems="center" >
+                                    <Grid item xs={12} sm={12} md={2} lg={2} xl={2}>
                                         <Link href="/NewsDetail/[id]" as={`/NewsDetail/${item.id}`} ><img className={classes.img} alt="complex" src={item.imgUrl} /></Link>
                                     </Grid>
-                                    <Grid item xs={12} sm={12} md={12} lg={8} xl={8} sm container justify="space-between" direction="column">
+                                    <Grid item xs={12} sm={12} md={9} lg={9} xl={9} container justify="space-between" direction="column">
                                         <Link href="/NewsDetail/[id]" as={`/NewsDetail/${item.id}`}><a className={classes.titleColor}>{item.title}</a></Link>
                                         <Link href="/NewsDetail/[id]" as={`/NewsDetail/${item.id}`}><a className={classes.linkColor}>{item.content}</a></Link>
-                                        <Box fontSize="14px" lineHeight="1.7" color="#7c7c7c">发布于：{parseTime(item.createTime, '{y}-{m}-{d}')}</Box>
+                                        <Box fontSize="14px" lineHeight="1.7" color="#7c7c7c">{t('publicBy')}：{parseTime(item.createTime, '{y}-{m}-{d}')}</Box>
                                     </Grid>
                                 </Grid>
                                 <Divider className={classes.divider} />
@@ -164,4 +170,4 @@ function NewList(props) {
 NewList.propTypes = {
     t: PropTypes.func.isRequired,
 }
-export default withTranslation('gameList')(NewList);
+export default withTranslation('news')(NewList);

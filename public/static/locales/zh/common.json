@@ -3,5 +3,7 @@
     "GameList": "游陆游戏",
     "jobs": "加入游陆",
     "login": "登录",
-    "register": "注册"
+    "register": "注册",
+    "signout": "退出",
+    "logout": "退出成功~"
 }

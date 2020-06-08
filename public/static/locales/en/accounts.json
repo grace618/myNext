@@ -1,0 +1,12 @@
+{
+    "binding": "Bind account",
+    "bindtip": "After binding your social network account, you can log in using the bound social network account.",
+    "bind": "Binding",
+    "unbind": "Unlink",
+    "forget": "Forget",
+    "forgetTip": "Please enter your email address. If you have set up a recovered email address, the password reset instruction will be sent to your recovered email address",
+    "member": "Member Center",
+    "userinfo": "User Profile",
+    "bindingService": "Bound Services",
+    "bindingSuccess": "bind succeeded"
+}

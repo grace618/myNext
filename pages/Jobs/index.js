@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react'
-import MySnackbarContentWrapper from '../../components/SnackbarWrapper'
+import MySnackbarContentWrapper from 'components/SnackbarWrapper'
 import PropTypes from 'prop-types'
 import { addRecruitment } from 'service/jobs'
 import { withTranslation } from '../../i18n'
@@ -10,8 +10,8 @@ import {
     makeStyles, Typography, Grid, Container, Divider, Box, List, ListItemText, ListItem, Button, InputLabel, FormControl, Select, MenuItem, Input, OutlinedInput, Snackbar
 } from '@material-ui/core'
 import { Check, AddCircle } from '@material-ui/icons';
-import Footer from '../../components/Layouts/Footer'
-import Topbar from '../../components/Layouts/Topbar'
+import Footer from 'components/Layouts/Footer'
+import Topbar from 'components/Layouts/Topbar'
 
 const useStyles = makeStyles(theme => ({
     banner: {

@@ -1,10 +1,10 @@
 
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import Layout from '../../components/Layouts/index.js'
+import Layout from 'components/Layouts/index.js'
 import Link from 'next/link'
 import Slider from "react-slick";
-import { withTranslation } from '../../i18n'
+import { withTranslation, i18n } from '../../i18n'
 import { gameList } from 'service/gameList'
 import { makeStyles, Container, Typography, Grid, Button, Box, Hidden, Breadcrumbs, Divider } from '@material-ui/core'
 import Pagination from '@material-ui/lab/Pagination';
@@ -82,7 +82,6 @@ const ButtonLink = React.forwardRef(({ className, href, hrefAs, children }, ref)
     </Link>
 ));
 
-
 function GameList(props) {
     const classes = useStyles()
     const { t } = props
@@ -99,9 +98,10 @@ function GameList(props) {
     const [current, setCurrent] = useState(1)
     const [total, setTotal] = useState(0)
     const user = useSelector(state => state.app)
+
     const getInfo = async (current) => {
         const data = {
-            "language": user.lang,
+            "language": i18n.language,
             "platformId": 3,
             "size": 12,
             "current": current,
@@ -119,7 +119,7 @@ function GameList(props) {
     }
     useEffect(() => {
         getInfo(current)
-    }, [user.lang])
+    }, [i18n.language])
     const handleChange = (event, val) => {
         getInfo(val)
     }

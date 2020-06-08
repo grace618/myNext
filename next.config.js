@@ -12,15 +12,6 @@ module.exports = {
                     statsFilename: 'stats.json',
                 }));
         }
-
-        config.resolve.alias['Component'] = path.join(__dirname, 'components')
-        config.resolve.alias['Images'] = path.join(__dirname, 'public/images')
-        config.resolve.alias['Public'] = path.join(__dirname, 'public')
-        config.resolve.alias['views'] = path.join(__dirname, 'pages')
-        config.resolve.alias['service'] = path.join(__dirname, 'service')
-        config.resolve.alias['store'] = path.join(__dirname, 'store')
-        config.resolve.alias['utils'] = path.join(__dirname, 'utils')
-        config.resolve.alias['common'] = path.join(__dirname, 'common')
         config.module.rules.push({
             test: /\.svg$/,
             issuer: {

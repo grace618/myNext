@@ -2,10 +2,10 @@ import React, { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import PropTypes from 'prop-types'
 
-import Layout from '../../components/Layouts/index.js'
+import Layout from 'components/Layouts/index.js'
 import { withTranslation } from '../../i18n'
 import { makeStyles, Container, Typography, Grid, Button, Box, Hidden, Breadcrumbs, Divider, Snackbar } from '@material-ui/core'
-import MySnackbarContentWrapper from '../../components/SnackbarWrapper'
+import MySnackbarContentWrapper from 'components/SnackbarWrapper'
 import { uploadFile } from 'service/publishing'
 import { useSubmitForm } from 'common/CustomHooks'
 

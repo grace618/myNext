@@ -1,7 +1,8 @@
 import React from 'react';
 import Account from '../index'
 import { makeStyles, Container, Typography } from '@material-ui/core'
-import PasswordComponent from '../../../components/User/Password'
+import PasswordComponent from 'components/User/Password'
+import { withTranslation } from '../../../i18n'
 const useStyles = makeStyles(theme => ({
     root: {
         width: '100%',
@@ -17,15 +18,16 @@ const useStyles = makeStyles(theme => ({
         marginBottom: '2%'
     }
 }));
-function Profile() {
+function Profile(props) {
     const classes = useStyles()
+    const { t } = props
     return (
         <Account>
             <div className={classes.root}>
-                <span className={classes.title}>修改密码</span>
+                <span className={classes.title}>{t('forget')}</span>
                 <Container>
                     <div className={classes.inputEmail}>
-                        <Typography gutterBottom variant="body2" color="textPrimary" align="center" className={classes.desc}>请输入你的邮箱，若你已设置追回邮箱，密码重置指令会被发送至你的追回邮箱</Typography>
+                        <Typography gutterBottom variant="body2" color="textPrimary" align="center" className={classes.desc}>{t('forgetTip')}</Typography>
                         <PasswordComponent />
                     </div>
                 </Container>
@@ -33,4 +35,5 @@ function Profile() {
         </Account >
     )
 }
-export default Profile
+
+export default withTranslation('accounts')(Profile);

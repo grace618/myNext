@@ -1,4 +1,3 @@
-import getLanguage from 'utils/i18n.js'
 import { login, registerByEmailValitor } from 'service/login'
 import Cookies from 'js-cookie'
 const LANGUAGE = 'APP/LANGUAGE'
@@ -22,7 +21,7 @@ export const setUid = (data => ({
     data
 }))
 const initialState = {
-    lang: getLanguage(),
+    lang: Cookies.get('next-i18next') || 'en',
     authcode: Cookies.get('authCode'),
     token: Cookies.get('token'),
     uid: Cookies.get('uid')

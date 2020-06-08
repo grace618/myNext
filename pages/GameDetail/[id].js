@@ -4,8 +4,8 @@ import Slider from "react-slick";
 import ReactPlayer from 'react-player'
 import PropTypes from 'prop-types'
 import Link from 'next/link'
-import { withTranslation } from '../../i18n'
-import Layout from '../../components/Layouts/index.js'
+import { withTranslation, i18n } from '../../i18n'
+import Layout from 'components/Layouts/index.js'
 
 import { ReactComponent as DateIcon } from 'icons/svg/date.svg'
 import { ReactComponent as LightIcon } from 'icons/svg/light.svg'
@@ -185,6 +185,7 @@ const gameType = [
     'IdleGame',
     'CasualGame'
 ]
+
 export async function getServerSideProps(context) {
     let list = []
     const data = {
@@ -194,7 +195,7 @@ export async function getServerSideProps(context) {
         "gameId": 100010,
     }
     const res = await getGameDetail(data)
-    if (res.code === 0) {
+    if (res.code == 0) {
         list = res.data
     }
     return {
@@ -203,12 +204,11 @@ export async function getServerSideProps(context) {
         }
     }
 }
-
 function Detail(props) {
     const classes = useStyles()
     let { t, detail } = props
     let snapshotUrlList = [], video = [], carousel = [];
-    if (detail.snapshotUrlList.length > 0) {
+    if (detail.snapshotUrlList && detail.snapshotUrlList.length > 0) {
         detail.snapshotUrlList.map(item => {
             if (item.type === '1') {
                 snapshotUrlList.push(item.imgUrl)
@@ -319,31 +319,30 @@ function Detail(props) {
                             </Grid>
                         </Grid>
                         <Divider />
-                        {
-                            detail.downloadUrlList.length > 0 && (
-                                <Grid className={classes.infoPanel} container direction="column">
-                                    <div className={classes.textInfo} >{t('download')}</div>
-                                    {
-                                        detail.downloadUrlList.length > 0 && detail.downloadUrlList.map(item => (
-                                            <React.Fragment key={item.type}>
-                                                {item.type === '2' &&
-                                                    (<Button variant="contained" color="secondary" size="large" className={classes.downloadiOS} href={item.downloadUrl} target="_blank">
-                                                        <IOS className={classes.icon} />
+
+                        <Grid className={classes.infoPanel} container direction="column">
+                            <div className={classes.textInfo} >{t('download')}</div>
+                            {
+                                detail.downloadUrlList && detail.downloadUrlList.map(item => (
+                                    <React.Fragment key={item.type}>
+                                        {item.type === '2' &&
+                                            (<Button variant="contained" color="secondary" size="large" className={classes.downloadiOS} href={item.downloadUrl} target="_blank">
+                                                <IOS className={classes.icon} />
                                                         APP STORE
-                                                    </Button>)
-                                                }
-                                                {
-                                                    item.type === '1' &&
-                                                    (<Button variant="contained" color="primary" size="large" className={classes.downloadGoogleplay} href={item.downloadUrl} target="_blank">
-                                                        <Android className={classes.icon} />
+                                            </Button>)
+                                        }
+                                        {
+                                            item.type === '1' &&
+                                            (<Button variant="contained" color="primary" size="large" className={classes.downloadGoogleplay} href={item.downloadUrl} target="_blank">
+                                                <Android className={classes.icon} />
                                                         GOOGLE PLAY
-                                                    </Button>)
-                                                }
-                                            </React.Fragment>
-                                        ))
-                                    }
-                                </Grid>)
-                        }
+                                            </Button>)
+                                        }
+                                    </React.Fragment>
+                                ))
+                            }
+                        </Grid>
+
                         <Divider />
                         <Grid className={classes.infoPanel} container direction="column">
                             <div className={classes.textInfo} >{t('follow')}</div>

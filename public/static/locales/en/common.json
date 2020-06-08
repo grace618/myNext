@@ -3,5 +3,7 @@
      "GameList": "GAMES",
      "jobs": "JOBS",
      "login": "LOG IN",
-     "register": "SIGN UP"
+     "register": "SIGN UP",
+     "signout": "LOG OUT",
+     "logout": "You successfully logged out"
  }

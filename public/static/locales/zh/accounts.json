@@ -1,0 +1,13 @@
+{
+    "binding": "绑定账号",
+    "bindtip": "绑定你的社交网络账号后，你可以使用已绑定的社交网络账号来登录。",
+    "bind": "绑定",
+    "unbind": "解绑",
+    "forget": "忘记密码",
+    "forgetTip": "请输入你的邮箱，若你已设置追回邮箱，密码重置指令会被发送至你的追回邮箱",
+    "member": "会员中心",
+    "userinfo": "个人信息",
+    "bindingService": "绑定服务",
+    "bindingSuccess": "绑定成功",
+    "unbindsuccess": "解绑成功"
+}

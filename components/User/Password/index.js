@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { resetPassword, sendCaptchaByAuthCode } from 'service/login'
 import MySnackbarContentWrapper from 'components/SnackbarWrapper'
 import { useRouter } from 'next/router'
-import { withTranslation } from '../../../i18n'
+import { withTranslation, i18n } from '../../../i18n'
 const crypto = require('crypto')
 const useStyles = makeStyles((theme) => ({
     textField1: {
@@ -50,7 +50,7 @@ function PasswordComponent() {
         setSnackBar(initSnackbar)
         const isEmail = /^([A-Za-z0-9_\-\.\u4e00-\u9fa5])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,8})$/.test(email)
         if (email === '' || !isEmail) {
-            setSnackBar({ ...snackBar, 'message': '请输入合理的邮箱', 'variant': 'warning', 'autoHideDuration': 5000 })
+            setSnackBar({ ...snackBar, 'message': t('emailTip'), 'variant': 'warning', 'autoHideDuration': 5000 })
             setOpen(true);
             return false
         }
@@ -58,7 +58,7 @@ function PasswordComponent() {
     }
     //发送验证码
     const submitFormData = () => {
-        let lang = user.lang == 'en' ? 'en-US' : 'zh-CN'
+        let lang = i18n.language == 'en' ? 'en-US' : 'zh-CN'
         if (!checkEmail(inputs.mail)) return false
         const data = {
             "mail": inputs.mail,
@@ -90,17 +90,17 @@ function PasswordComponent() {
     const submitData = () => {
         const { captcha, password, passwordAgain } = regInputs
         if (captcha == '') {
-            setSnackBar({ ...snackBar, 'message': '请输入验证码', 'variant': 'warning', 'autoHideDuration': 10000 })
+            setSnackBar({ ...snackBar, 'message': t('codeTip'), 'variant': 'warning', 'autoHideDuration': 10000 })
             setOpen(true);
             return false
         }
         if (password.length < 8) {
-            setSnackBar({ ...snackBar, 'message': '请输入8-20位字母 (区别大小写)、数字或符号', 'variant': 'warning', 'autoHideDuration': 5000 })
+            setSnackBar({ ...snackBar, 'message': t('tip'), 'variant': 'warning', 'autoHideDuration': 5000 })
             setOpen(true);
             return false
         }
         if ((password == '' || passwordAgain == '') || password !== passwordAgain) {
-            setSnackBar({ ...snackBar, 'message': '两次输入密码不一致', 'variant': 'warning', 'autoHideDuration': 10000 })
+            setSnackBar({ ...snackBar, 'message': t('pwdComfirm'), 'variant': 'warning', 'autoHideDuration': 10000 })
             setOpen(true);
             return false
         }
@@ -115,7 +115,7 @@ function PasswordComponent() {
         }
         resetPassword(data, user.authcode).then(res => {
             if (res.code == 0) {
-                setSnackBar({ ...snackBar, 'message': '修改成功', 'variant': 'warning', 'autoHideDuration': 10000 })
+                setSnackBar({ ...snackBar, 'message': t('modify'), 'variant': 'warning', 'autoHideDuration': 10000 })
                 setOpen(true);
                 router.push('/')
             } else {
@@ -135,7 +135,7 @@ function PasswordComponent() {
                     <Box display="flex" alignContent="center" flexDirection="column">
                         <TextField
                             id="outlined-email-input"
-                            label="电子邮箱"
+                            label={this('email')}
                             className={classes.textField1}
                             type="email"
                             name="mail"
@@ -145,15 +145,15 @@ function PasswordComponent() {
                             value={inputs.mail}
                             onChange={handleInputChange}
                         />
-                        <Button variant="contained" color="primary" className={classes.LoginBtn} onClick={submitFormData} size="large"> 发送 </Button>
+                        <Button variant="contained" color="primary" className={classes.LoginBtn} onClick={submitFormData} size="large">{t('send')} </Button>
                     </Box>
                 ) : (
                         <form className={classes.formData} >
-                            <Typography gutterBottom variant="body1" color="textPrimary" align="center" className={classes.tips}>设置新密码,邮箱验证码已下发，请注意查收</Typography>
+                            <Typography gutterBottom variant="body1" color="textPrimary" align="center" className={classes.tips}>{t('check')}</Typography>
                             <Box display="flex" justifyContent="space-betwwen" flexDirection="column">
                                 <FormControl className={classes.getcode}>
                                     <TextField
-                                        label="验证码"
+                                        label={t('code')}
                                         name="captcha"
                                         margin="normal"
                                         size="small"
@@ -164,7 +164,7 @@ function PasswordComponent() {
                                 </FormControl>
                                 <FormControl>
                                     <TextField
-                                        label="密码"
+                                        label={t('password')}
                                         className={classes.textField}
                                         type="password"
                                         name="password"
@@ -173,12 +173,12 @@ function PasswordComponent() {
                                         size="small"
                                         value={regInputs.password}
                                         onChange={handleRegInputChnage}
-                                        helperText="请输入8-20位字母 (区别大小写)、数字或符号"
+                                        helperText={t('tip')}
                                     />
                                 </FormControl>
                                 <FormControl>
                                     <TextField
-                                        label="确认密码"
+                                        label={t('comfirm')}
                                         className={classes.textField}
                                         type="password"
                                         name="passwordAgain"
@@ -189,7 +189,7 @@ function PasswordComponent() {
                                         onChange={handleRegInputChnage}
                                     />
                                 </FormControl>
-                                <Button variant="contained" color="primary" className={classes.LoginBtn} onClick={submitData} size="large"> 完成 </Button>
+                                <Button variant="contained" color="primary" className={classes.LoginBtn} onClick={submitData} size="large"> {t('complete')} </Button>
                             </Box>
                         </form>
                     )

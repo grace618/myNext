@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link'
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux';
-import { Container, Grid, IconButton, Hidden, MenuItem, Menu, Snackbar } from '@material-ui/core';
+import { Container, Grid, IconButton, Hidden, MenuItem, Menu, Snackbar, Slide } from '@material-ui/core';
+import Fade from '@material-ui/core/Fade';
 import { Language, Menu as MenuIcon } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/styles'
 import { setLang } from 'store/modules/app'
@@ -60,8 +61,6 @@ const options = [{
     'value': 'en',
     'name': 'English'
 }]
-
-
 const menu = [{
     'name': 'publishing',
 }, {
@@ -133,7 +132,7 @@ function Topbar(props) {
             "platform": 3,
             "channelTag": 0,
             "env": 3,
-            "language": user.lang,
+            "language": i18n.language,
             "signature": "DFD29F8E1D150AB53830FB62B46E581C",
         }
 
@@ -144,16 +143,22 @@ function Topbar(props) {
     }
     /**sign out */
     const signout = () => {
-        logout({ gameId: '100001' }, user.token).then(res => {
-            if (res.code == 0) {
-                setOpen(true);
-                setSnackBar({ ...snackBar, 'message': '退出成功', 'variant': 'success', 'autoHideDuration': 1500 });
-                Cookies.remove('token')
-                Cookies.remove('uid')
-                Cookies.remove('authCode')
-                location.reload();
-            }
-        })
+        // logout({ gameId: '100001' }, user.token).then(res => {
+        //     if (res.code == 0) {
+        //         setOpen(true);
+        //         setSnackBar({ ...snackBar, 'message': tr.t('logout'), 'variant': 'success', 'autoHideDuration': 1500 });
+        //         Cookies.remove('token')
+        //         Cookies.remove('uid')
+        //         Cookies.remove('authCode')
+        //         location.reload();
+        //     }
+        // })
+        setOpen(true);
+        setSnackBar({ ...snackBar, 'message': t('logout'), 'variant': 'success', 'autoHideDuration': 1500 });
+        Cookies.remove('token')
+        Cookies.remove('uid')
+        Cookies.remove('authCode')
+        location.reload();
     }
     useEffect(() => {
         getInit()
@@ -200,17 +205,18 @@ function Topbar(props) {
                                                     <span key={option.name} onClick={() => handleLogin(index)}>{t(option.name)}</span>
                                                 </MenuItem>
                                             )
-                                        } else {
-                                            <>
-                                                <MenuItem>
-                                                    <a href="/accounts/profile">{user.uid}</a>
-                                                </MenuItem>
-                                                <MenuItem>
-                                                    <span className={classes.asLink} onClick={signout}>退出</span>
-                                                </MenuItem>
-                                            </>
                                         }
                                     })
+                                }
+                                {
+                                    user.uid && <>
+                                        <MenuItem>
+                                            <a href="/accounts/profile">{user.uid}</a>
+                                        </MenuItem>
+                                        <MenuItem>
+                                            <span className={classes.asLink} onClick={signout}>{t('signout')}</span>
+                                        </MenuItem>
+                                    </>
                                 }
                             </Menu>
                         </Grid>
@@ -230,13 +236,14 @@ function Topbar(props) {
                                         return (
                                             <span key={option.name} onClick={() => handleLogin(index)}>{t(option.name)}</span>
                                         )
-                                    } else {
-                                        <>
-                                            <a href="/accounts/profile">{user.uid}</a>
-                                            <span className={classes.asLink} onClick={signout}>退出</span>
-                                        </>
                                     }
                                 })
+                            }
+                            {
+                                user.uid && <>
+                                    <a href="/accounts/profile">{user.uid}</a>
+                                    <span className={classes.asLink} onClick={signout}>{t('signout')}</span>
+                                </>
                             }
                         </Hidden>
                         <IconButton aria-label="select" aria-controls="simple-menu" aria-haspopup="true" onClick={handleLanguage}>

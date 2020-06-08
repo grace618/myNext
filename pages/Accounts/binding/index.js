@@ -65,14 +65,14 @@ const useStyles = makeStyles(theme => ({
         }
     }
 }))
-function Profile() {
+function Profile(props) {
     const classes = useStyles()
+    const { t } = props
     const initSnackbar = {
         message: '',
         variant: 'warning',
         autoHideDuration: 0
     }
-
     const [snackBar, setSnackBar] = useState(initSnackbar)
     const [open, setOpen] = useState(false);
     const app = useSelector(state => state.app)
@@ -162,7 +162,7 @@ function Profile() {
     const bingUser = (data) => {
         bindingAccounts(data, app.token).then(res => {
             if (res.code == 0) {
-                setSnackBar({ ...snackBar, 'message': '绑定成功', 'variant': 'success', 'autoHideDuration': 1500 })
+                setSnackBar({ ...snackBar, 'message': t('bindingService'), 'variant': 'success', 'autoHideDuration': 1500 })
                 setOpen(true);
                 init()
             } else {
@@ -182,7 +182,7 @@ function Profile() {
         }
         unBind(data, app.token).then(res => {
             if (res.code == 0) {
-                setSnackBar({ ...snackBar, 'message': '解绑成功', 'variant': 'success', 'autoHideDuration': 1500 })
+                setSnackBar({ ...snackBar, 'message': t('unbindsuccess'), 'variant': 'success', 'autoHideDuration': 1500 })
                 setOpen(true);
                 init()
             } else {
@@ -234,8 +234,8 @@ function Profile() {
     return (
         <Account>
             <div>
-                <span className={classes.title}> 绑定账号</span>
-                <p className={classes.textSize}>绑定你的社交网络账号后，你可以使用已绑定的社交网络账号来登录。</p>
+                <span className={classes.title}>{t('binding')}</span>
+                <p className={classes.textSize}>{t('bindtip')}</p>
                 <ul className={classes.ulPart}>
                     <li>
                         <div className={classes.iconStyle}>
@@ -244,8 +244,8 @@ function Profile() {
                         </div>
                         <div>
                             {
-                                binding.facebook ? <Button variant="outlined" color="primary" size="small" onClick={() => getFacebookInfo(0)}>解绑</Button> :
-                                    <Button variant="contained" color="primary" size="small" onClick={() => getFacebookInfo(1)}>绑定</Button>
+                                binding.facebook ? <Button variant="outlined" color="primary" size="small" onClick={() => getFacebookInfo(0)}>{t('unbind')}</Button> :
+                                    <Button variant="contained" color="primary" size="small" onClick={() => getFacebookInfo(1)}>{t('bind')}</Button>
                             }
                         </div>
                     </li>
@@ -255,8 +255,8 @@ function Profile() {
                             <span>GOOGLE</span>
                         </div>
                         <div>
-                            {binding.google ? <Button variant="outlined" color="primary" size="small" onClick={() => getGoogleInfo(0)}>解绑</Button> :
-                                <Button variant="contained" color="primary" size="small" onClick={() => getGoogleInfo(1)}>绑定</Button>}
+                            {binding.google ? <Button variant="outlined" color="primary" size="small" onClick={() => getGoogleInfo(0)}>{t('unbind')}</Button> :
+                                <Button variant="contained" color="primary" size="small" onClick={() => getGoogleInfo(1)}>{t('bind')}</Button>}
                         </div>
                     </li>
                 </ul>
@@ -279,4 +279,4 @@ function Profile() {
         </Account>
     )
 }
-export default withTranslation('profile')(Profile);
+export default withTranslation('accounts')(Profile);

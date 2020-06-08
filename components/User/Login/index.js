@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link'
 import PropTypes from 'prop-types'
 import { useSelector, useDispatch } from 'react-redux';
 import Phone from 'react-phone-number-input'
-import { withTranslation } from '../../../i18n'
+import { withTranslation, i18n } from '../../../i18n'
 const crypto = require('crypto')
 
-import { Grid, Button, TextField, Checkbox, Box, FormControlLabel, Typography, FormControl, Snackbar } from '@material-ui/core';
+import { Grid, Button, TextField, Checkbox, Box, FormControlLabel, Typography, FormControl, Snackbar, Slide } from '@material-ui/core';
 import { Save as SaveIcon, Clear, Facebook } from '@material-ui/icons';
 
 import { makeStyles } from '@material-ui/styles'
@@ -16,7 +16,6 @@ import { sendPhoneCode, sendCaptchaByAuthCode } from 'service/login'
 import { getUserInfo, register } from 'store/modules/app.js';
 
 const useStyles = makeStyles(theme => ({
-
     loginBox: {
         width: '90%',
         maxWidth: '820px',
@@ -63,10 +62,6 @@ const useStyles = makeStyles(theme => ({
     },
     left: {
         marginTop: '5%',
-    },
-
-    buttonColor: {
-        background: '#7FC75A'
     },
     buttonGoogle: {
         background: '#FFC107'
@@ -184,7 +179,7 @@ function LoginComponent(props) {
         setSnackBar(initSnackbar)
         const isEmail = /^([A-Za-z0-9_\-\.\u4e00-\u9fa5])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,8})$/.test(email)
         if (email === '' || !isEmail) {
-            setSnackBar({ ...snackBar, 'message': '请输入合理的邮箱', 'variant': 'warning', 'autoHideDuration': 5000 })
+            setSnackBar({ ...snackBar, 'message': t('emailTip'), 'variant': 'warning', 'autoHideDuration': 5000 })
             setOpen(true);
             return false
         }
@@ -201,14 +196,14 @@ function LoginComponent(props) {
         if (LoginWay) {
             if (!checkEmail(email)) return false
             if (password === '') {
-                setSnackBar({ ...snackBar, 'message': '请输入密码', 'variant': 'warning', 'autoHideDuration': 5000 })
+                setSnackBar({ ...snackBar, 'message': t('passwordTip'), 'variant': 'warning', 'autoHideDuration': 5000 })
                 setOpen(true);
                 return false
             }
             data = { loginType: 2, accessId: '', accessToken: '', uluAccount: email, password: pwd, gameId: '100001' }
         } else {
             if (phoneValue === '' || code === '') {
-                setSnackBar({ ...snackBar, 'message': '请输入手机号码或验证码', 'variant': 'warning', 'autoHideDuration': 10000 })
+                setSnackBar({ ...snackBar, 'message': t('phoneEmail'), 'variant': 'warning', 'autoHideDuration': 10000 })
                 setOpen(true);
                 return false
             }
@@ -245,17 +240,17 @@ function LoginComponent(props) {
         setSnackBar(initSnackbar)
         if (!checkEmail(mail)) return false
         if (password.length < 8) {
-            setSnackBar({ ...snackBar, 'message': '请输入8-20位字母 (区别大小写)、数字或符号', 'variant': 'warning', 'autoHideDuration': 5000 })
+            setSnackBar({ ...snackBar, 'message': t('tip'), 'variant': 'warning', 'autoHideDuration': 5000 })
             setOpen(true);
             return false
         }
         if ((password == '' || passwordAgain == '') || (password !== passwordAgain)) {
-            setSnackBar({ ...snackBar, 'message': '两次输入密码不一致', 'variant': 'warning', 'autoHideDuration': 5000 })
+            setSnackBar({ ...snackBar, 'message': t('pwdComfirm'), 'variant': 'warning', 'autoHideDuration': 5000 })
             setOpen(true);
             return false
         }
         if (!checkedA) {
-            setSnackBar({ ...snackBar, 'message': '请先同意服务条款', 'variant': 'warning', 'autoHideDuration': 1500 })
+            setSnackBar({ ...snackBar, 'message': t('readTip'), 'variant': 'warning', 'autoHideDuration': 1500 })
             setOpen(true);
             return false
         }
@@ -281,7 +276,7 @@ function LoginComponent(props) {
         });
     }
     const sendCaptcha = () => {
-        let lang = user.lang == 'en' ? 'en-US' : 'zh-CN'
+        let lang = i18n.language == 'en' ? 'en-US' : 'zh-CN'
         const data = {
             "mail": regInputs.mail,
             "gameId": "100001",
@@ -367,8 +362,8 @@ function LoginComponent(props) {
                             startIcon={<Facebook />}
                             onClick={facebookLogin}
                         >
-                            Facebook登入
-                            </Button>
+                            {t('facebook')}
+                        </Button>
                         <Button
                             variant="contained"
                             color="primary"
@@ -377,8 +372,8 @@ function LoginComponent(props) {
                             startIcon={<SaveIcon />}
                             onClick={googleLogin}
                         >
-                            Google登入
-                            </Button>
+                            {t('google')}
+                        </Button>
                     </Grid>
                     <Grid item lg={6} xs={12} md={6} sm={6} xl={6} className={classes.right}>
                         {
@@ -390,7 +385,7 @@ function LoginComponent(props) {
                                             <FormControl className={classes.inputBox}>
                                                 <TextField
                                                     id="outlined-email-input"
-                                                    label="电子邮箱"
+                                                    label={t('email')}
                                                     className={classes.textField}
                                                     type="email"
                                                     name="email"
@@ -405,7 +400,7 @@ function LoginComponent(props) {
                                             <FormControl className={classes.inputBox}>
                                                 <TextField
                                                     id="outlined-password-input"
-                                                    label="密码"
+                                                    label={t('password')}
                                                     className={classes.textField}
                                                     type="password"
                                                     name="password"
@@ -427,7 +422,7 @@ function LoginComponent(props) {
                                                 <Phone
                                                     placeholder="Enter phone number"
                                                     className={classes.phoneCode}
-                                                    label="手机号码"
+                                                    label={t('phone')}
                                                     name="phoneNumber"
                                                     margin="normal"
                                                     variant="outlined"
@@ -439,27 +434,27 @@ function LoginComponent(props) {
                                             </FormControl>
                                             <Box display="flex" justifyContent="space-betwwen">
                                                 <FormControl className={classes.getcode}>
-                                                    <TextField label="验证码" name="code" margin="normal" variant="outlined" value={inputs.code} onChange={handleInputChange} />
+                                                    <TextField label={t('code')} name="code" margin="normal" variant="outlined" value={inputs.code} onChange={handleInputChange} />
                                                 </FormControl>
                                                 <FormControl className={classes.sendCaptcha}>
-                                                    <Button variant="outlined" color="secondary" className={classes.sendcode} onClick={sendCode}> {isSend ? time : '发送验证码'}</Button>
+                                                    <Button variant="outlined" color="secondary" className={classes.sendcode} onClick={sendCode}> {isSend ? time : t('send')}</Button>
                                                 </FormControl>
                                             </Box>
                                         </div>
                                     }
                                     <Box display="flex" justifyContent="space-between" alignItems="center" fontSize={16} className={classes.info}>
-                                        <span onClick={loginInfo}> {LoginWay ? '手机号登录' : '邮箱登录'}</span>
-                                        <Link href="/Accounts/password"><a>忘记密码</a></Link>
+                                        <span onClick={loginInfo}> {LoginWay ? t('phoneLogin') : t('emailLogin')}</span>
+                                        <Link href="/Accounts/password"><a>{t('forgetPassword')}</a></Link>
                                     </Box>
-                                    <Button variant="contained" color="primary" className={classes.LoginBtn} onClick={handleSubmit}> 登入 </Button>
-                                    <Typography color="textPrimary" variant="body2" align="center">没有游陆账号？<span onClick={() => setShow(false)} className={classes.asLink}>马上注册</span></Typography>
+                                    <Button variant="contained" color="primary" className={classes.LoginBtn} onClick={handleSubmit}> {t('sign')} </Button>
+                                    <Typography color="textPrimary" variant="body2" align="center">{t('ulu')}？<span onClick={() => setShow(false)} className={classes.asLink}>{t('register')}</span></Typography>
                                 </form>) :
                                 (
                                     // register
                                     <form className={classes.formData} onSubmit={handleRegSubmit}>
                                         <FormControl className={classes.inputBox}>
                                             <TextField
-                                                label="电子邮箱"
+                                                label={t('email')}
                                                 className={classes.textField}
                                                 type="email"
                                                 name="mail"
@@ -474,7 +469,7 @@ function LoginComponent(props) {
                                         <Box display="flex" justifyContent="space-betwwen">
                                             <FormControl className={classes.getcode}>
                                                 <TextField
-                                                    label="验证码"
+                                                    label={t('code')}
                                                     name="captcha"
                                                     margin="normal"
                                                     variant="outlined"
@@ -484,12 +479,12 @@ function LoginComponent(props) {
                                                 />
                                             </FormControl>
                                             <FormControl className={classes.sendCaptcha}>
-                                                <Button variant="outlined" color="secondary" className={classes.sendcode2} onClick={sendCaptcha}> {isSend1 ? time1 : '发送验证码'}</Button>
+                                                <Button variant="outlined" color="secondary" className={classes.sendcode2} onClick={sendCaptcha}> {isSend1 ? time1 : t('send')}</Button>
                                             </FormControl>
                                         </Box>
                                         <FormControl className={classes.inputBox}>
                                             <TextField
-                                                label="密码"
+                                                label={t("password")}
                                                 className={classes.textField}
                                                 type="password"
                                                 name="password"
@@ -499,12 +494,12 @@ function LoginComponent(props) {
                                                 variant="outlined"
                                                 value={regInputs.password}
                                                 onChange={handleRegInputChnage}
-                                                helperText="请输入8-20位字母 (区别大小写)、数字或符号"
+                                                helperText={t("tip")}
                                             />
                                         </FormControl>
                                         <FormControl className={classes.inputBox}>
                                             <TextField
-                                                label="确认密码"
+                                                label={t('comfirm')}
                                                 className={classes.textField}
                                                 type="password"
                                                 name="passwordAgain"
@@ -519,11 +514,11 @@ function LoginComponent(props) {
                                         <Box display="flex" justifyContent="space-between" alignItems="center">
                                             <FormControlLabel
                                                 control={<Checkbox checked={regInputs.checkedA} name="checkedA" fontSize="small" className={classes.checked} onChange={handleRegInputChnage} />}
-                                                label="我已阅读并同意遵守服务条款"
+                                                label={t("read")}
                                             />
                                         </Box>
-                                        <Button variant="contained" color="primary" className={classes.LoginBtn} onClick={submitRegData}> 注册 </Button>
-                                        <Typography color="textPrimary" variant="body2" align="center">已有账号？<span onClick={() => setShow(true)} className={classes.asLink}>在此登录</span></Typography>
+                                        <Button variant="contained" color="primary" className={classes.LoginBtn} onClick={submitRegData}> {t('register')} </Button>
+                                        <Typography color="textPrimary" variant="body2" align="center">{t('accounts')}？<span onClick={() => setShow(true)} className={classes.asLink}>{t('login')}</span></Typography>
                                     </form>)
                         }
                     </Grid>
@@ -551,4 +546,4 @@ function LoginComponent(props) {
 LoginComponent.propTypes = {
     t: PropTypes.func.isRequired,
 }
-export default withTranslation('common')(LoginComponent);
+export default withTranslation('user')(LoginComponent);

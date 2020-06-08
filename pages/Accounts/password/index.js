@@ -1,7 +1,8 @@
 import React from 'react'
 import { makeStyles, Container, Typography } from '@material-ui/core'
-import Layout from '../../../components/Layouts/index.js'
-import PasswordComponent from '../../../components/User/Password'
+import Layout from 'components/Layouts/index.js'
+import PasswordComponent from 'components/User/Password'
+import { withTranslation } from '../../../i18n'
 const useStyles = makeStyles(theme => ({
     root: {
         background: '#FBFBFB',
@@ -31,16 +32,16 @@ const useStyles = makeStyles(theme => ({
         marginBottom: '2%'
     },
 }));
-function ResetPassword() {
+function ResetPassword(props) {
     const classes = useStyles()
-
+    const { t } = props
     return (
         <Layout>
             <div className={classes.root}>
                 <Container>
                     <div className={classes.inputEmail}>
-                        <Typography gutterBottom variant="h5" color="textPrimary" align="center" className={classes.title}>忘记密码?</Typography>
-                        <Typography gutterBottom variant="body1" color="textPrimary" align="center" className={classes.desc}>请输入你的邮箱，若你已设置追回邮箱，密码重置指令会被发送至你的追回邮箱</Typography>
+                        <Typography gutterBottom variant="h5" color="textPrimary" align="center" className={classes.title}>{t('forget')}?</Typography>
+                        <Typography gutterBottom variant="body1" color="textPrimary" align="center" className={classes.desc}>{t('forgetTip')}</Typography>
                         <PasswordComponent />
                     </div>
                 </Container>
@@ -48,4 +49,4 @@ function ResetPassword() {
         </Layout>
     )
 }
-export default ResetPassword
+export default withTranslation('accounts')(ResetPassword);

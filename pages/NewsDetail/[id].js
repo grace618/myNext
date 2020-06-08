@@ -2,8 +2,8 @@ import React from 'react';
 import { makeStyles, Container, Typography, Grid, Box, Hidden, Breadcrumbs, Divider } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import Link from 'next/link'
-import { withTranslation } from '../../i18n'
-import Layout from '../../components/Layouts/index.js'
+import { withTranslation, i18n } from '../../i18n'
+import Layout from 'components/Layouts/index.js'
 import { newsDetail } from 'service/news'
 import { parseTime } from 'utils/format.js'
 const useStyles = makeStyles(theme => ({
@@ -79,7 +79,6 @@ function NewDetail(props) {
                             <Breadcrumbs aria-label="breadcrumb">
                                 <Link href="/" ><a className={classes.breadcrumbs}>{t('home')}</a></Link>
                                 <Link href="/gameslist"><a className={classes.breadcrumbs}>{t('game')}</a></Link>
-                                <Typography color="textPrimary" className={classes.breadcrumbs}>详情</Typography>
                             </Breadcrumbs>
                         </Grid>
                     </Container>
@@ -89,7 +88,7 @@ function NewDetail(props) {
                 <Grid container alignItems="center" className={classes.gameTitle} direction="column">
                     <Typography gutterBottom variant="h5" color="textPrimary">{detail.title}</Typography>
                     <Divider className={classes.divider} />
-                    <Typography gutterBottom color="textSecondary">发表于{parseTime(detail.createTime, '{y}-{m}-{d}')}</Typography>
+                    <Typography gutterBottom color="textSecondary">{t('publicBy')}：{parseTime(detail.createTime, '{y}-{m}-{d}')}</Typography>
                 </Grid>
                 <div className={classes.space} dangerouslySetInnerHTML={{ __html: detail.content }}></div>
             </Container>
@@ -99,4 +98,4 @@ function NewDetail(props) {
 NewDetail.propTypes = {
     t: PropTypes.func.isRequired,
 }
-export default withTranslation('gameDetail')(NewDetail);
+export default withTranslation('newsDetail')(NewDetail);
