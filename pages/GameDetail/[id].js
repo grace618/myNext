@@ -60,7 +60,11 @@ const useStyles = makeStyles(theme => ({
         margin: '10px 0'
     },
     downloadGoogleplay: {
-        background: '#7FC75A'
+        background: '#7FC75A',
+        marginBottom: '10px'
+    },
+    downloadULU: {
+        background: '#FF0000',
     },
     facebook: {
         background: '#3B5998',
@@ -307,7 +311,8 @@ function Detail(props) {
                         <Grid className={classes.infoPanel} container direction="column">
                             <Grid container item>
                                 <Box className={classes.textInfo} width="150px"> <UserIcon /> {t('developer')}: </Box>
-                                {detail.developer}
+                                {/* {detail.developer} */}
+                                U.LU GAMES
                             </Grid>
                             <Grid container item >
                                 <Box className={classes.textInfo} width="150px"> <DateIcon /><span> {t('release')}:</span>  </Box>
@@ -337,6 +342,15 @@ function Detail(props) {
                                                 <Android className={classes.icon} />
                                                         GOOGLE PLAY
                                             </Button>)
+                                        }
+                                        {
+                                            item.type === '10' &&
+                                            (
+                                                <Button variant="contained" color="primary" size="large" className={classes.downloadULU} href={item.downloadUrl} target="_blank">
+                                                    <Android className={classes.icon} />
+                                                        U.LU GAMES
+                                                </Button>
+                                            )
                                         }
                                     </React.Fragment>
                                 ))

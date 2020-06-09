@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Button, TextField, Typography, makeStyles, Box, FormControl, Snackbar } from '@material-ui/core';
 import { useSubmitForm } from 'common/CustomHooks'
 import { useSelector } from 'react-redux';
@@ -27,12 +27,13 @@ const useStyles = makeStyles((theme) => ({
     }
 })
 )
-function PasswordComponent() {
+function PasswordComponent(props) {
     const classes = useStyles()
     const user = useSelector(state => state.app)
     const [step, setStep] = useState(true)
     const [open, setOpen] = useState(false);
     const router = useRouter();
+    const { t } = props
     const initSnackbar = {
         message: '',
         variant: 'warning',
@@ -135,7 +136,7 @@ function PasswordComponent() {
                     <Box display="flex" alignContent="center" flexDirection="column">
                         <TextField
                             id="outlined-email-input"
-                            label={this('email')}
+                            label={t('email')}
                             className={classes.textField1}
                             type="email"
                             name="mail"

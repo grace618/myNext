@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
         width: theme.spacing(5),
         height: 2,
         display: 'block',
-        margin: '40px 0 30px 0'
+        margin: '0 0 30px 0'
     },
     thumbnail: {
         marginBottom: theme.spacing(3),
@@ -87,6 +87,18 @@ const useStyles = makeStyles(theme => ({
     box: {
         minHeight: '500px',
         width: '100%'
+    },
+    headSlide: {
+        background: "url('images/accounts/bg1.jpg') no-repeat",
+        width: '100%',
+        height: '390px'
+    },
+    title: {
+        color: 'white',
+        fontSize: "26px",
+        padding: '240px 0 0 0',
+        fontWeight: 'bold',
+        fontSize: '34px'
     }
 })
 )
@@ -136,16 +148,19 @@ function NewList(props) {
                     </Container>
                 </Box>
             </Hidden>
+            <div className={classes.headSlide}>
+                <Container><div className={classes.title}> {t('news')}</div></Container>
+            </div>
             <Container>
                 <Box pt={10}>
-                    <span className={classes.headingBlock}>{t('news')}</span>
+                    {/* <span className={classes.headingBlock}>{t('news')}</span> */}
                     <span className={classes.line}></span>
                 </Box>
                 <div className={`${classes.gameList} ${classes.box}`}>
                     {
                         infoItem.length > 0 && infoItem.map(item => (
                             <React.Fragment key={item.id}>
-                                <Grid container spacing={1} alignItems="center" >
+                                <Grid container spacing={1} alignItems="center">
                                     <Grid item xs={12} sm={12} md={2} lg={2} xl={2}>
                                         <Link href="/NewsDetail/[id]" as={`/NewsDetail/${item.id}`} ><img className={classes.img} alt="complex" src={item.imgUrl} /></Link>
                                     </Grid>

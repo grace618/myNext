@@ -154,10 +154,16 @@ const useStyles = makeStyles(theme => ({
         textAlign: 'center'
     },
     slideImg: {
+        padding: '5px 0',
+        cursor: 'pointer',
         '& img': {
             width: '277px',
             height: '277px',
             margin: '0 auto'
+        },
+        '&:hover': {
+            transform: 'scale(1.05, 1.05)',
+            transition: 'all 0.5s'
         }
     },
     c: {
@@ -175,7 +181,12 @@ const useStyles = makeStyles(theme => ({
             marginBottom: '67px',
             boxSizing: 'border-box',
             height: '100%',
+            cursor: 'pointer'
         },
+        '&>*:hover': {
+            boxShadow: '0 4px 10px rgba(0, 0, 0, .3)',
+            transition: 'all .3s'
+        }
     },
     news_detail: {
         borderLeft: "4px solid #fe9a45",
@@ -205,6 +216,7 @@ const useStyles = makeStyles(theme => ({
     center: {
         position: 'relative',
         color: 'white',
+        height: 558
 
     },
     news_center: {

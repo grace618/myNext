@@ -62,9 +62,11 @@ const options = [{
     'name': 'English'
 }]
 const menu = [{
-    'name': 'publishing',
-}, {
     'name': 'GameList',
+}, {
+    'name': 'news'
+}, {
+    'name': 'publishing',
 }, {
     'name': 'jobs',
 },
@@ -112,7 +114,7 @@ function Topbar(props) {
     };
 
     const handleLogin = (index) => {
-        if (index == 3) {
+        if (index == 4) {
             setShow(true)
         } else {
             setShow(false)
@@ -197,7 +199,7 @@ function Topbar(props) {
                             >
                                 {
                                     menu.map((option, index) => {
-                                        if (index < 3) {
+                                        if (index < 4) {
                                             return (<MenuItem key={option.name} onClick={handleClose}> <Link href={`/${option.name}`} ><a>{t(option.name)}</a></Link></MenuItem>)
                                         } else if (!user.uid) {
                                             return (
@@ -230,7 +232,7 @@ function Topbar(props) {
                             {
                                 menu.map((option, index) => {
                                     //未登录
-                                    if (index < 3) {
+                                    if (index < 4) {
                                         return (<Link href={`/${option.name}`} key={option.name}><a>{t(option.name)}</a></Link>)
                                     } else if (!user.uid) {
                                         return (
@@ -241,7 +243,7 @@ function Topbar(props) {
                             }
                             {
                                 user.uid && <>
-                                    <a href="/accounts/profile">{user.uid}</a>
+                                    <a href="/accounts/binding">{user.uid}</a>
                                     <span className={classes.asLink} onClick={signout}>{t('signout')}</span>
                                 </>
                             }
