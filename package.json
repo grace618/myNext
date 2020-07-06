@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "cross-env PORT=6006 URL='http://47.244.105.144' node server.js",
-    "build": "cross-env NODE_ENV=production PORT=6006 URL='http://47.244.105.144' next build",
-    "start": "cross-env NODE_ENV=production PORT=6006 URL='http://47.244.105.144' node server.js"
+    "dev": "cross-env NODE_ENV=development node server.js",
+    "build": "next build",
+    "start": "cross-env NODE_ENV=production node server.js"
   },
   "dependencies": {
     "@material-ui/lab": "^4.0.0-alpha.54",

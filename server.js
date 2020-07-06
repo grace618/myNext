@@ -8,7 +8,8 @@ const nextI18next = require('./i18n')
 
 const port = process.env.PORT || 3000
 const env = process.env.NODE_ENV
-const url = process.env.URL
+const url = process.env.NEXT_PUBLIC_URL
+console.log(process.env.API_URL, process.env.NEXT_PUBLIC_URL, 'url')
 const dev = env !== 'production'
 const app = next({
   dir: '.',
@@ -16,11 +17,11 @@ const app = next({
 })
 const devProxy = {
   '/api': {
-    target: url,
+    target: "http://47.244.105.144",
     changeOrigin: true,
   },
   '/v1': {
-    target: url,
+    target: "http://47.244.105.144",
     changeOrigin: true,
   }
 }

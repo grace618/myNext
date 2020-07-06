@@ -9,9 +9,9 @@ function Layout(props) {
     return (
         <div>
             <Head>
-                <meta charset="utf-8"></meta>
+                <meta charSet="utf-8"></meta>
                 <link rel="icon" href="/favicon.ico" />
-                <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+                <meta httpEquiv="X-UA-Compatible" content="IE=edge"></meta>
                 <link rel="apple-touch-icon" href="/logo192.png"></link>
                 <meta name="theme-color" content="#000000"></meta>
                 <meta name="og:title" content={siteTitle} />

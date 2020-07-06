@@ -382,7 +382,7 @@ function Home(props) {
                 <Container className={classes.panelContainer}>
                     <Grid container justify="space-between" >
                         <Grid item className={classes.left} xs={12} sm={12} md={6} lg={6} xl={6}>
-                            <img src='Images/person.png' alt="role" className={classes.role} />
+                            <img src="images/person.png" alt="role" className={classes.role} />
                         </Grid>
                         <Grid item container direction="column" justify="center" className={classes.right} xs={12} sm={12} md={6} lg={6} xl={6}>
                             <Box width="100%">
